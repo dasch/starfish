@@ -1,12 +1,7 @@
-<ol class="breadcrumb">
-  <li><a href="/">Home</a></li>
-  <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
-  <li class="active"><%= @channel %></li>
-</ol>
+<%= erb :project_navigation %>
 
-<h2><%= @channel %></h2>
+<h3><%= @channel %></h3>
 
-<h3>Releases</h3>
 <table class="table">
   <thead>
     <tr>

@@ -1,11 +1,12 @@
+<%= erb :project_navigation %>
+
 <ol class="breadcrumb">
-  <li><a href="/">Home</a></li>
-  <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
-  <li><a href="<%= branch_path(@branch) %>"><%= @branch %></a></li>
+  <li><a href="<%= branches_path(@project) %>">Branches</a></li>
+  <li><a href="<%= branch_path(@branch) %>"><code><%= @branch %></code></a></li>
   <li class="active">Build <%= @build %></li>
 </ol>
 
-<h2><%= @project %> build <%= @build %></h2>
+<h3>Build <%= @build %></h3>
 
 <dl class="dl-horizontal">
   <dt>Commit:</dt>

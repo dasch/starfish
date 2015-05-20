@@ -328,8 +328,12 @@ module Starfish
           "Canaries" => "#",
         }
 
+        current_path = items.values.
+          select {|path| request.path_info.start_with?(path) }.
+          max_by(&:length)
+
         items.map do |title, path|
-          [title, path, path == request.path_info]
+          [title, path, path == current_path]
         end
       end
 
