@@ -14,7 +14,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @project.master_branch.builds.reverse.take(15).each do |build| %>
+    <% @project.master_branch.builds.reverse.each do |build| %>
       <tr class="<%= 'success' if @project.channels.any? {|c| c.current_build == build } %>">
         <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
 
