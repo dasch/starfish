@@ -281,7 +281,7 @@ module Starfish
     User.new(name: "Chewbacca"),
   ]
 
-  12.times do
+  30.times do
     commits = (1..5).to_a.sample.times.map {
       project.add_commit(
         sha: SecureRandom.hex,
@@ -298,7 +298,7 @@ module Starfish
     build.add_status(name: "System Tests", value: "Passed")
   end
 
-  %w(Staging Production).each do |channel_name|
+  %w(Staging Pod1 Pod2 Pod3 Pod4 Pod5 Pod6).each do |channel_name|
     channel = project.add_channel(name: channel_name)
 
     env = {
@@ -309,8 +309,8 @@ module Starfish
 
     config = channel.add_config(env: env)
 
-    (5..11).to_a.sample.times do |number|
-      build = branch.find_build(number: (3..12).to_a.sample)
+    (8..11).to_a.sample.times do |number|
+      build = branch.find_build(number: (23..29).to_a.sample)
       channel.add_release(build: build, config: config)
     end
   end

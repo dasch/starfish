@@ -3,26 +3,28 @@
     <tr>
       <th>Build</th>
       <th>Status</th>
-      <th>Channels</th>
       <th>Authors</th>
-      <th>Changes</th>
+      <th colspan="<%= @project.channels.count %>">Channels</th>
     </tr>
   </thead>
   <tbody>
-    <% builds.reverse.take(10).each do |build| %>
-      <tr>
+    <% builds.reverse.take(15).each do |build| %>
+      <tr class="<%= 'success' if @project.channels.any? {|c| c.current_build == build } %>">
         <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
+
         <td width="10"><%= build_status(build) %></td>
-        <td>
-          <% @project.releases_for_build(build).each do |release| %>
-            <span class="label label-success"><%= release.channel %> <%= release %></span>
-          <% end %>
-        </td>
+
         <td><%= build.authors.join(", ") %></td>
-        <td align="right" width="100">
-          <span class="label label-success"><%= build.additions %></span>
-          <span class="label label-danger"><%= build.deletions %></span>
-        </td>
+
+        <% @project.channels.each do |channel| %>
+          <td width="20">
+            <% if channel.current_build == build %>
+              <span class="label label-success"><%= channel %></span>
+            <% elsif channel.current_build.number < build.number %>
+              <span class="label label-default"><%= channel %></span>
+            <% end %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
