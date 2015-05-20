@@ -347,7 +347,7 @@ module Starfish
           "Channels" => channels_path(project),
           "Releases" => "#",
           "Branches" => branches_path(project),
-          "Canaries" => "#",
+          "Canaries" => canaries_path(project),
         }
 
         current_path = items.values.
@@ -379,6 +379,10 @@ module Starfish
 
       def channel_path(channel)
         [channels_path(channel.project), channel.slug].join("/")
+      end
+
+      def canaries_path(project)
+        [project_path(project), "canaries"].join("/")
       end
 
       def release_path(release)
@@ -446,6 +450,11 @@ module Starfish
       @branch = @project.find_branch(name: params[:branch])
       @build = @branch.find_build(number: params[:build].to_i)
       erb :show_build
+    end
+
+    get '/projects/:project/canaries' do
+      @project = $repo.find_project(slug: params[:project])
+      erb :list_canaries
     end
   end
 end
