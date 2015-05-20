@@ -1,0 +1,32 @@
+<ol class="breadcrumb">
+  <li><a href="/">Home</a></li>
+  <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
+  <li class="active"><%= @channel %></li>
+</ol>
+
+<h2><%= @channel %></h2>
+
+<h3>Releases</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Release</th>
+      <th>Build</th>
+      <th>Authors</th>
+      <th>Changes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @channel.releases.reverse.each do |release| %>
+      <tr>
+        <th width="10"><a href="<%= release_path(release) %>"><%= release %></a></th>
+        <td width="10"><a href="<%= build_path(release.build) %>"><%= release.build %></a></td>
+        <td><%= release.authors.join(", ") %></td>
+        <td align="right" width="100">
+          <span class="label label-success"><%= release.build.additions %></span>
+          <span class="label label-danger"><%= release.build.deletions %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

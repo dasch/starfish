@@ -1,5 +1,24 @@
 <ol class="breadcrumb">
   <li><a href="/">Home</a></li>
   <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
+  <li><a href="<%= branch_path(@branch) %>"><%= @branch %></a></li>
   <li class="active">Build <%= @build %></li>
 </ol>
+
+<h2><%= @project %> build <%= @build %></h2>
+
+<dl class="dl-horizontal">
+  <dt>Commit:</dt>
+  <dd><code><%= @build.commit %></code></dd>
+
+  <dt>Branch:</dt>
+  <dd><code><%= @build.branch %></code></dd>
+
+  <dt>Container image:</dt>
+  <dd><code><%= @build.image %></code></dd>
+
+  <% @build.statuses.each do |status| %>
+    <dt><%= status.name %>:</dt>
+    <dd><%= status.value %></dd>
+  <% end %>
+</dl>

@@ -1,0 +1,29 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Build</th>
+      <th>Status</th>
+      <th>Channels</th>
+      <th>Authors</th>
+      <th>Changes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% builds.reverse.take(10).each do |build| %>
+      <tr>
+        <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
+        <td width="10"><%= build_status(build) %></td>
+        <td>
+          <% @project.releases_for_build(build).each do |release| %>
+            <span class="label label-success"><%= release.channel %> <%= release %></span>
+          <% end %>
+        </td>
+        <td><%= build.authors.join(", ") %></td>
+        <td align="right" width="100">
+          <span class="label label-success"><%= build.additions %></span>
+          <span class="label label-danger"><%= build.deletions %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

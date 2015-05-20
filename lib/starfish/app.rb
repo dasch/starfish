@@ -2,28 +2,91 @@ require 'sinatra/base'
 
 module Starfish
   class Project
-    attr_reader :name, :releases, :builds
+    attr_reader :name, :commits, :branches, :channels
 
-    def initialize(name:, releases: [], builds: [])
+    def initialize(name:)
       @name = name
-      @releases = releases
-      @builds = builds
+      @commits = []
+      @branches = []
+      @channels = []
     end
 
-    def add_release(number:)
-      @releases << Release.new(number: number, project: self)
+    def add_commit(**options)
+      commit = Commit.new(**options)
+      @commits << commit
+      commit
+    end
+
+    def add_branch(**options)
+      branch = Branch.new(**options.merge(project: self))
+      @branches << branch
+      branch
+    end
+
+    def find_branch(name:)
+      @branches.find {|b| b.name == name }
+    end
+
+    def master_branch
+      find_branch(name: "master")
+    end
+
+    def add_channel(**options)
+      channel = Channel.new(**options.merge(project: self))
+      @channels << channel
+      channel
+    end
+
+    def find_channel(slug:)
+      @channels.find {|c| c.slug == slug }
+    end
+
+    def releases_for_build(build)
+      @channels.find_all {|c| c.current_build == build }.map(&:current_release)
+    end
+
+    def slug
+      name.downcase.scan(/\w+/).join("-")
+    end
+
+    def to_s
+      name
+    end
+  end
+
+  class Channel
+    attr_reader :project, :name, :releases, :configs
+
+    def initialize(project:, name:)
+      @project = project
+      @name = name
+      @releases = []
+      @configs = []
+    end
+
+    def current_release
+      releases.last
+    end
+
+    def current_build
+      current_release.build
+    end
+
+    def add_release(**options)
+      number = @releases.count + 1
+      release = Release.new(**options.merge(channel: self, number: number))
+      @releases << release
+      release
     end
 
     def find_release(number:)
       @releases.find {|b| b.number == number }
     end
 
-    def add_build(number:)
-      @builds << Build.new(number: number, project: self)
-    end
-
-    def find_build(number:)
-      @builds.find {|b| b.number == number }
+    def add_config(**options)
+      config = Config.new(**options)
+      @configs << config
+      config
     end
 
     def slug
@@ -36,10 +99,14 @@ module Starfish
   end
 
   class Release
-    attr_reader :number, :project
+    attr_reader :build, :config, :number, :channel
 
-    def initialize(number:, project:)
-      @number, @project = number, project
+    def initialize(build:, config:, number:, channel:)
+      @build, @config, @number, @channel = build, config, number, channel
+    end
+
+    def authors
+      build.authors
     end
 
     def to_s
@@ -48,14 +115,138 @@ module Starfish
   end
 
   class Build
-    attr_reader :number, :project
+    attr_reader :number, :commits, :statuses, :image, :branch
 
-    def initialize(number:, project:)
-      @number, @project = number, project
+    def initialize(number:, commits:, image:, branch:)
+      @number, @project, @image = number, project, image
+      @commits = commits
+      @branch = branch
+      @statuses = []
+    end
+
+    def project
+      @branch && @branch.project
+    end
+
+    def add_status(name:, value:)
+      status = Status.new(name: name, value: value)
+      @statuses << status
+      status
+    end
+
+    def ok?
+      statuses.all?(&:ok?)
+    end
+
+    def commit
+      commits.last
+    end
+
+    def authors
+      commits.flat_map(&:author).uniq
+    end
+
+    def additions
+      commits.map(&:additions).inject(0, &:+)
+    end
+
+    def deletions
+      commits.map(&:deletions).inject(0, &:+)
+    end
+
+    def ==(other)
+      branch == other.branch && commit == other.commit
     end
 
     def to_s
       "##{number}"
+    end
+  end
+
+  class Commit
+    attr_reader :sha, :author, :additions, :deletions
+
+    def initialize(sha:, author:, additions:, deletions:)
+      @sha = sha
+      @author = author
+      @additions = additions
+      @deletions = deletions
+    end
+
+    def to_s
+      sha
+    end
+  end
+
+  class Branch
+    attr_reader :name, :project, :builds
+
+    def initialize(name:, project:)
+      @name, @project = name, project
+      @builds = []
+    end
+
+    def add_build(**options)
+      number = @builds.count + 1
+      build = Build.new(**options.merge(branch: self, number: number))
+      @builds << build
+      build
+    end
+
+    def find_build(number:)
+      @builds.find {|b| b.number == number }
+    end
+
+    def to_s
+      name
+    end
+  end
+
+  class Config
+    attr_reader :env
+
+    def initialize(env:)
+      @env = env
+    end
+  end
+
+  class Status
+    attr_reader :name, :value
+
+    def initialize(name:, value:)
+      @name, @value = name, value
+    end
+
+    def ok?
+      value != "Failed"
+    end
+  end
+
+  class ContainerImage
+    attr_reader :id, :namespace, :name
+
+    def initialize(id:, namespace:, name:)
+      @id, @namespace, @name = id, namespace, name
+    end
+
+    def to_s
+      "#{namespace}/#{name}:#{id}"
+    end
+  end
+
+  class User
+    attr_reader :name
+
+    def initialize(name:)
+      @name = name
+    end
+
+    def ==(other)
+      name == other.name
+    end
+
+    def to_s
+      name
     end
   end
 
@@ -78,32 +269,83 @@ module Starfish
   end
 
   $repo = Repository.new
-  $repo.add_project(name: "Voice")
 
   project = $repo.add_project(name: "Help Center")
+  branch = project.add_branch(name: "master")
 
-  1.upto(11).each do |number|
-    project.add_release(number: number)
+  users = [
+    User.new(name: "Luke Skywalker"),
+    User.new(name: "Darth Vader"),
+    User.new(name: "Princess Leia"),
+    User.new(name: "Han Solo"),
+    User.new(name: "Chewbacca"),
+  ]
+
+  12.times do
+    commits = (1..5).to_a.sample.times.map {
+      project.add_commit(
+        sha: SecureRandom.hex,
+        author: users.sample,
+        additions: (0..100).to_a.sample,
+        deletions: (0..100).to_a.sample
+      )
+    }
+
+    image = ContainerImage.new(id: SecureRandom.hex, namespace: "zendesk", name: "help_center")
+    build = branch.add_build(commits: commits, image: image)
+    build.add_status(name: "Travis CI", value: "Pending")
+    build.add_status(name: "Code Climate", value: "Passed")
+    build.add_status(name: "System Tests", value: "Passed")
   end
 
-  1.upto(32).each do |number|
-    project.add_build(number: number)
+  %w(Staging Production).each do |channel_name|
+    channel = project.add_channel(name: channel_name)
+
+    env = {
+      "NEW_RELIC_KEY" => "fads834rsd98basaf",
+      "MYSQL_URL" => "mysql://fdsafs:fasdfsac@db.zdsys.com/production",
+      "REDIS_URL" => "redis://redis1.zdsys.com/0",
+    }
+
+    config = channel.add_config(env: env)
+
+    (5..11).to_a.sample.times do |number|
+      build = branch.find_build(number: (3..12).to_a.sample)
+      channel.add_release(build: build, config: config)
+    end
   end
 
   class App < Sinatra::Base
     set :root, File.expand_path("../../../", __FILE__)
 
     helpers do
+      def build_status(build)
+        icon = build.ok? ? "glyphicon-ok" : "glyphicon-remove"
+        %(<span class="glyphicon #{icon}" aria-hidden="true"></span>)
+      end
+
       def project_path(project)
         ["/projects", project.slug].join("/")
       end
 
+      def channel_path(channel)
+        [project_path(channel.project), "channels", channel.slug].join("/")
+      end
+
       def release_path(release)
-        [project_path(release.project), "releases", release.number].join("/")
+        [channel_path(release.channel), "releases", release.number].join("/")
+      end
+
+      def branch_path(branch)
+        [project_path(branch.project), "branches", branch.name].join("/")
       end
 
       def build_path(build)
-        [project_path(build.project), "builds", build.number].join("/")
+        [branch_path(build.branch), "builds", build.number].join("/")
+      end
+
+      def branch_path(branch)
+        [project_path(branch.project), "branches", branch.name].join("/")
       end
     end
 
@@ -117,15 +359,29 @@ module Starfish
       erb :show_project
     end
 
-    get '/projects/:slug/releases/:number' do
-      @project = $repo.find_project(slug: params[:slug])
-      @release = @project.find_release(number: params[:number].to_i)
+    get '/projects/:project/channels/:channel' do
+      @project = $repo.find_project(slug: params[:project])
+      @channel = @project.find_channel(slug: params[:channel])
+      erb :show_channel
+    end
+
+    get '/projects/:project/channels/:channel/releases/:release' do
+      @project = $repo.find_project(slug: params[:project])
+      @channel = @project.find_channel(slug: params[:channel])
+      @release = @channel.find_release(number: params[:release].to_i)
       erb :show_release
     end
 
-    get '/projects/:slug/builds/:number' do
-      @project = $repo.find_project(slug: params[:slug])
-      @build = @project.find_build(number: params[:number].to_i)
+    get '/projects/:project/branches/:branch' do
+      @project = $repo.find_project(slug: params[:project])
+      @branch = @project.find_branch(name: params[:branch])
+      erb :show_branch
+    end
+
+    get '/projects/:project/branches/:branch/builds/:build' do
+      @project = $repo.find_project(slug: params[:project])
+      @branch = @project.find_branch(name: params[:branch])
+      @build = @branch.find_build(number: params[:build].to_i)
       erb :show_build
     end
   end

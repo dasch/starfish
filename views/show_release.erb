@@ -1,5 +1,19 @@
 <ol class="breadcrumb">
   <li><a href="/">Home</a></li>
   <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
+  <li><a href="<%= channel_path(@channel) %>"><%= @channel %></a></li>
   <li class="active">Release <%= @release %></li>
 </ol>
+
+<dl class="dl-horizontal">
+  <dt>Build:</dt>
+  <dd><a href="<%= build_path(@release.build) %>"><%= @release.build %></a></dd>
+</dl>
+
+<h4>Config</h4>
+<dl class="dl-horizontal">
+  <% @release.config.env.each do |key, value| %>
+    <dt><code><%= key %></code></dt>
+    <dd><code><%= value %></code></dd>
+  <% end %>
+</dl>
