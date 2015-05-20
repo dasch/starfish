@@ -1,35 +1,33 @@
-<ol class="breadcrumb">
-  <li><a href="/">Home</a></li>
-  <li class="active"><%= @project %></li>
-</ol>
+<%= erb :project_navigation %>
 
-<h3>Master builds</h3>
-<%= erb :build_table, locals: { builds: @project.master_branch.builds } %>
-
-<h3>Channels</h3>
 <table class="table">
   <thead>
     <tr>
-      <th>Channel</th>
-      <th>Release</th>
       <th>Build</th>
+      <th>Status</th>
+      <th>Authors</th>
+      <th colspan="<%= @project.channels.count %>">Channels</th>
     </tr>
   </thead>
   <tbody>
-    <% @project.channels.each do |channel| %>
-      <tr>
-        <th><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
-        <td><a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a></td>
-        <td><a href="<%= build_path(channel.current_build) %>"><%= channel.current_build %></a></td>
+    <% @project.master_branch.builds.reverse.take(15).each do |build| %>
+      <tr class="<%= 'success' if @project.channels.any? {|c| c.current_build == build } %>">
+        <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
+
+        <td width="10"><%= build_status(build) %></td>
+
+        <td><%= build.authors.join(", ") %></td>
+
+        <% @project.channels.each do |channel| %>
+          <td width="20">
+            <% if channel.current_build == build %>
+              <span class="label label-success"><%= channel %></span>
+            <% elsif channel.current_build.number < build.number %>
+              <span class="label label-default"><%= channel %></span>
+            <% end %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<h3>Branches</h3>
-<ul>
-  <% @project.branches.each do |branch| %>
-    <li><a href="<%= branch_path(branch) %>"><%= branch %></a></li>
-  <% end %>
-</ul>
-

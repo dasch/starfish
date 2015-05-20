@@ -1,0 +1,20 @@
+<%= erb :project_navigation %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Channel</th>
+      <th>Release</th>
+      <th>Build</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @project.channels.each do |channel| %>
+      <tr>
+        <th><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
+        <td><a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a></td>
+        <td><a href="<%= build_path(channel.current_build) %>"><%= channel.current_build %></a></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

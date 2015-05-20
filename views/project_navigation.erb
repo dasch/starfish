@@ -1,0 +1,13 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="<%= project_path(@project) %>"><%= @project %></a>
+    </div>
+
+    <ul class="nav navbar-nav">
+      <% project_nav_items(@project).each do |title, path, active| %>
+        <li class="<%= 'active' if active %>"><a href="<%= path %>"><%= title %></a></li>
+      <% end %>
+    </ul>
+  </div>
+</nav>

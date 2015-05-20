@@ -319,6 +319,20 @@ module Starfish
     set :root, File.expand_path("../../../", __FILE__)
 
     helpers do
+      def project_nav_items(project)
+        items = {
+          "Master builds" => project_path(project),
+          "Channels" => channels_path(project),
+          "Releases" => "#",
+          "Branches" => branches_path(project),
+          "Canaries" => "#",
+        }
+
+        items.map do |title, path|
+          [title, path, path == request.path_info]
+        end
+      end
+
       def build_status(build)
         icon = build.ok? ? "glyphicon-ok" : "glyphicon-remove"
         %(<span class="glyphicon #{icon}" aria-hidden="true"></span>)
@@ -328,16 +342,24 @@ module Starfish
         ["/projects", project.slug].join("/")
       end
 
+      def channels_path(project)
+        [project_path(project), "channels"].join("/")
+      end
+
       def channel_path(channel)
-        [project_path(channel.project), "channels", channel.slug].join("/")
+        [channels_path(channel.project), channel.slug].join("/")
       end
 
       def release_path(release)
         [channel_path(release.channel), "releases", release.number].join("/")
       end
 
+      def branches_path(project)
+        [project_path(project), "branches"].join("/")
+      end
+
       def branch_path(branch)
-        [project_path(branch.project), "branches", branch.name].join("/")
+        [branches_path(branch.project), branch.name].join("/")
       end
 
       def build_path(build)
@@ -359,6 +381,11 @@ module Starfish
       erb :show_project
     end
 
+    get '/projects/:project/channels' do
+      @project = $repo.find_project(slug: params[:project])
+      erb :list_channels
+    end
+
     get '/projects/:project/channels/:channel' do
       @project = $repo.find_project(slug: params[:project])
       @channel = @project.find_channel(slug: params[:channel])
@@ -370,6 +397,11 @@ module Starfish
       @channel = @project.find_channel(slug: params[:channel])
       @release = @channel.find_release(number: params[:release].to_i)
       erb :show_release
+    end
+
+    get '/projects/:project/branches' do
+      @project = $repo.find_project(slug: params[:project])
+      erb :list_branches
     end
 
     get '/projects/:project/branches/:branch' do
