@@ -5,15 +5,25 @@
     <tr>
       <th>Channel</th>
       <th>Release</th>
-      <th>Build</th>
+      <% @project.channels.map(&:current_build).uniq.sort.reverse.each do |build| %>
+        <th style="text-align:center">Build <%= build %></th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
     <% @project.channels.each do |channel| %>
       <tr>
-        <th><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
-        <td><a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a></td>
-        <td><a href="<%= build_path(channel.current_build) %>"><%= channel.current_build %></a></td>
+        <th width="10"><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
+
+        <td width="10"><a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a></td>
+
+        <% @project.channels.map(&:current_build).uniq.sort.reverse.each do |build| %>
+          <td align="center" class="<%= 'success' if channel.current_build == build %>">
+            <% if channel.current_build == build %>
+              <span class="glyphicon glyphicon-ok text-success"></span>
+            <% end %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

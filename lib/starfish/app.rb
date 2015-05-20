@@ -115,6 +115,8 @@ module Starfish
   end
 
   class Build
+    include Comparable
+
     attr_reader :number, :commits, :statuses, :image, :branch
 
     def initialize(number:, commits:, image:, branch:)
@@ -154,8 +156,8 @@ module Starfish
       commits.map(&:deletions).inject(0, &:+)
     end
 
-    def ==(other)
-      branch == other.branch && commit == other.commit
+    def <=>(other)
+      number <=> other.number
     end
 
     def to_s
