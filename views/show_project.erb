@@ -1,13 +1,16 @@
 <%= erb :project_navigation %>
 
-<table class="table">
+<table class="table build-history">
   <thead>
     <tr>
       <th>Build</th>
       <th>Status</th>
       <th>Approved</th>
       <th>Authors</th>
-      <th colspan="<%= @project.channels.count %>">Channels</th>
+
+      <% @project.channels.each do |channel| %>
+        <th><%= channel %></th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -22,11 +25,13 @@
         <td><%= build.authors.join(", ") %></td>
 
         <% @project.channels.each do |channel| %>
-          <td width="20">
+          <td width="20" align="center">
             <% if channel.current_build == build %>
-              <span class="label label-success"><%= channel %></span>
+              <span class="glyphicon glyphicon-ok text-success"></span>
             <% elsif channel.current_build.number < build.number %>
-              <span class="label label-default"><%= channel %></span>
+              <span class="glyphicon glyphicon-plus text-muted release-build"></span>
+            <% else %>
+              <span class="glyphicon glyphicon-minus text-muted release-build"></span>
             <% end %>
           </td>
         <% end %>
