@@ -130,6 +130,10 @@ module Starfish
       @branch && @branch.project
     end
 
+    def approved?
+      true
+    end
+
     def add_status(name:, value:)
       status = Status.new(name: name, value: value)
       @statuses << status

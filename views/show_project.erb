@@ -5,6 +5,7 @@
     <tr>
       <th>Build</th>
       <th>Status</th>
+      <th>Approved</th>
       <th>Authors</th>
       <th colspan="<%= @project.channels.count %>">Channels</th>
     </tr>
@@ -14,7 +15,9 @@
       <tr class="<%= 'success' if @project.channels.any? {|c| c.current_build == build } %>">
         <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
 
-        <td width="10"><%= build_status(build) %></td>
+        <td width="10" align="center"><%= build_status(build) %></td>
+
+        <td width="10" align="center"><% if build.approved? %><span class="glyphicon glyphicon-thumbs-up"></span><% end %></td>
 
         <td><%= build.authors.join(", ") %></td>
 
