@@ -140,8 +140,16 @@ module Starfish
       status
     end
 
-    def ok?
-      statuses.all?(&:ok?)
+    def status
+      if statuses.all?(&:ok?)
+        :ok
+      elsif statuses.any?(&:pending?)
+        :pending
+      elsif statuses.any?(&:failed?)
+        :failed
+      else
+        raise "what now?"
+      end
     end
 
     def commit
@@ -224,7 +232,15 @@ module Starfish
     end
 
     def ok?
-      value != "Failed"
+      value == :ok
+    end
+
+    def pending?
+      value == :pending
+    end
+
+    def failed?
+      value == :failed
     end
   end
 
@@ -287,7 +303,7 @@ module Starfish
     User.new(name: "Chewbacca"),
   ]
 
-  30.times do
+  30.times do |number|
     commits = (1..5).to_a.sample.times.map {
       project.add_commit(
         sha: SecureRandom.hex,
@@ -299,9 +315,9 @@ module Starfish
 
     image = ContainerImage.new(id: SecureRandom.hex, namespace: "zendesk", name: "help_center")
     build = branch.add_build(commits: commits, image: image)
-    build.add_status(name: "Travis CI", value: "Pending")
-    build.add_status(name: "Code Climate", value: "Passed")
-    build.add_status(name: "System Tests", value: "Passed")
+    build.add_status(name: "Travis CI", value: number > 28 ? :pending : :ok)
+    build.add_status(name: "Code Climate", value: :ok)
+    build.add_status(name: "System Tests", value: :ok)
   end
 
   %w(Staging Pod1 Pod2 Pod3 Pod4 Pod5 Pod6).each do |channel_name|
@@ -344,7 +360,12 @@ module Starfish
       end
 
       def build_status(build)
-        icon = build.ok? ? "glyphicon-ok" : "glyphicon-remove"
+        icon = case build.status
+                 when :ok then "glyphicon-ok"
+                 when :pending then "glyphicon-refresh"
+                 when :failed then "glyphicon-remove"
+                 end
+
         %(<span class="glyphicon #{icon}" aria-hidden="true"></span>)
       end
 
