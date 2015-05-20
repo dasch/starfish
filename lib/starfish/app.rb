@@ -152,6 +152,18 @@ module Starfish
       end
     end
 
+    def ok?
+      status == :ok
+    end
+
+    def failed?
+      status == :failed
+    end
+
+    def pending?
+      status == :pending
+    end
+
     def commit
       commits.last
     end
@@ -360,13 +372,12 @@ module Starfish
       end
 
       def build_status(build)
-        icon = case build.status
-                 when :ok then "glyphicon-ok"
-                 when :pending then "glyphicon-refresh"
-                 when :failed then "glyphicon-remove"
-                 end
+        status = "glyphicon-"
+        status << "ok text-success" if build.ok?
+        status << "remove text-danger" if build.failed?
+        status << "refresh text-info" if build.pending?
 
-        %(<span class="glyphicon #{icon}" aria-hidden="true"></span>)
+        %(<span class="glyphicon #{status}" aria-hidden="true"></span>)
       end
 
       def project_path(project)
