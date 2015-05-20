@@ -1,0 +1,16 @@
+<h2><%= @project.name %></h2>
+
+<h3>Releases</h3>
+<ul>
+  <% @project.releases.reverse.each do |release| %>
+    <li><a href="<%= release_path(release) %>"><%= release %></a></li>
+  <% end %>
+</ul>
+
+<h3>Builds</h3>
+<ul>
+  <% @project.builds.reverse.each do |build| %>
+    <li><a href="<%= build_path(build) %>"><%= build %></a></li>
+  <% end %>
+</ul>
+
