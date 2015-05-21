@@ -2,13 +2,12 @@ require 'sinatra/base'
 
 module Starfish
   class Project
-    attr_reader :name, :commits, :branches, :channels
+    attr_reader :name, :commits, :pipelines
 
     def initialize(name:)
       @name = name
+      @pipelines = []
       @commits = []
-      @branches = []
-      @channels = []
     end
 
     def add_commit(**options)
@@ -17,22 +16,49 @@ module Starfish
       commit
     end
 
-    def add_branch(**options)
-      branch = Branch.new(**options.merge(project: self))
-      @branches << branch
-      branch
+    def add_pipeline(**options)
+      pipeline = Pipeline.new(**options.merge(project: self))
+      @pipelines << pipeline
+      pipeline
     end
 
-    def find_branch(name:)
-      @branches.find {|b| b.name == name }
+    def find_pipeline(slug:)
+      @pipelines.find {|b| b.slug == slug }
     end
 
-    def master_branch
-      find_branch(name: "master")
+    def slug
+      name.downcase.scan(/\w+/).join("-")
+    end
+
+    def to_s
+      name
+    end
+  end
+
+  class Pipeline
+    attr_reader :name, :project, :branch, :builds, :channels
+
+    def initialize(name:, branch:, project:)
+      @name = name
+      @branch = branch
+      @project = project
+      @builds = []
+      @channels = []
+    end
+
+    def add_build(**options)
+      number = @builds.count + 1
+      build = Build.new(**options.merge(pipeline: self, number: number))
+      @builds << build
+      build
+    end
+
+    def find_build(number:)
+      @builds.find {|b| b.number == number }
     end
 
     def add_channel(**options)
-      channel = Channel.new(**options.merge(project: self))
+      channel = Channel.new(**options.merge(pipeline: self))
       @channels << channel
       channel
     end
@@ -55,10 +81,10 @@ module Starfish
   end
 
   class Channel
-    attr_reader :project, :name, :releases, :configs
+    attr_reader :pipeline, :name, :releases, :configs
 
-    def initialize(project:, name:)
-      @project = project
+    def initialize(pipeline:, name:)
+      @pipeline = pipeline
       @name = name
       @releases = []
       @configs = []
@@ -117,17 +143,14 @@ module Starfish
   class Build
     include Comparable
 
-    attr_reader :number, :commits, :statuses, :image, :branch
+    attr_reader :number, :commits, :statuses, :image, :pipeline
 
-    def initialize(number:, commits:, image:, branch:)
-      @number, @project, @image = number, project, image
+    def initialize(number:, commits:, image:, pipeline:)
+      @number = number
+      @image = image
       @commits = commits
-      @branch = branch
+      @pipeline = pipeline
       @statuses = []
-    end
-
-    def project
-      @branch && @branch.project
     end
 
     def approved?
@@ -201,30 +224,6 @@ module Starfish
 
     def to_s
       sha
-    end
-  end
-
-  class Branch
-    attr_reader :name, :project, :builds
-
-    def initialize(name:, project:)
-      @name, @project = name, project
-      @builds = []
-    end
-
-    def add_build(**options)
-      number = @builds.count + 1
-      build = Build.new(**options.merge(branch: self, number: number))
-      @builds << build
-      build
-    end
-
-    def find_build(number:)
-      @builds.find {|b| b.number == number }
-    end
-
-    def to_s
-      name
     end
   end
 
@@ -304,8 +303,10 @@ module Starfish
 
   $repo = Repository.new
 
-  project = $repo.add_project(name: "Help Center")
-  branch = project.add_branch(name: "master")
+  project = $repo.add_project(name: "Zendesk")
+  master = project.add_pipeline(name: "Master", branch: "master")
+  staging = project.add_pipeline(name: "Staging", branch: "staging")
+  production = project.add_pipeline(name: "Production", branch: "production")
 
   users = [
     User.new(name: "Luke Skywalker"),
@@ -315,26 +316,34 @@ module Starfish
     User.new(name: "Chewbacca"),
   ]
 
-  30.times do |number|
-    commits = (1..5).to_a.sample.times.map {
-      project.add_commit(
-        sha: SecureRandom.hex,
-        author: users.sample,
-        additions: (0..100).to_a.sample,
-        deletions: (0..100).to_a.sample
-      )
-    }
+  [master, staging, production].each do |pipeline|
+    30.times do |number|
+      commits = (1..5).to_a.sample.times.map {
+        project.add_commit(
+          sha: SecureRandom.hex,
+          author: users.sample,
+          additions: (0..100).to_a.sample,
+          deletions: (0..100).to_a.sample
+        )
+      }
 
-    image = ContainerImage.new(id: SecureRandom.hex, namespace: "zendesk", name: "help_center")
-    build = branch.add_build(commits: commits, image: image)
-    build.add_status(name: "Travis CI", value: number > 28 ? :pending : :ok)
-    build.add_status(name: "Code Climate", value: :ok)
-    build.add_status(name: "System Tests", value: :ok)
+      image = ContainerImage.new(id: SecureRandom.hex, namespace: "zendesk", name: "help_center")
+      build = pipeline.add_build(commits: commits, image: image)
+      build.add_status(name: "Travis CI", value: number > 28 ? :pending : :ok)
+      build.add_status(name: "Code Climate", value: :ok)
+      build.add_status(name: "System Tests", value: :ok)
+    end
   end
 
-  %w(Staging Pod1 Pod2 Pod3 Pod4 Pod5 Pod6).each do |channel_name|
-    channel = project.add_channel(name: channel_name)
+  channels = []
+  channels << master.add_channel(name: "Master")
+  channels << staging.add_channel(name: "Staging")
 
+  %w(Pod1 Pod2 Pod3 Pod4 Pod5 Pod6).each do |channel_name|
+    channels << production.add_channel(name: channel_name)
+  end
+
+  channels.each do |channel|
     env = {
       "NEW_RELIC_KEY" => "fads834rsd98basaf",
       "MYSQL_URL" => "mysql://fdsafs:fasdfsac@db.zdsys.com/production",
@@ -344,7 +353,7 @@ module Starfish
     config = channel.add_config(env: env)
 
     (8..11).to_a.sample.times do |number|
-      build = branch.find_build(number: (23..29).to_a.sample)
+      build = channel.pipeline.find_build(number: (23..29).to_a.sample)
       channel.add_release(build: build, config: config)
     end
   end
@@ -353,13 +362,12 @@ module Starfish
     set :root, File.expand_path("../../../", __FILE__)
 
     helpers do
-      def project_nav_items(project)
+      def pipeline_nav_items(pipeline)
         items = {
-          "Master builds" => project_path(project),
-          "Channels" => channels_path(project),
+          "Builds" => pipeline_path(pipeline),
+          "Channels" => channels_path(pipeline),
           "Releases" => "#",
-          "Branches" => branches_path(project),
-          "Canaries" => canaries_path(project),
+          "Canaries" => canaries_path(pipeline),
         }
 
         current_path = items.values.
@@ -384,36 +392,28 @@ module Starfish
         ["/projects", project.slug].join("/")
       end
 
-      def channels_path(project)
-        [project_path(project), "channels"].join("/")
+      def pipeline_path(pipeline)
+        [project_path(pipeline.project), pipeline.slug].join("/")
+      end
+
+      def channels_path(pipeline)
+        [pipeline_path(pipeline), "channels"].join("/")
       end
 
       def channel_path(channel)
-        [channels_path(channel.project), channel.slug].join("/")
+        [channels_path(channel.pipeline), channel.slug].join("/")
       end
 
-      def canaries_path(project)
-        [project_path(project), "canaries"].join("/")
+      def canaries_path(pipeline)
+        [pipeline_path(pipeline), "canaries"].join("/")
       end
 
       def release_path(release)
         [channel_path(release.channel), "releases", release.number].join("/")
       end
 
-      def branches_path(project)
-        [project_path(project), "branches"].join("/")
-      end
-
-      def branch_path(branch)
-        [branches_path(branch.project), branch.name].join("/")
-      end
-
       def build_path(build)
-        [branch_path(build.branch), "builds", build.number].join("/")
-      end
-
-      def branch_path(branch)
-        [project_path(branch.project), "branches", branch.name].join("/")
+        [pipeline_path(build.pipeline), "builds", build.number].join("/")
       end
     end
 
@@ -422,49 +422,36 @@ module Starfish
       erb :list_projects
     end
 
-    get '/projects/:slug' do
+    get '/projects/:slug/:pipeline' do
       @project = $repo.find_project(slug: params[:slug])
-      erb :show_project
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
+      erb :list_builds
     end
 
-    get '/projects/:project/channels' do
+    get '/projects/:project/:pipeline/channels' do
       @project = $repo.find_project(slug: params[:project])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
       erb :list_channels
     end
 
-    get '/projects/:project/channels/:channel' do
+    get '/projects/:project/:pipeline/channels/:channel' do
       @project = $repo.find_project(slug: params[:project])
-      @channel = @project.find_channel(slug: params[:channel])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
+      @channel = @pipeline.find_channel(slug: params[:channel])
       erb :show_channel
     end
 
-    get '/projects/:project/channels/:channel/releases/:release' do
+    get '/projects/:project/:pipeline/channels/:channel/releases/:release' do
       @project = $repo.find_project(slug: params[:project])
-      @channel = @project.find_channel(slug: params[:channel])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
+      @channel = @pipeline.find_channel(slug: params[:channel])
       @release = @channel.find_release(number: params[:release].to_i)
       erb :show_release
     end
 
-    get '/projects/:project/branches' do
+    get '/projects/:project/:pipeline/canaries' do
       @project = $repo.find_project(slug: params[:project])
-      erb :list_branches
-    end
-
-    get '/projects/:project/branches/:branch' do
-      @project = $repo.find_project(slug: params[:project])
-      @branch = @project.find_branch(name: params[:branch])
-      erb :show_branch
-    end
-
-    get '/projects/:project/branches/:branch/builds/:build' do
-      @project = $repo.find_project(slug: params[:project])
-      @branch = @project.find_branch(name: params[:branch])
-      @build = @branch.find_build(number: params[:build].to_i)
-      erb :show_build
-    end
-
-    get '/projects/:project/canaries' do
-      @project = $repo.find_project(slug: params[:project])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
       erb :list_canaries
     end
   end

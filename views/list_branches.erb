@@ -1,8 +1,0 @@
-<%= erb :project_navigation %>
-
-<ul>
-  <% @project.branches.each do |branch| %>
-    <li><a href="<%= branch_path(branch) %>"><%= branch %></a></li>
-  <% end %>
-</ul>
-
