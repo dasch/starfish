@@ -7,7 +7,7 @@ module Starfish
     helpers do
       def pipeline_nav_items(pipeline)
         items = {
-          "Builds" => pipeline_path(pipeline),
+          "Builds" => builds_path(pipeline),
           "Channels" => channels_path(pipeline),
           "Releases" => "#",
           "Canaries" => canaries_path(pipeline),
@@ -37,6 +37,10 @@ module Starfish
 
       def pipeline_path(pipeline)
         [project_path(pipeline.project), pipeline.slug].join("/")
+      end
+
+      def builds_path(pipeline)
+        [pipeline_path(pipeline), "builds"].join("/")
       end
 
       def channels_path(pipeline)
@@ -71,6 +75,12 @@ module Starfish
     end
 
     get '/projects/:slug/:pipeline' do
+      @project = $repo.find_project(slug: params[:slug])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
+      erb :show_pipeline
+    end
+
+    get '/projects/:slug/:pipeline/builds' do
       @project = $repo.find_project(slug: params[:slug])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])
       erb :list_builds

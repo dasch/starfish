@@ -1,0 +1,46 @@
+<%= erb :project_navigation %>
+
+<div class="panel panel-default">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Pending CI</th>
+        <th></th>
+        <th>Pending image build</th>
+        <th></th>
+        <th>Pending approval </th>
+        <th></th>
+        <% @pipeline.channels.each do |channel| %>
+          <th><%= channel %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <% [30, 29, 28].map {|i| @pipeline.find_build(number: i) }.each do |build| %>
+            <a href="<%= build_path(build) %>"><%= build %></a>
+          <% end %>
+        </td>
+        <td><span class="glyphicon glyphicon-arrow-right"></span></td>
+        <td>
+          <% [27, 26].map {|i| @pipeline.find_build(number: i) }.each do |build| %>
+            <a href="<%= build_path(build) %>"><%= build %></a>
+          <% end %>
+        </td>
+        <td><span class="glyphicon glyphicon-arrow-right"></span></td>
+        <td>
+          <% [25].map {|i| @pipeline.find_build(number: i) }.each do |build| %>
+            <a href="<%= build_path(build) %>"><%= build %></a>
+          <% end %>
+        </td>
+        <td><span class="glyphicon glyphicon-arrow-right"></span></td>
+        <% @pipeline.channels.map {|i| @pipeline.find_build(number: 24) }.each do |build| %>
+          <td>
+            <a href="<%= build_path(build) %>"><%= build %></a>
+          </td>
+        <% end %>
+      </tr>
+    </tbody>
+  </table>
+</div>
