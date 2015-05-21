@@ -17,6 +17,8 @@ users = ["Luke Skywalker", "Darth Vader", "Princess Leia", "Han Solo", "Chewbacc
   )
 }
 
+last_good_build = (26..29).to_a.sample
+
 [master, staging, production].each do |pipeline|
   30.times do |number|
     commits = (1..5).to_a.sample.times.map {
@@ -30,7 +32,7 @@ users = ["Luke Skywalker", "Darth Vader", "Princess Leia", "Han Solo", "Chewbacc
 
     image = Starfish::ContainerImage.new(id: SecureRandom.hex, namespace: "zendesk", name: "help_center")
     build = pipeline.add_build(commits: commits, image: image)
-    build.add_status(name: "Travis CI", value: number > 28 ? :pending : :ok)
+    build.add_status(name: "Travis CI", value: number.succ > last_good_build ? :pending : :ok)
     build.add_status(name: "Code Climate", value: :ok)
     build.add_status(name: "System Tests", value: :ok)
   end
@@ -54,7 +56,7 @@ channels.each do |channel|
   config = channel.add_config(env: env)
 
   (8..11).to_a.sample.times do |number|
-    build = channel.pipeline.find_build(number: (23..29).to_a.sample)
+    build = channel.pipeline.find_build(number: (last_good_build - 3).upto(last_good_build - 1).to_a.sample)
     channel.add_release(build: build, config: config)
   end
 end
