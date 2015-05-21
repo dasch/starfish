@@ -23,7 +23,11 @@
 
           <td width="10" align="center"><% if build.approved? %><span class="glyphicon glyphicon-thumbs-up"></span><% end %></td>
 
-          <td><%= build.authors.join(", ") %></td>
+          <td>
+            <% build.authors.each do |author| %>
+              <%= erb :avatar, locals: { user: author } %>
+            <% end %>
+          </td>
 
           <% @pipeline.channels.each do |channel| %>
             <td width="20" align="center">

@@ -9,13 +9,13 @@ master = project.add_pipeline(name: "Master", branch: "master")
 staging = project.add_pipeline(name: "Staging", branch: "staging")
 production = project.add_pipeline(name: "Production", branch: "production")
 
-users = [
-  Starfish::User.new(name: "Luke Skywalker"),
-  Starfish::User.new(name: "Darth Vader"),
-  Starfish::User.new(name: "Princess Leia"),
-  Starfish::User.new(name: "Han Solo"),
-  Starfish::User.new(name: "Chewbacca"),
-]
+users = ["Luke Skywalker", "Darth Vader", "Princess Leia", "Han Solo", "Chewbacca"].map {|name|
+  avatar = "http://api.randomuser.me/portraits/thumb/%s/%s.jpg" % [%w(men women).sample, rand(40)]
+  Starfish::User.new(
+    name: name,
+    avatar_url: avatar
+  )
+}
 
 [master, staging, production].each do |pipeline|
   30.times do |number|
