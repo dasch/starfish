@@ -58,4 +58,3 @@ channels.each do |channel|
     channel.add_release(build: build, config: config)
   end
 end
-

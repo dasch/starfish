@@ -65,6 +65,11 @@ module Starfish
       erb :list_projects
     end
 
+    get '/projects/:slug' do
+      @project = $repo.find_project(slug: params[:slug])
+      erb :list_pipelines
+    end
+
     get '/projects/:slug/:pipeline' do
       @project = $repo.find_project(slug: params[:slug])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])

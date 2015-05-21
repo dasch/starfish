@@ -1,0 +1,30 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @project %> pipelines</h3>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Branch</th>
+        <th></td>
+        <th>Channels</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @project.pipelines.each do |pipeline| %>
+        <tr>
+          <td><a href="<%= pipeline_path(pipeline) %>"><%= pipeline.name %></a></td>
+          <td><code><%= pipeline.branch %></code></td>
+          <td><span class="glyphicon glyphicon-arrow-right"></span>
+          <td>
+            <% pipeline.channels.each do |channel| %>
+              <span class="label label-default"><%= channel %></span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
