@@ -1,32 +1,34 @@
 <%= erb :project_navigation %>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Channel</th>
-      <th>Release</th>
-      <th></th>
-      <% @project.channels.map(&:current_build).uniq.sort.reverse.each do |build| %>
-        <th style="text-align:center">Build <%= build %></th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% @project.channels.each do |channel| %>
+<div class="panel panel-default">
+  <table class="table">
+    <thead>
       <tr>
-        <th width="10"><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
-
-        <td width="10"><a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a></td>
-
-        <td></td>
-        <% @project.channels.map(&:current_build).uniq.sort.reverse.each_with_index do |build, index| %>
-          <td width="100" align="center" class="<%= 'active' if index % 2 == 0 %> <%= 'success' if channel.current_build == build %>">
-            <% if channel.current_build == build %>
-              <span class="glyphicon glyphicon-ok text-success"></span>
-            <% end %>
-          </td>
+        <th>Channel</th>
+        <th>Release</th>
+        <th></th>
+        <% @project.channels.map(&:current_build).uniq.sort.reverse.each do |build| %>
+          <th style="text-align:center">Build <%= build %></th>
         <% end %>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @project.channels.each do |channel| %>
+        <tr>
+          <th width="10"><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
+
+          <td width="10"><a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a></td>
+
+          <td></td>
+          <% @project.channels.map(&:current_build).uniq.sort.reverse.each_with_index do |build, index| %>
+            <td width="100" align="center" class="<%= 'active' if index % 2 == 0 %> <%= 'success' if channel.current_build == build %>">
+              <% if channel.current_build == build %>
+                <span class="glyphicon glyphicon-ok text-success"></span>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
