@@ -56,7 +56,7 @@ module Starfish
     get '/projects/:slug/:pipeline' do
       @project = $repo.find_project(slug: params[:slug])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])
-      erb :show_pipeline
+      redirect builds_path(@pipeline)
     end
 
     get '/projects/:slug/:pipeline/builds' do
