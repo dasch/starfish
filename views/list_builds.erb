@@ -56,7 +56,7 @@
     var $indicator = $(this);
     var $row = $indicator.closest(".build");
     var channel = $indicator.parent("td").data("channel");
-    var build = $row.data("build-number");
+    var build = parseInt($row.data("build-number"));
     console.log("Releasing ", build);
     $indicator.removeClass("glyphicon-plus");
     $indicator.removeClass("glyphicon-minus");
@@ -64,14 +64,14 @@
     $indicator.addClass("glyphicon-refresh");
 
     setTimeout(function() {
-      $(".build.success .glyphicon-ok").each(function() {
+      $(".build.success .channel-status span").each(function() {
         if (channel === $(this).parent("td").data("channel")) {
           $(this).removeClass("glyphicon-ok");
           $(this).removeClass("text-success");
           $(this).addClass("release-build");
           $(this).addClass("text-muted");
 
-          if (build > $(this).closest(".build").data("build-number")) {
+          if (parseInt($(this).closest(".build").data("build-number")) < build) {
             $(this).addClass("glyphicon-minus");
           } else {
             $(this).addClass("glyphicon-plus");
