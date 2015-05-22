@@ -31,6 +31,10 @@ module Starfish
         %(<span class="glyphicon #{status}" aria-hidden="true"></span>)
       end
 
+      def projects_path
+        "/projects"
+      end
+
       def project_path(project)
         ["/projects", project.slug].join("/")
       end
@@ -65,8 +69,12 @@ module Starfish
     end
 
     get '/' do
+      redirect projects_path
+    end
+
+    get '/projects' do
       @projects = $repo.projects
-      erb :list_projects
+      erb :list_projects, layout: false
     end
 
     get '/projects/:slug' do
