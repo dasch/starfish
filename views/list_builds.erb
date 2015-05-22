@@ -16,7 +16,7 @@
     </thead>
     <tbody>
       <% @pipeline.builds.reverse.each do |build| %>
-        <tr class="<%= 'success' if @pipeline.channels.any? {|c| c.current_build == build } %>">
+        <tr data-build-number="<%= build.number %>" class="build <%= 'success' if @pipeline.channels.any? {|c| c.current_build == build } %>">
           <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
 
           <td width="10" align="center"><%= build_status(build) %></td>
@@ -30,7 +30,7 @@
           </td>
 
           <% @pipeline.channels.each do |channel| %>
-            <td width="20" align="center">
+            <td width="20" align="center" class="channel-status" data-channel="<%= channel.slug %>">
               <% if channel.current_build == build %>
                 <span class="glyphicon glyphicon-ok text-success" title="Current build"></span>
               <% elsif channel.current_build.number < build.number %>
@@ -45,3 +45,46 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  function pruneBuildIndicators() {
+    $(".build.success").removeClass("success");
+    $(".build").has(".channel-status .text-success").addClass("success");
+  }
+
+  $(".build .release-build").click(function() {
+    var $indicator = $(this);
+    var $row = $indicator.closest(".build");
+    var channel = $indicator.parent("td").data("channel");
+    var build = $row.data("build-number");
+    console.log("Releasing ", build);
+    $indicator.removeClass("glyphicon-plus");
+    $indicator.removeClass("glyphicon-minus");
+    $indicator.removeClass("release-build");
+    $indicator.addClass("glyphicon-refresh");
+
+    setTimeout(function() {
+      $(".build.success .glyphicon-ok").each(function() {
+        if (channel === $(this).parent("td").data("channel")) {
+          $(this).removeClass("glyphicon-ok");
+          $(this).removeClass("text-success");
+          $(this).addClass("release-build");
+          $(this).addClass("text-muted");
+
+          if (build > $(this).closest(".build").data("build-number")) {
+            $(this).addClass("glyphicon-minus");
+          } else {
+            $(this).addClass("glyphicon-plus");
+          }
+        }
+      });
+
+      $indicator.removeClass("glyphicon-refresh");
+      $indicator.addClass("glyphicon-ok");
+      $indicator.removeClass("text-muted");
+      $indicator.addClass("text-success");
+      $row.addClass("success");
+      pruneBuildIndicators();
+    }, 1000);
+  });
+</script>
