@@ -79,7 +79,7 @@ production = project.add_pipeline(name: "Production", branch: "master")
 
   image = Starfish::ContainerImage.new(id: SecureRandom.hex, namespace: "zendesk", name: "help_center")
   build = production.add_build(commits: commits, image: image)
-  build.add_status(name: "Travis CI", value: number.succ > last_good_build ? :pending : :ok)
+  build.add_status(name: "Travis CI", value: number >= 28 ? :pending : :ok)
   build.add_status(name: "Code Climate", value: :ok)
   build.add_status(name: "System Tests", value: :ok)
 end
@@ -95,8 +95,13 @@ end
 
   config = channel.add_config(env: env)
 
-  (8..11).to_a.sample.times do |number|
-    build = channel.pipeline.find_build(number: (last_good_build - 3).upto(last_good_build - 1).to_a.sample)
+  1.upto((25..28).to_a.sample) do |number|
+    build = channel.pipeline.find_build(number: number)
     channel.add_release(build: build, config: config)
+
+    if rand < 0.2
+      config = channel.add_config(env: env.dup.update("NEW_RELIC_KEY" => env["NEW_RELIC_KEY"].chars.shuffle.join("")))
+      channel.add_release(build: build, config: config)
+    end
   end
 end

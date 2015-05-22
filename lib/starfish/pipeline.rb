@@ -30,6 +30,10 @@ module Starfish
       channel
     end
 
+    def releases
+      @channels.flat_map(&:releases).sort_by(&:number)
+    end
+
     def find_channel(slug:)
       @channels.find {|c| c.slug == slug }
     end

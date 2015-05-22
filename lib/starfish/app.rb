@@ -9,7 +9,6 @@ module Starfish
         items = {
           "Builds" => builds_path(pipeline),
           "Channels" => channels_path(pipeline),
-          "Releases" => "#",
           "Canaries" => canaries_path(pipeline),
         }
 
@@ -59,8 +58,12 @@ module Starfish
         [pipeline_path(pipeline), "canaries"].join("/")
       end
 
+      def releases_path(channel)
+        [channel_path(channel), "releases"].join("/")
+      end
+
       def release_path(release)
-        [channel_path(release.channel), "releases", release.number].join("/")
+        [channel_path(release.channel), release.number].join("/")
       end
 
       def build_path(build)
@@ -104,7 +107,14 @@ module Starfish
       @project = $repo.find_project(slug: params[:project])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])
       @channel = @pipeline.find_channel(slug: params[:channel])
-      erb :show_channel
+      erb :list_releases
+    end
+
+    get '/projects/:project/:pipeline/channels/:channel/releases' do
+      @project = $repo.find_project(slug: params[:project])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
+      @channel = @pipeline.find_channel(slug: params[:channel])
+      erb :list_releases
     end
 
     get '/projects/:project/:pipeline/channels/:channel/releases/:release' do

@@ -22,7 +22,7 @@ module Starfish
 
     def add_release(**options)
       number = @releases.count + 1
-      release = Release.new(**options.merge(channel: self, number: number))
+      release = Release.new(**options.merge(channel: self, number: number, previous_release: @releases.last))
       @releases << release
       release
     end
@@ -32,7 +32,7 @@ module Starfish
     end
 
     def add_config(**options)
-      config = Config.new(**options)
+      config = Config.new(**options.merge(version: @configs.count + 1))
       @configs << config
       config
     end
