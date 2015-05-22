@@ -1,10 +1,29 @@
 require 'sinatra/base'
+require 'byebug'
 
 module Starfish
+  class AuthenticatedUser
+    attr_reader :email, :name, :nickname
+
+    def initialize(email:, name:, nickname:)
+      @email = email
+      @name = name
+      @nickname = nickname
+    end
+  end
+
   class App < Sinatra::Base
     set :root, File.expand_path("../../../", __FILE__)
 
     helpers do
+      def current_user
+        @current_user ||= AuthenticatedUser.new(
+          email: session[:auth].info.email,
+          name: session[:auth].info.name,
+          nickname: session[:auth].info.nickname
+        )
+      end
+
       def pipeline_nav_items(pipeline)
         items = {
           "Builds" => builds_path(pipeline),
@@ -69,6 +88,10 @@ module Starfish
       def build_path(build)
         [pipeline_path(build.pipeline), "builds", build.number].join("/")
       end
+    end
+
+    before do
+      redirect "/auth/github" if session[:auth].nil?
     end
 
     get '/' do
@@ -136,6 +159,12 @@ module Starfish
       @project = $repo.find_project(slug: params[:project])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])
       erb :list_canaries
+    end
+
+    get '/auth/:provider/callback' do
+      session[:auth] = env['omniauth.auth']
+
+      redirect "/"
     end
   end
 end
