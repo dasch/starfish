@@ -8,6 +8,7 @@ require 'omniauth/strategies/github'
 Dotenv.load
 
 require 'starfish/app'
+require 'starfish/authentication'
 
 require './boot'
 
@@ -26,4 +27,5 @@ use OmniAuth::Builder do
   provider :github, client_id, client_secret, scope: scopes.join(",")
 end
 
-run Starfish::App
+map("/auth") { run Starfish::Authentication }
+map("/") { run Starfish::App }

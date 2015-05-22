@@ -1,29 +1,14 @@
 require 'sinatra/base'
-require 'byebug'
+require 'starfish/authentication_helpers'
+require 'starfish/url_helpers'
 
 module Starfish
-  class AuthenticatedUser
-    attr_reader :email, :name, :nickname
-
-    def initialize(email:, name:, nickname:)
-      @email = email
-      @name = name
-      @nickname = nickname
-    end
-  end
-
   class App < Sinatra::Base
     set :root, File.expand_path("../../../", __FILE__)
 
-    helpers do
-      def current_user
-        @current_user ||= AuthenticatedUser.new(
-          email: session[:auth].info.email,
-          name: session[:auth].info.name,
-          nickname: session[:auth].info.nickname
-        )
-      end
+    helpers AuthenticationHelpers, UrlHelpers
 
+    helpers do
       def pipeline_nav_items(pipeline)
         items = {
           "Builds" => builds_path(pipeline),
@@ -48,50 +33,10 @@ module Starfish
 
         %(<span class="glyphicon #{status}" aria-hidden="true"></span>)
       end
-
-      def projects_path
-        "/projects"
-      end
-
-      def project_path(project)
-        ["/projects", project.slug].join("/")
-      end
-
-      def pipeline_path(pipeline)
-        [project_path(pipeline.project), pipeline.slug].join("/")
-      end
-
-      def builds_path(pipeline)
-        [pipeline_path(pipeline), "builds"].join("/")
-      end
-
-      def channels_path(pipeline)
-        [pipeline_path(pipeline), "channels"].join("/")
-      end
-
-      def channel_path(channel)
-        [channels_path(channel.pipeline), channel.slug].join("/")
-      end
-
-      def canaries_path(pipeline)
-        [pipeline_path(pipeline), "canaries"].join("/")
-      end
-
-      def releases_path(channel)
-        [channel_path(channel), "releases"].join("/")
-      end
-
-      def release_path(release)
-        [channel_path(release.channel), release.number].join("/")
-      end
-
-      def build_path(build)
-        [pipeline_path(build.pipeline), "builds", build.number].join("/")
-      end
     end
 
     before do
-      redirect "/auth/github" if session[:auth].nil?
+      redirect "/auth/signin" if session[:auth].nil?
     end
 
     get '/' do
@@ -159,12 +104,6 @@ module Starfish
       @project = $repo.find_project(slug: params[:project])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])
       erb :list_canaries
-    end
-
-    get '/auth/:provider/callback' do
-      session[:auth] = env['omniauth.auth']
-
-      redirect "/"
     end
   end
 end
