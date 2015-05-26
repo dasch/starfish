@@ -56,9 +56,14 @@ channels.each do |channel|
 
   config = channel.add_config(env: env)
 
-  (8..11).to_a.sample.times do |number|
-    build = channel.pipeline.find_build(number: (last_good_build - 3).upto(last_good_build - 1).to_a.sample)
+  1.upto((25..28).to_a.sample) do |number|
+    build = channel.pipeline.find_build(number: number)
     channel.add_release(build: build, config: config)
+
+    if rand < 0.2
+      config = channel.add_config(env: env.dup.update("NEW_RELIC_KEY" => env["NEW_RELIC_KEY"].chars.shuffle.join("")))
+      channel.add_release(build: build, config: config)
+    end
   end
 end
 
