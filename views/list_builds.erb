@@ -52,7 +52,7 @@
     $(".build").has(".channel-status .text-success").addClass("success");
   }
 
-  $(".build .release-build").click(function() {
+  $(".build").on('click', '.release-build', function() {
     var $indicator = $(this);
     var $row = $indicator.closest(".build");
     var channel = $indicator.parent("td").data("channel");
@@ -66,12 +66,16 @@
     setTimeout(function() {
       $(".build.success .channel-status span").each(function() {
         if (channel === $(this).parent("td").data("channel")) {
-          $(this).removeClass("glyphicon-ok");
-          $(this).removeClass("text-success");
-          $(this).addClass("release-build");
-          $(this).addClass("text-muted");
+          var thisBuild = parseInt($(this).closest(".build").data("build-number"));
 
-          if (parseInt($(this).closest(".build").data("build-number")) < build) {
+          if (thisBuild !== build) {
+            $(this).removeClass("glyphicon-ok");
+            $(this).removeClass("text-success");
+            $(this).addClass("release-build");
+            $(this).addClass("text-muted");
+          }
+
+          if (thisBuild < build) {
             $(this).addClass("glyphicon-minus");
           } else {
             $(this).addClass("glyphicon-plus");
