@@ -11,7 +11,7 @@ module Starfish
     helpers do
       def pipeline_nav_items(pipeline)
         items = {
-          "Builds" => builds_path(pipeline),
+          "Builds"   => builds_path(pipeline),
           "Channels" => channels_path(pipeline),
           "Canaries" => canaries_path(pipeline),
         }
