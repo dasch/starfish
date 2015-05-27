@@ -54,12 +54,16 @@
         </div>
 
         <div class="modal-body">
-            <div class="form-group">
-              <label for="channel_name">Channel name</label>
-              <input type="text" class="form-control" name="channel_name" placeholder="Channel name">
-              <span class="help-block">E.g. <q>Staging</q>, <q>Production</q>, etc.</span>
-            </div>
-          </form>
+          <div class="form-group">
+            <label for="channel_name">Channel name</label>
+            <input type="text" class="form-control" name="channel_name" placeholder="Staging, Production, etc.">
+          </div>
+
+          <div class="checkbox">
+            <label>
+              <input name="channel_auto_release" type="checkbox" value="1"> Automatically release new builds to this channel
+            </label>
+          </div>
         </div>
 
         <div class="modal-footer">

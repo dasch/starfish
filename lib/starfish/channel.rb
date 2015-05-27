@@ -5,11 +5,12 @@ module Starfish
   class Channel
     attr_reader :pipeline, :name, :releases, :configs
 
-    def initialize(pipeline:, name:)
+    def initialize(pipeline:, name:, auto_release_builds: false)
       @pipeline = pipeline
       @name = name
       @releases = []
       @configs = []
+      @auto_release_builds = auto_release_builds
     end
 
     def current_release
@@ -22,6 +23,10 @@ module Starfish
 
     def current_config
       configs.last || Config::Null
+    end
+
+    def auto_release_builds?
+      @auto_release_builds
     end
 
     def add_release(**options)

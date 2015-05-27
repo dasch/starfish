@@ -17,6 +17,17 @@ module Starfish
       number = @builds.count + 1
       build = Build.new(**options.merge(pipeline: self, number: number))
       @builds << build
+
+      channels.each do |channel|
+        if channel.auto_release_builds?
+          channel.add_release(
+            build: build,
+            config: channel.current_config,
+            author: build.author
+          )
+        end
+      end
+
       build
     end
 

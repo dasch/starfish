@@ -135,7 +135,10 @@ module Starfish
       @project = $repo.find_project(slug: params[:project])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])
 
-      @channel = @pipeline.add_channel(name: params[:channel_name])
+      @channel = @pipeline.add_channel(
+        name: params[:channel_name],
+        auto_release_builds: params[:channel_auto_release] == "1"
+      )
 
       $repo.persist!
 
