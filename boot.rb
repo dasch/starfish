@@ -25,9 +25,7 @@ last_good_build = (26..29).to_a.sample
     commits = (1..5).to_a.sample.times.map {
       project.add_commit(
         sha: SecureRandom.hex,
-        author: users.sample,
-        additions: (0..100).to_a.sample,
-        deletions: (0..100).to_a.sample
+        author: users.sample
       )
     }
 
@@ -76,9 +74,7 @@ production = project.add_pipeline(name: "Production", branch: "master")
   commits = (1..5).to_a.sample.times.map {
     project.add_commit(
       sha: SecureRandom.hex,
-      author: users.sample,
-      additions: (0..100).to_a.sample,
-      deletions: (0..100).to_a.sample
+      author: users.sample
     )
   }
 

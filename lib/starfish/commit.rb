@@ -1,12 +1,11 @@
 module Starfish
   class Commit
-    attr_reader :sha, :author, :additions, :deletions
+    attr_reader :sha, :author, :message
 
-    def initialize(sha:, author:, additions:, deletions:)
+    def initialize(sha:, author:, message: "N/A")
       @sha = sha
       @author = author
-      @additions = additions
-      @deletions = deletions
+      @message = message
     end
 
     def to_s

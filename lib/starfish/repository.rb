@@ -8,8 +8,8 @@ module Starfish
       @projects = []
     end
 
-    def add_project(name:)
-      project = Project.new(name: name)
+    def add_project(**options)
+      project = Project.new(**options)
       @projects << project
       project
     end

@@ -43,5 +43,9 @@ module Starfish
     def build_path(build)
       [pipeline_path(build.pipeline), "builds", build.number].join("/")
     end
+
+    def github_webhook_url(pipeline)
+      [request.base_url, "webhooks", "github", pipeline.project.slug, pipeline.slug].join("/")
+    end
   end
 end

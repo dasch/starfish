@@ -3,10 +3,11 @@ require 'starfish/commit'
 
 module Starfish
   class Project
-    attr_reader :name, :commits, :pipelines
+    attr_reader :name, :repo, :commits, :pipelines
 
-    def initialize(name:)
+    def initialize(name:, repo: nil)
       @name = name
+      @repo = repo
       @pipelines = []
       @commits = []
     end

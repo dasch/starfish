@@ -1,0 +1,5 @@
+<ul>
+<% @repos.each do |repo| %>
+  <li><a href="<%= setup_repo_path(repo) %>"><%= repo.full_name %></a></li>
+<% end %>
+</ul>

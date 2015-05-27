@@ -6,7 +6,7 @@ module Starfish
 
     attr_reader :number, :commits, :statuses, :image, :pipeline
 
-    def initialize(number:, commits:, image:, pipeline:)
+    def initialize(number:, commits:, image: nil, pipeline:)
       @number = number
       @image = image
       @commits = commits
@@ -54,14 +54,6 @@ module Starfish
 
     def authors
       commits.flat_map(&:author).uniq
-    end
-
-    def additions
-      commits.map(&:additions).inject(0, &:+)
-    end
-
-    def deletions
-      commits.map(&:deletions).inject(0, &:+)
     end
 
     def <=>(other)
