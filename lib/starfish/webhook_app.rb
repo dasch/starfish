@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'json'
 require 'starfish/url_helpers'
 
 module Starfish
@@ -11,17 +12,18 @@ module Starfish
       case event
       when "ping" then status 200
       when "push" then
-        @project = $repo.find_project(slug: params[:project])
-        @pipeline = @project.find_pipeline(slug: params[:pipeline])
+        payload = JSON.parse(request.body.read)
 
-        commits = params[:commits].map {|data|
+        commits = payload["commits"].map {|data|
           Commit.new(
-            sha: data[:sha],
-            author: data[:author][:name],
-            message: data[:message]
+            sha: data["sha"],
+            author: data["author"]["name"],
+            message: data["message"]
           )
         }
 
+        @project = $repo.find_project(slug: params[:project])
+        @pipeline = @project.find_pipeline(slug: params[:pipeline])
         @pipeline.add_build(commits: commits)
 
         status 200

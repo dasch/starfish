@@ -43,7 +43,10 @@ module Starfish
         branch: params[:pipeline_branch]
       )
 
-      @github.create_hook(@project.repo, "web", url: github_webhook_url(@pipeline))
+      @github.create_hook(@project.repo, "web", {
+        url: github_webhook_url(@pipeline),
+        content_type: "json"
+      })
 
       redirect pipeline_path(@pipeline)
     end
