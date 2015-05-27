@@ -82,6 +82,21 @@ module Starfish
       erb :list_releases
     end
 
+    post '/:project/:pipeline/channels/:channel/releases' do
+      @project = $repo.find_project(slug: params[:project])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
+      @channel = @pipeline.find_channel(slug: params[:channel])
+
+      build = @pipeline.find_build(number: params[:build].to_i) or halt(404)
+      config = @channel.current_config
+
+      @release = @channel.add_release(build: build, config: config)
+
+      $repo.persist!
+
+      201
+    end
+
     get '/:project/:pipeline/channels/:channel/releases/:release' do
       @project = $repo.find_project(slug: params[:project])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])

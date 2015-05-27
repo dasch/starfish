@@ -20,9 +20,13 @@ module Starfish
       current_release ? current_release.build : Build::Null.new
     end
 
+    def current_config
+      configs.last || Config::Null
+    end
+
     def add_release(**options)
       number = @releases.count + 1
-      release = Release.new(**options.merge(channel: self, number: number, previous_release: @releases.last))
+      release = Release.new(**options.merge(channel: self, number: number))
       @releases << release
       release
     end

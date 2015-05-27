@@ -28,7 +28,7 @@
           </td>
 
           <% @pipeline.channels.each do |channel| %>
-            <td width="20" align="center" class="channel-status" data-channel="<%= channel.slug %>">
+            <td width="20" align="center" class="channel-status" data-channel="<%= channel.slug %>" data-channel-release-url="<%= releases_path(channel) %>?build=<%= build.number %>">
               <% if channel.current_build == build %>
                 <span class="glyphicon glyphicon-ok text-success" title="Current build"></span>
               <% elsif channel.current_build.number < build.number %>
@@ -55,13 +55,16 @@
     var $row = $indicator.closest(".build");
     var channel = $indicator.parent("td").data("channel");
     var build = parseInt($row.data("build-number"));
+    var releaseUrl = $indicator.parent("td").data("channel-release-url");
+
     console.log("Releasing ", build);
+
     $indicator.removeClass("glyphicon-plus");
     $indicator.removeClass("glyphicon-minus");
     $indicator.removeClass("release-build");
     $indicator.addClass("glyphicon-refresh");
 
-    setTimeout(function() {
+    $.post(releaseUrl, function() {
       $(".build.success .channel-status span").each(function() {
         if (channel === $(this).parent("td").data("channel")) {
           var thisBuild = parseInt($(this).closest(".build").data("build-number"));
@@ -87,6 +90,6 @@
       $indicator.addClass("text-success");
       $row.addClass("success");
       pruneBuildIndicators();
-    }, 1000);
+    });
   });
 </script>
