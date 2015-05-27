@@ -13,16 +13,6 @@ module Starfish
 
     helpers AuthenticationHelpers, UrlHelpers
 
-    helpers do
-      def setup_repo_path(repo)
-        [setup_path, "repo"].join("/") << "?name=#{repo.full_name}"
-      end
-
-      def setup_finalize_path
-        setup_path
-      end
-    end
-
     before do
       @github = Octokit::Client.new(
         access_token: session[:auth].credentials.token
@@ -38,23 +28,12 @@ module Starfish
     post '/' do
       @project = $repo.add_project(name: params[:name], repo: params[:repo])
 
-      @pipeline = @project.add_pipeline(
-        name: params[:pipeline_name],
-        branch: params[:pipeline_branch]
-      )
-
       @github.create_hook(@project.repo, "web", {
-        url: github_webhook_url(@pipeline),
+        url: github_webhook_url(@project),
         content_type: "json"
       })
 
-      redirect pipeline_path(@pipeline)
-    end
-
-    get '/repo' do
-      @repo = @github.repository(params[:name])
-
-      erb :define_pipeline
+      redirect project_path(@project)
     end
   end
 end

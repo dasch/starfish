@@ -52,7 +52,7 @@ module Starfish
 
     get '/projects/:slug/:pipeline' do
       @project = $repo.find_project(slug: params[:slug])
-      @pipeline = @project.find_pipeline(slug: params[:pipeline])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline]) or halt(404)
       redirect builds_path(@pipeline)
     end
 
@@ -101,6 +101,17 @@ module Starfish
       @project = $repo.find_project(slug: params[:project])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])
       erb :list_canaries
+    end
+
+    post '/projects/:project/pipelines' do
+      @project = $repo.find_project(slug: params[:project])
+
+      @pipeline = @project.add_pipeline(
+        name: params[:pipeline_name],
+        branch: params[:pipeline_branch]
+      )
+
+      redirect pipeline_path(@pipeline)
     end
   end
 end

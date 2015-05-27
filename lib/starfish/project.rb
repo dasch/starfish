@@ -28,6 +28,10 @@ module Starfish
       @pipelines.find {|b| b.slug == slug }
     end
 
+    def find_pipelines(branch:)
+      @pipelines.select {|p| p.branch == branch }
+    end
+
     def slug
       name.downcase.scan(/\w+/).join("-")
     end

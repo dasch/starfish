@@ -6,7 +6,7 @@ module Starfish
   class WebhookApp < Sinatra::Base
     set :root, File.expand_path("../../../", __FILE__)
 
-    post '/github/:project/:pipeline' do
+    post '/github/:project' do
       event = env["HTTP_X_GITHUB_EVENT"]
 
       case event
@@ -32,9 +32,14 @@ module Starfish
           avatar_url: payload["sender"]["avatar_url"],
         )
 
+        branch = payload["ref"].scan(%r(refs/heads/(.+))).flatten.first
+
         @project = $repo.find_project(slug: params[:project])
-        @pipeline = @project.find_pipeline(slug: params[:pipeline])
-        @pipeline.add_build(commits: commits, author: author)
+        @pipelines = @project.find_pipelines(branch: branch)
+
+        @pipelines.each do |pipeline|
+          pipeline.add_build(commits: commits, author: author)
+        end
 
         status 200
       end
