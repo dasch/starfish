@@ -28,10 +28,16 @@ module Starfish
     post '/' do
       @project = $repo.add_project(name: params[:name], repo: params[:repo])
 
-      @github.create_hook(@project.repo, "web", {
-        url: github_webhook_url(@project),
-        content_type: "json"
-      })
+      begin
+        @github.create_hook(@project.repo, "web", {
+          url: github_webhook_url(@project),
+          content_type: "json"
+        })
+      rescue Octokit::UnprocessableEntity
+        # Hook already exists.
+      end
+
+      $repo.persist!
 
       redirect project_path(@project)
     end

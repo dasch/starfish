@@ -41,6 +41,8 @@ module Starfish
           pipeline.add_build(commits: commits, author: author)
         end
 
+        $repo.persist!
+
         status 200
       end
     end

@@ -8,6 +8,7 @@ gem 'dotenv'
 gem 'omniauth'
 gem 'omniauth-github'
 gem 'octokit'
+gem 'redis'
 
 group :development, :test do
   gem 'rspec', '~> 3.2.0'

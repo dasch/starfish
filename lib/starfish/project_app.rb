@@ -111,6 +111,8 @@ module Starfish
         branch: params[:pipeline_branch]
       )
 
+      $repo.persist!
+
       redirect pipeline_path(@pipeline)
     end
   end
