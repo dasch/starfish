@@ -32,4 +32,5 @@ end
 map("/setup") { run Starfish::SetupApp }
 map("/auth") { run Starfish::AuthenticationApp }
 map("/webhooks") { run Starfish::WebhookApp }
-map("/") { run Starfish::ProjectApp }
+map("/projects") { run Starfish::ProjectApp }
+map("/") { run ->(env) { [301, { "Location" => "/projects" }, []] } }
