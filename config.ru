@@ -14,7 +14,7 @@ require 'starfish/webhook_app'
 
 require './boot'
 
-use Rack::Session::Cookie
+use Rack::Session::Cookie, secret: "yolo"
 
 use OmniAuth::Builder do
   client_id = ENV.fetch("GITHUB_CLIENT_ID")
