@@ -1,5 +1,9 @@
 module Starfish
   module UrlHelpers
+    def setup_path
+      "/setup"
+    end
+
     def authentication_path
       "/auth/github"
     end

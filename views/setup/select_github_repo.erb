@@ -1,5 +1,7 @@
-<ul>
-<% @repos.each do |repo| %>
-  <li><a href="<%= setup_repo_path(repo) %>"><%= repo.full_name %></a></li>
-<% end %>
-</ul>
+<h3>Select repository:</h3>
+
+<div class="list-group">
+  <% @repos.each do |repo| %>
+    <a class="list-group-item" href="<%= setup_repo_path(repo) %>"><%= repo.full_name %></a>
+  <% end %>
+</div>

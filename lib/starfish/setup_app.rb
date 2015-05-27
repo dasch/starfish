@@ -14,10 +14,6 @@ module Starfish
     helpers AuthenticationHelpers, UrlHelpers
 
     helpers do
-      def setup_path
-        "/setup"
-      end
-
       def setup_repo_path(repo)
         [setup_path, "repo"].join("/") << "?name=#{repo.full_name}"
       end

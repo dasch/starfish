@@ -41,6 +41,8 @@
               <% @projects.each do |project| %>
                 <li><a href="<%= project_path(project) %>"><%= project %></a></li>
               <% end %>
+              <li class="divider"></li>
+              <li><a href="<%= setup_path %>">Add project...</a></li>
             </ul>
           </li>
         </ul>
