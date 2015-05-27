@@ -21,5 +21,24 @@
         <dd><%= status.value %></dd>
       <% end %>
     </dl>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>SHA</th>
+          <th>Author</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @build.commits.each do |commit| %>
+          <tr>
+            <td width="10"><code><%= commit.sha %></code></td>
+            <td><%= commit.author %></td>
+            <td><%= commit.message %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
