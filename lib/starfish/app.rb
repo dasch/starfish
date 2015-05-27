@@ -41,12 +41,7 @@ module Starfish
     end
 
     get '/' do
-      redirect projects_path
-    end
-
-    get '/projects' do
-      @projects = $repo.projects
-      erb :list_projects, layout: false
+      redirect project_path(@projects.first)
     end
 
     get '/projects/:slug' do
