@@ -97,7 +97,7 @@ module Starfish
       201
     end
 
-    get '/:project/:pipeline/channels/:channel/releases/:release' do
+    get '/:project/:pipeline/channels/:channel/:release' do
       @project = $repo.find_project(slug: params[:project])
       @pipeline = @project.find_pipeline(slug: params[:pipeline])
       @channel = @pipeline.find_channel(slug: params[:channel])

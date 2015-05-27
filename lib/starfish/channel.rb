@@ -22,7 +22,7 @@ module Starfish
     end
 
     def current_config
-      configs.last || Config::Null
+      configs.last || Config::Null.new
     end
 
     def auto_release_builds?
