@@ -31,4 +31,35 @@
       <% end %>
     </tbody>
   </table>
+
+  <div class="panel-footer">
+    <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-channel" value="Add channel...">
+  </div>
+</div>
+
+<div class="modal fade" id="add-channel">
+  <div class="modal-dialog">
+    <form action="<%= channels_path(@pipeline) %>" method="POST">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Add channel</h4>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-group">
+              <label for="channel_name">Channel name</label>
+              <input type="text" class="form-control" name="channel_name" placeholder="Channel name">
+              <span class="help-block">E.g. <q>Staging</q>, <q>Production</q>, etc.</span>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add channel</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>

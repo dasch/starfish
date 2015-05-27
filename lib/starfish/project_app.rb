@@ -115,5 +115,16 @@ module Starfish
 
       redirect pipeline_path(@pipeline)
     end
+
+    post '/projects/:project/:pipeline/channels' do
+      @project = $repo.find_project(slug: params[:project])
+      @pipeline = @project.find_pipeline(slug: params[:pipeline])
+
+      @channel = @pipeline.add_channel(name: params[:channel_name])
+
+      $repo.persist!
+
+      redirect channel_path(@channel)
+    end
   end
 end

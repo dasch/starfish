@@ -2,6 +2,12 @@ require 'starfish/status'
 
 module Starfish
   class Build
+    class Null
+      def number
+        0
+      end
+    end
+
     include Comparable
 
     attr_reader :number, :author, :commits, :statuses, :image, :pipeline

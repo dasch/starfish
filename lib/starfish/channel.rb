@@ -17,7 +17,7 @@ module Starfish
     end
 
     def current_build
-      current_release.build
+      current_release ? current_release.build : Build::Null.new
     end
 
     def add_release(**options)
