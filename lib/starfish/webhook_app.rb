@@ -6,7 +6,7 @@ module Starfish
     set :root, File.expand_path("../../../", __FILE__)
 
     post '/github/:project/:pipeline' do
-      event = request.headers["X-GitHub-Event"]
+      event = env["HTTP_X_GITHUB_EVENT"]
 
       case event
       when "ping" then status 200
