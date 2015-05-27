@@ -3,8 +3,9 @@ require 'starfish/authentication_helpers'
 require 'starfish/url_helpers'
 
 module Starfish
-  class App < Sinatra::Base
+  class ProjectApp < Sinatra::Base
     set :root, File.expand_path("../../../", __FILE__)
+    set :views, -> { File.join(root, "views", "project") }
 
     helpers AuthenticationHelpers, UrlHelpers
 
