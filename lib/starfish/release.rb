@@ -2,17 +2,18 @@ module Starfish
   class Release
     attr_reader :build, :config, :number, :channel
 
-    def initialize(build:, config:, number:, channel:)
+    def initialize(build:, config:, number:, channel:, author: nil)
       @build, @config, @number = build, config, number
       @channel = channel
+      @author = author
+    end
+
+    def author
+      @author || build.author
     end
 
     def authors
       build.authors
-    end
-
-    def author
-      build.author
     end
 
     def new_build?

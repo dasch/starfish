@@ -90,7 +90,7 @@ module Starfish
       build = @pipeline.find_build(number: params[:build].to_i) or halt(404)
       config = @channel.current_config
 
-      @release = @channel.add_release(build: build, config: config)
+      @release = @channel.add_release(build: build, config: config, author: current_user)
 
       $repo.persist!
 
