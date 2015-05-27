@@ -17,6 +17,10 @@
           <% @project.pipelines.each do |pipeline| %>
             <li><a href="<%= pipeline_path(pipeline) %>"><%= pipeline %></a></li>
           <% end %>
+
+          <li class="divider"></li>
+
+          <li><a href="<%= pipelines_path(@project) %>">Configure pipelines...</a></li>
         </ul>
       </li>
     </ul>
