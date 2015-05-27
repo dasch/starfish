@@ -15,16 +15,26 @@ module Starfish
         payload = JSON.parse(request.body.read)
 
         commits = payload["commits"].map {|data|
+          author = User.new(
+            name: data["author"]["name"],
+            username: data["author"]["username"]
+          )
+
           Commit.new(
             sha: data["sha"],
-            author: data["author"]["name"],
+            author: author,
             message: data["message"]
           )
         }
 
+        author = User.new(
+          username: payload["sender"]["login"],
+          avatar_url: payload["sender"]["avatar_url"],
+        )
+
         @project = $repo.find_project(slug: params[:project])
         @pipeline = @project.find_pipeline(slug: params[:pipeline])
-        @pipeline.add_build(commits: commits)
+        @pipeline.add_build(commits: commits, author: author)
 
         status 200
       end

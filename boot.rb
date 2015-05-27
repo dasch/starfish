@@ -30,7 +30,7 @@ last_good_build = (26..29).to_a.sample
     }
 
     image = Starfish::ContainerImage.new(id: SecureRandom.hex, namespace: "zendesk", name: "help_center")
-    build = pipeline.add_build(commits: commits, image: image)
+    build = pipeline.add_build(commits: commits, image: image, author: users.sample)
     build.add_status(name: "Travis CI", value: number.succ > last_good_build ? :pending : :ok)
     build.add_status(name: "Code Climate", value: :ok)
     build.add_status(name: "System Tests", value: :ok)
@@ -79,7 +79,7 @@ production = project.add_pipeline(name: "Production", branch: "master")
   }
 
   image = Starfish::ContainerImage.new(id: SecureRandom.hex, namespace: "zendesk", name: "help_center")
-  build = production.add_build(commits: commits, image: image)
+  build = production.add_build(commits: commits, image: image, author: users.sample)
   build.add_status(name: "Travis CI", value: number >= 28 ? :pending : :ok)
   build.add_status(name: "Code Climate", value: :ok)
   build.add_status(name: "System Tests", value: :ok)

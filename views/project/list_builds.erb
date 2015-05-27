@@ -7,7 +7,7 @@
         <th>Build</th>
         <th>Status</th>
         <th>Approved</th>
-        <th>Authors</th>
+        <th>Author</th>
 
         <% @pipeline.channels.each do |channel| %>
           <th><%= channel %></th>
@@ -24,9 +24,7 @@
           <td width="10" align="center"><% if build.approved? %><span class="glyphicon glyphicon-thumbs-up"></span><% end %></td>
 
           <td>
-            <% build.authors.each do |author| %>
-              <%= erb :avatar, locals: { user: author } %>
-            <% end %>
+            <%= erb :avatar, locals: { user: build.author } %>
           </td>
 
           <% @pipeline.channels.each do |channel| %>

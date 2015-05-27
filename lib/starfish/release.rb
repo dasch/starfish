@@ -12,7 +12,7 @@ module Starfish
     end
 
     def author
-      authors.first
+      build.author
     end
 
     def new_build?
