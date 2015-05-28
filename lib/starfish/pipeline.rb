@@ -66,9 +66,17 @@ module Starfish
     end
 
     def add_pull_request(**options)
-      pull_request = PullRequest.new(**options)
+      pull_request = PullRequest.new(**options.merge(pipeline: self))
       @pull_requests << pull_request
       pull_request
+    end
+
+    def remove_pull_request(number)
+      @pull_requests.delete_if {|pr| pr.number == number }
+    end
+
+    def find_pull_request(number)
+      @pull_requests.find {|pr| pr.number == number }
     end
 
     def slug

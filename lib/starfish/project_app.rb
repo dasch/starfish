@@ -80,8 +80,15 @@ module Starfish
 
     get '/:slug/:pipeline/pulls' do
       @project = $repo.find_project_by_slug(params[:slug])
-      @pipeline = @project.pipelines.first
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       erb :list_pull_requests
+    end
+
+    get '/:slug/:pipeline/pulls/:pull' do
+      @project = $repo.find_project_by_slug(params[:slug])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @pull_request = @pipeline.find_pull_request(params[:pull].to_i)
+      erb :show_pull_request
     end
 
     get '/:project/:pipeline/channels' do

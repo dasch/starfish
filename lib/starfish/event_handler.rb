@@ -110,15 +110,29 @@ module Starfish
       payload = data[:payload]
       pr = payload["pull_request"]
 
-      if payload["action"] == "opened"
+      case payload["action"]
+      when "opened"
         target_branch = pr["base"]["ref"]
         pipelines = project.find_pipelines(branch: target_branch)
+
+        author = User.new(
+          username: pr["user"]["login"],
+          avatar_url: pr["user"]["avatar_url"]
+        )
 
         pipelines.each do |pipeline|
           pipeline.add_pull_request(
             number: pr["number"],
             title: pr["title"],
+            author: author
           )
+        end
+      when "closed"
+        target_branch = pr["base"]["ref"]
+        pipelines = project.find_pipelines(branch: target_branch)
+
+        pipelines.each do |pipeline|
+          pipeline.remove_pull_request(pr["number"])
         end
       end
     end

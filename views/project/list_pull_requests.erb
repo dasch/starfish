@@ -1,14 +1,20 @@
 <%= erb :project_navigation %>
 
 <div class="panel panel-default">
-  <table class="table build-history">
-    <tbody>
-      <% @pipeline.pull_requests.each do |pull_request| %>
-        <tr>
-          <th width="10">#<%= pull_request.number %></th>
-          <td><%= pull_request.title %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <% if @pipeline.pull_requests.any? %>
+    <table class="table build-history">
+      <tbody>
+        <% @pipeline.pull_requests.each do |pull_request| %>
+          <tr>
+            <th width="10">#<%= pull_request.number %></th>
+            <td><a href="<%= pull_path(pull_request) %>"><%= pull_request.title %></a></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="panel-body">
+      <p>No open pull requests at the moment.</p>
+    </div>
+  <% end %>
 </div>
