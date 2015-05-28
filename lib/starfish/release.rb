@@ -1,8 +1,9 @@
 module Starfish
   class Release
-    attr_reader :build, :config, :number, :channel
+    attr_reader :id, :build, :config, :number, :channel
 
-    def initialize(build:, config:, number:, channel:, author: nil)
+    def initialize(id:, build:, config:, number:, channel:, author: nil)
+      @id = id
       @build, @config, @number = build, config, number
       @channel = channel
       @author = author
