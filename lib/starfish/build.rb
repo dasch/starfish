@@ -38,7 +38,7 @@ module Starfish
     end
 
     def summary
-      commit ? commit.summary : "N/A"
+      commit.summary
     end
 
     def changes

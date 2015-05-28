@@ -91,6 +91,8 @@ module Starfish
         )
       }
 
+      return if commits.empty?
+
       author = User.new(
         username: payload["sender"]["login"],
         avatar_url: payload["sender"]["avatar_url"],

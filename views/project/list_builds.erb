@@ -32,10 +32,10 @@
 
           <% @pipeline.channels.each do |channel| %>
             <td width="20" align="center" class="channel-status" data-channel="<%= channel.slug %>" data-channel-release-url="<%= releases_path(channel) %>?build=<%= build.number %>">
-              <% if channel.current_build == build %>
-                <span class="glyphicon glyphicon-ok text-success" title="Current build"></span>
-              <% elsif channel.current_build.number < build.number %>
+              <% if channel.current_build.nil? || channel.current_build.number < build.number %>
                 <span class="glyphicon glyphicon-plus text-muted release-build" title="Release this build"></span>
+              <% elsif channel.current_build == build %>
+                <span class="glyphicon glyphicon-ok text-success" title="Current build"></span>
               <% else %>
                 <span class="glyphicon glyphicon-minus text-muted release-build" title="Release this build"></span>
               <% end %>
