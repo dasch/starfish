@@ -10,6 +10,14 @@ module Starfish
     helpers AuthenticationHelpers, UrlHelpers
 
     helpers do
+      def change_status(status)
+        case status
+        when :added then '<span class="label label-success">A</span>'
+        when :removed then '<span class="label label-danger">R</span>'
+        when :modified then '<span class="label label-primary">M</span>'
+        end
+      end
+
       def pipeline_nav_items(pipeline)
         items = {
           "Builds"   => builds_path(pipeline),

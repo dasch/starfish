@@ -1,11 +1,8 @@
 <%= erb :project_navigation %>
 
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Build <%= @build %></h3>
-  </div>
-
   <div class="panel-body">
+    <h4>Build <%= @build %></h4>
     <dl class="dl-horizontal">
       <dt>Commit:</dt>
       <dd><code><%= @build.commit %></code></dd>
@@ -13,8 +10,10 @@
       <dt>Pipeline:</dt>
       <dd><code><%= @build.pipeline %></code></dd>
 
-      <dt>Container image:</dt>
-      <dd><code><%= @build.image %></code></dd>
+      <% if @build.image %>
+        <dt>Container image:</dt>
+        <dd><code><%= @build.image %></code></dd>
+      <% end %>
 
       <% @build.statuses.each do |status| %>
         <dt><%= status.name %>:</dt>
@@ -22,6 +21,19 @@
       <% end %>
     </dl>
 
+    <h4>Changes</h4>
+    <table class="table">
+      <tbody>
+        <% @build.changes.each do |filename, status| %>
+          <tr>
+            <td width="10"><%= change_status(status) %></td>
+            <td><code><%= filename %></code></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <h4>Commits</h4>
     <table class="table">
       <thead>
         <tr>

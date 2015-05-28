@@ -31,6 +31,22 @@ module Starfish
       status
     end
 
+    def changes
+      commits.each_with_object({}) do |commit, changes|
+        commit.added.each do |filename|
+          changes[filename] = :added
+        end
+
+        commit.removed.each do |filename|
+          changes[filename] = :removed
+        end
+
+        commit.modified.each do |filename|
+          changes[filename] = :modified
+        end
+      end
+    end
+
     def status
       if statuses.all?(&:ok?)
         :ok

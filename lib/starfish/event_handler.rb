@@ -79,7 +79,10 @@ module Starfish
         Commit.new(
           sha: data["id"],
           author: author,
-          message: data["message"]
+          message: data["message"],
+          added: data["added"],
+          removed: data["removed"],
+          modified: data["modified"]
         )
       }
 
