@@ -66,7 +66,12 @@ module Starfish
       $stderr.puts "Added channel #{channel}"
     end
 
+    # For backwards compatibility.
     def github_webhook_received(timestamp, data)
+      github_push_received(timestamp, data)
+    end
+
+    def github_push_received(timestamp, data)
       project = $repo.find_project(data[:project_id])
       payload = data[:payload]
 
