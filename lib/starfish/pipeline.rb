@@ -22,6 +22,7 @@ module Starfish
       channels.each do |channel|
         if channel.auto_release_builds?
           channel.add_release(
+            id: SecureRandom.uuid,
             build: build,
             config: channel.current_config,
             author: build.author
