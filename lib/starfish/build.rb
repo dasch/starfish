@@ -34,15 +34,25 @@ module Starfish
     def changes
       commits.each_with_object({}) do |commit, changes|
         commit.added.each do |filename|
-          changes[filename] = :added
+          if changes[filename] == :removed
+            changes.delete(filename)
+          else
+            changes[filename] = :added
+          end
         end
 
         commit.removed.each do |filename|
-          changes[filename] = :removed
+          if changes[filename] == :added
+            changes.delete(filename)
+          else
+            changes[filename] = :removed
+          end
         end
 
         commit.modified.each do |filename|
-          changes[filename] = :modified
+          if changes[filename] != :added
+            changes[filename] = :modified
+          end
         end
       end
     end
