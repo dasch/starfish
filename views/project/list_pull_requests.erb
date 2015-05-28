@@ -1,0 +1,14 @@
+<%= erb :project_navigation %>
+
+<div class="panel panel-default">
+  <table class="table build-history">
+    <tbody>
+      <% @pipeline.pull_requests.each do |pull_request| %>
+        <tr>
+          <th width="10">#<%= pull_request.number %></th>
+          <td><%= pull_request.title %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

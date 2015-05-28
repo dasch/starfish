@@ -104,5 +104,23 @@ module Starfish
         pipeline.add_build(commits: commits, author: author)
       end
     end
+
+    def github_pull_request_received(timestamp, data)
+      project = $repo.find_project(data[:project_id])
+      payload = data[:payload]
+      pr = payload["pull_request"]
+
+      if payload["action"] == "opened"
+        target_branch = pr["base"]["ref"]
+        pipelines = project.find_pipelines(branch: target_branch)
+
+        pipelines.each do |pipeline|
+          pipeline.add_pull_request(
+            number: pr["number"],
+            title: pr["title"],
+          )
+        end
+      end
+    end
   end
 end

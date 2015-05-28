@@ -1,9 +1,10 @@
 require 'starfish/channel'
 require 'starfish/build'
+require 'starfish/pull_request'
 
 module Starfish
   class Pipeline
-    attr_reader :id, :name, :project, :branch, :builds, :channels
+    attr_reader :id, :name, :project, :branch, :builds, :channels, :pull_requests
 
     def initialize(id: SecureRandom.uuid, name:, branch:, project:)
       @id = id
@@ -12,6 +13,7 @@ module Starfish
       @project = project
       @builds = []
       @channels = []
+      @pull_requests = []
     end
 
     def add_build(**options)
@@ -57,6 +59,12 @@ module Starfish
 
     def releases_for_build(build)
       @channels.find_all {|c| c.current_build == build }.map(&:current_release)
+    end
+
+    def add_pull_request(**options)
+      pull_request = PullRequest.new(**options)
+      @pull_requests << pull_request
+      pull_request
     end
 
     def slug

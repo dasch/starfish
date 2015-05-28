@@ -20,13 +20,14 @@ module Starfish
 
       def pipeline_nav_items(pipeline)
         items = {
-          "Builds"   => builds_path(pipeline),
-          "Channels" => channels_path(pipeline),
-          "Canaries" => canaries_path(pipeline),
+          "Builds"        => builds_path(pipeline),
+          "Channels"      => channels_path(pipeline),
+          "Pull Requests" => pulls_path(pipeline),
+          "Canaries"      => canaries_path(pipeline),
         }
 
         current_path = items.values.
-          select {|path| request.path_info.start_with?(path) }.
+          select {|path| env["REQUEST_PATH"].start_with?(path) }.
           max_by(&:length)
 
         items.map do |title, path|
@@ -75,6 +76,12 @@ module Starfish
       @project = $repo.find_project_by_slug(params[:slug])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       erb :list_builds
+    end
+
+    get '/:slug/:pipeline/pulls' do
+      @project = $repo.find_project_by_slug(params[:slug])
+      @pipeline = @project.pipelines.first
+      erb :list_pull_requests
     end
 
     get '/:project/:pipeline/channels' do
