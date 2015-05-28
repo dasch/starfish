@@ -19,6 +19,10 @@ module Starfish
       commit
     end
 
+    def find_builds_by_sha(sha)
+      pipelines.flat_map {|p| p.find_builds_by_sha(sha) }
+    end
+
     def add_pipeline(**options)
       pipeline = Pipeline.new(**options.merge(project: self))
       @pipelines << pipeline

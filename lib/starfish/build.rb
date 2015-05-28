@@ -21,11 +21,17 @@ module Starfish
       @statuses = []
     end
 
+    def sha
+      commit && commit.sha
+    end
+
     def approved?
       true
     end
 
     def add_status(name:, value:)
+      @statuses.delete_if {|s| s.name == name }
+
       status = Status.new(name: name, value: value)
       @statuses << status
       status

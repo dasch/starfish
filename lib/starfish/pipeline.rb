@@ -39,6 +39,10 @@ module Starfish
       @builds.find {|b| b.number == number }
     end
 
+    def find_builds_by_sha(sha)
+      @builds.find_all {|b| b.sha == sha }
+    end
+
     def add_channel(**options)
       channel = Channel.new(**options.merge(pipeline: self))
       @channels << channel

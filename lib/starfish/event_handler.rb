@@ -122,5 +122,26 @@ module Starfish
         end
       end
     end
+
+    def github_status_received(timestamp, data)
+      project = $repo.find_project(data[:project_id])
+      payload = data[:payload]
+
+      value_mapping = {
+        "pending" => :pending,
+        "success" => :ok,
+        "failure" => :failed,
+        "error"   => :failed,
+      }
+
+      value = value_mapping.fetch(payload["state"])
+
+      project.find_builds_by_sha(payload["sha"]).each do |build|
+        build.add_status(
+          name: payload["context"],
+          value: value
+        )
+      end
+    end
   end
 end
