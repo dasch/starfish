@@ -7,41 +7,20 @@ module Starfish
     set :root, File.expand_path("../../../", __FILE__)
 
     post '/github/:project' do
+      event_id = env["HTTP_X_GITHUB_DELIVERY"]
       event = env["HTTP_X_GITHUB_EVENT"]
 
       case event
       when "ping" then status 200
       when "push" then
+        project = $repo.find_project_by_slug(params[:project])
         payload = JSON.parse(request.body.read)
 
-        commits = payload["commits"].map {|data|
-          author = User.new(
-            name: data["author"]["name"],
-            username: data["author"]["username"]
-          )
-
-          Commit.new(
-            sha: data["id"],
-            author: author,
-            message: data["message"]
-          )
-        }
-
-        author = User.new(
-          username: payload["sender"]["login"],
-          avatar_url: payload["sender"]["avatar_url"],
-        )
-
-        branch = payload["ref"].scan(%r(refs/heads/(.+))).flatten.first
-
-        @project = $repo.find_project(slug: params[:project])
-        @pipelines = @project.find_pipelines(branch: branch)
-
-        @pipelines.each do |pipeline|
-          pipeline.add_build(commits: commits, author: author)
-        end
-
-        $repo.persist!
+        $events.record(:github_webhook_received, {
+          event_id: event_id,
+          project_id: project.id,
+          payload: payload
+        })
 
         status 200
       end

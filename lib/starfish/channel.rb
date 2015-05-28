@@ -3,9 +3,10 @@ require 'starfish/config'
 
 module Starfish
   class Channel
-    attr_reader :pipeline, :name, :releases, :configs
+    attr_reader :id, :pipeline, :name, :releases, :configs
 
-    def initialize(pipeline:, name:, auto_release_builds: false)
+    def initialize(id: SecureRandom.uuid, pipeline:, name:, auto_release_builds: false)
+      @id = id
       @pipeline = pipeline
       @name = name
       @releases = []
@@ -44,6 +45,10 @@ module Starfish
       config = Config.new(**options.merge(version: @configs.count + 1))
       @configs << config
       config
+    end
+
+    def find_config(version:)
+      @configs.find {|c| c.version == version }
     end
 
     def slug

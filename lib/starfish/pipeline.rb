@@ -3,9 +3,10 @@ require 'starfish/build'
 
 module Starfish
   class Pipeline
-    attr_reader :name, :project, :branch, :builds, :channels
+    attr_reader :id, :name, :project, :branch, :builds, :channels
 
-    def initialize(name:, branch:, project:)
+    def initialize(id: SecureRandom.uuid, name:, branch:, project:)
+      @id = id
       @name = name
       @branch = branch
       @project = project
@@ -45,7 +46,11 @@ module Starfish
       @channels.flat_map(&:releases).sort_by(&:number)
     end
 
-    def find_channel(slug:)
+    def find_channel(id)
+      @channels.find {|c| c.id == id }
+    end
+
+    def find_channel_by_slug(slug)
       @channels.find {|c| c.slug == slug }
     end
 

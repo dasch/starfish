@@ -3,9 +3,10 @@ require 'starfish/commit'
 
 module Starfish
   class Project
-    attr_reader :name, :repo, :commits, :pipelines
+    attr_reader :id, :name, :repo, :commits, :pipelines
 
-    def initialize(name:, repo: nil)
+    def initialize(id:, name:, repo: nil)
+      @id = id
       @name = name
       @repo = repo
       @pipelines = []
@@ -24,7 +25,11 @@ module Starfish
       pipeline
     end
 
-    def find_pipeline(slug:)
+    def find_pipeline(id)
+      @pipelines.find {|b| b.id == id }
+    end
+
+    def find_pipeline_by_slug(slug)
       @pipelines.find {|b| b.slug == slug }
     end
 

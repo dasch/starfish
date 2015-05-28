@@ -26,7 +26,15 @@ module Starfish
     end
 
     post '/' do
-      @project = $repo.add_project(name: params[:name], repo: params[:repo])
+      id = SecureRandom.uuid
+
+      $events.record(:project_added, {
+        id: id,
+        name: params[:name],
+        repo: params[:repo]
+      })
+
+      @project = $repo.find_project(id)
 
       begin
         @github.create_hook(@project.repo, "web", {
@@ -36,8 +44,6 @@ module Starfish
       rescue Octokit::UnprocessableEntity
         # Hook already exists.
       end
-
-      $repo.persist!
 
       redirect project_path(@project)
     end
