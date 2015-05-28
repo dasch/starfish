@@ -37,6 +37,10 @@ module Starfish
       status
     end
 
+    def summary
+      commit ? commit.summary : "N/A"
+    end
+
     def changes
       commits.each_with_object({}) do |commit, changes|
         commit.added.each do |filename|
