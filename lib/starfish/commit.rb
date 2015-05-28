@@ -11,6 +11,10 @@ module Starfish
       @modified = modified
     end
 
+    def summary
+      message.split("\n").first
+    end
+
     def to_s
       sha
     end
