@@ -2,24 +2,14 @@
 
 <div class="panel panel-default">
   <div class="panel-body">
-    <h4>Build <%= @build %></h4>
-    <dl class="dl-horizontal">
-      <dt>Commit:</dt>
-      <dd><code><%= @build.commit %></code></dd>
+    <h3>Build <%= @build %></h3>
+    <blockquote>
+      <p><%= @build.commit.message %></p>
 
-      <dt>Pipeline:</dt>
-      <dd><code><%= @build.pipeline %></code></dd>
-
-      <% if @build.image %>
-        <dt>Container image:</dt>
-        <dd><code><%= @build.image %></code></dd>
-      <% end %>
-
-      <% @build.statuses.each do |status| %>
-        <dt><%= status.name %>:</dt>
-        <dd><%= status.value %></dd>
-      <% end %>
-    </dl>
+      <footer>
+        <cite><code><%= @build.commit %></code> by <%= @build.commit.author %></cite>
+      </footer>
+    </blockquote>
 
     <h4>Changes</h4>
     <table class="table">
