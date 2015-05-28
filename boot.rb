@@ -5,7 +5,7 @@ require 'starfish/container_image'
 $repo = Starfish::Repository.new
 $repo.load!
 
-if $repo.projects.empty?
+if ENV["RACK_ENV"] == "development"
   puts "=== BOOTSTRAPPING ==="
 
   users = ["Luke Skywalker", "Darth Vader", "Princess Leia", "Han Solo", "Chewbacca"].map {|name|
@@ -114,6 +114,6 @@ if $repo.projects.empty?
       end
     end
   end
-end
 
-$repo.persist!
+  $repo.persist!
+end
