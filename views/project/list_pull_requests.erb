@@ -1,6 +1,12 @@
 <%= erb :project_navigation %>
 
 <div class="panel panel-default">
+  <ol class="breadcrumb">
+    <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
+    <li><a href="<%= pipeline_path(@pipeline) %>"><%= @pipeline %></a></li>
+    <li class="active">Pull Requests</li>
+  </ol>
+
   <% if @pipeline.pull_requests.any? %>
     <table class="table build-history">
       <tbody>

@@ -8,5 +8,9 @@ module Starfish
       @author = author
       @pipeline = pipeline
     end
+
+    def to_s
+      "##{number} #{title}"
+    end
   end
 end
