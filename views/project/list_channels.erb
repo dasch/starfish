@@ -7,7 +7,7 @@
         <tr>
           <th>Channel</th>
           <th>Release</th>
-          <th></th>
+
           <% @pipeline.channels.map(&:current_release).compact.map(&:build).uniq.sort.reverse.each do |build| %>
             <th style="text-align:center">Build <%= build %></th>
           <% end %>
@@ -18,15 +18,15 @@
           <tr>
             <th width="10"><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
 
-            <td width="10">
+            <td>
               <% if channel.current_release %>
-                <a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a>
+                <span class="label label-info"><%= channel.current_release %></span>
+                <%= channel.current_release.author %>
+                <%= release_event(channel.current_release) %>
               <% else %>
                 N/A
               <% end %>
             </td>
-
-            <td></td>
 
             <% @pipeline.channels.map(&:current_release).compact.map(&:build).uniq.sort.reverse.each_with_index do |build, index| %>
               <td width="100" align="center" class="<%= 'active' if index % 2 == 0 %> <%= 'success' if channel.current_build == build %>">

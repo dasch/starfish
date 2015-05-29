@@ -10,7 +10,7 @@
           <td width="10"><%= erb :avatar, locals: { user: release.author } %></td>
 
           <td>
-            <em><%= release.author %></em> <%= erb release.event_name, locals: { event: release.event } %>
+            <em><%= release.author %></em> <%= release_event(release) %>
 
             <br>
 

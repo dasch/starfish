@@ -41,6 +41,10 @@ module Starfish
         end
       end
 
+      def release_event(release)
+        erb release.event_name, locals: { event: release.event }
+      end
+
       def build_status(build)
         status = "glyphicon-"
         status << "ok text-success" if build.ok?
