@@ -1,28 +1,36 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#project-navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
       <a class="navbar-brand" href="<%= pipeline_path(@pipeline) %>"><%= @project %> / <%= @pipeline %></a>
     </div>
 
-    <ul class="nav navbar-nav">
-      <% pipeline_nav_items(@pipeline).each do |title, path, active| %>
-        <li class="<%= 'active' if active %>"><a href="<%= path %>"><%= title %></a></li>
-      <% end %>
-    </ul>
+    <div class="collapse navbar-collapse" id="project-navbar-collapse">
+      <ul class="nav navbar-nav">
+        <% pipeline_nav_items(@pipeline).each do |title, path, active| %>
+          <li class="<%= 'active' if active %>"><a href="<%= path %>"><%= title %></a></li>
+        <% end %>
+      </ul>
 
-    <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pipelines <span class="caret"></span></a>
-        <ul class="dropdown-menu" role="menu">
-          <% @project.pipelines.each do |pipeline| %>
-            <li><a href="<%= pipeline_path(pipeline) %>"><%= pipeline %></a></li>
-          <% end %>
+      <ul class="nav navbar-nav navbar-right hidden-xs">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pipelines <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <% @project.pipelines.each do |pipeline| %>
+              <li><a href="<%= pipeline_path(pipeline) %>"><%= pipeline %></a></li>
+            <% end %>
 
-          <li class="divider"></li>
+            <li class="divider"></li>
 
-          <li><a href="<%= pipelines_path(@project) %>">Configure pipelines...</a></li>
-        </ul>
-      </li>
-    </ul>
+            <li><a href="<%= pipelines_path(@project) %>">Configure pipelines...</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
