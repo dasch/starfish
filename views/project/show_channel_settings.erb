@@ -1,0 +1,16 @@
+<div class="panel-body">
+  <form action="<%= channel_settings_path(@channel) %>" method="POST">
+    <div class="form-group">
+      <label for="channel_name">Channel name</label>
+      <input type="text" class="form-control" name="channel_name" placeholder="Staging, Production, etc." value="<%= @channel.name %>">
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input name="channel_auto_release" type="checkbox" <%= 'checked' if @channel.auto_release_builds? %> value="1"> Automatically release new builds to this channel
+      </label>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Update Settings">
+  </form>
+</div>

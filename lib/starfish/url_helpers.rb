@@ -48,6 +48,10 @@ module Starfish
       [channels_path(channel.pipeline), channel.slug].join("/")
     end
 
+    def channel_settings_path(channel)
+      [channel_path(channel), "settings"].join("/")
+    end
+
     def config_path(channel)
       [channel_path(channel), "config"].join("/")
     end

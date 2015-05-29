@@ -115,6 +115,32 @@ module Starfish
       redirect releases_path(@channel)
     end
 
+    get '/:project/:pipeline/channels/:channel/settings' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @channel = @pipeline.find_channel_by_slug(params[:channel])
+
+      erb :channel_layout do
+        erb :show_channel_settings
+      end
+    end
+
+    post '/:project/:pipeline/channels/:channel/settings' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @channel = @pipeline.find_channel_by_slug(params[:channel])
+
+      $events.record(:channel_settings_updated, {
+        name: params[:channel_name],
+        auto_release_builds: params[:channel_auto_release] == "1",
+        project_id: @project.id,
+        pipeline_id: @pipeline.id,
+        channel_id: @channel.id
+      })
+
+      redirect channel_path(@channel)
+    end
+
     get '/:project/:pipeline/channels/:channel/releases' do
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])

@@ -1,6 +1,12 @@
 <%= erb :project_navigation %>
 
-<% nav_items = { releases_path(@channel) => "Releases", config_path(@channel) => "Config" } %>
+<%
+  nav_items = {
+    releases_path(@channel) => "Releases",
+    config_path(@channel) => "Config",
+    channel_settings_path(@channel) => "Settings"
+  }
+%>
 
 <div class="panel panel-default">
   <div class="panel-heading">

@@ -83,6 +83,15 @@ module Starfish
       $stderr.puts "Added channel #{channel}"
     end
 
+    def channel_settings_updated(timestamp, data)
+      project = @repo.find_project(data[:project_id])
+      pipeline = project.find_pipeline(data[:pipeline_id])
+      channel = pipeline.find_channel(data[:channel_id])
+
+      channel.name = data[:name]
+      channel.auto_release_builds = data[:auto_release_builds]
+    end
+
     def channel_config_key_added(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
