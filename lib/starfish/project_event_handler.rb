@@ -72,12 +72,16 @@ module Starfish
 
       channel.add_config_key(data[:key], data[:value])
 
-      channel.add_release(
-        build: channel.current_build,
-        config: channel.current_config,
-        author: data[:author],
-        event: :new_config
-      )
+      # We only want to release the config if there's a build we can release it
+      # with.
+      if channel.releases.any?
+        channel.add_release(
+          build: channel.current_build,
+          config: channel.current_config,
+          author: data[:author],
+          event: :new_config
+        )
+      end
     end
   end
 end

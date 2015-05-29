@@ -4,7 +4,9 @@ module Starfish
 
     def initialize(id: SecureRandom.uuid, build:, config:, number:, channel:, author:, event:)
       @id = id
-      @build, @config, @number = build, config, number
+      @build = build
+      @config = config
+      @number = number
       @channel = channel
       @author = author
       @event = event
