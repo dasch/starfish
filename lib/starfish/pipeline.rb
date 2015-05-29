@@ -2,6 +2,7 @@ require 'starfish/channel'
 require 'starfish/build'
 require 'starfish/pull_request'
 require 'starfish/not_found'
+require 'starfish/automatic_release_event'
 
 module Starfish
   class Pipeline
@@ -29,7 +30,7 @@ module Starfish
             build: build,
             config: channel.current_config,
             author: build.author,
-            message: "automatically released build #{build}"
+            event: AutomaticReleaseEvent.new(build: build)
           )
         end
       end

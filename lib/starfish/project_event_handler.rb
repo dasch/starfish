@@ -1,3 +1,7 @@
+require 'starfish/manual_release_event'
+require 'starfish/config_changed_event'
+require 'starfish/rollback_event'
+
 module Starfish
   class ProjectEventHandler
     def initialize(repo)
@@ -34,7 +38,7 @@ module Starfish
         build: build,
         config: config,
         author: author,
-        message: "pushed build #{build}"
+        event: ManualReleaseEvent.new(build: build)
       )
 
       $stderr.puts "Added release #{release}"
@@ -52,7 +56,7 @@ module Starfish
         build: target_release.build,
         config: target_release.config,
         author: author,
-        message: "rolled back to #{target_release}"
+        event: RollbackEvent.new(target_release: target_release)
       )
 
       $stderr.puts "Added release #{release}"
@@ -106,7 +110,7 @@ module Starfish
           build: channel.current_build,
           config: channel.current_config,
           author: data[:author],
-          message: "added config key #{data[:key]}"
+          event: ConfigChangedEvent.new(key: data[:key], value: data[:value])
         )
       end
     end
