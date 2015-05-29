@@ -87,7 +87,8 @@ module Starfish
           message: data["message"],
           added: data["added"],
           removed: data["removed"],
-          modified: data["modified"]
+          modified: data["modified"],
+          url: data["url"]
         )
       }
 
