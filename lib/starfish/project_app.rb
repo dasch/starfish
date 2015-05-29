@@ -101,14 +101,17 @@ module Starfish
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       @channel = @pipeline.find_channel_by_slug(params[:channel])
-      erb :list_releases
+      redirect releases_path(@channel)
     end
 
     get '/:project/:pipeline/channels/:channel/releases' do
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       @channel = @pipeline.find_channel_by_slug(params[:channel])
-      erb :list_releases
+
+      erb :channel_layout do
+        erb :list_releases
+      end
     end
 
     post '/:project/:pipeline/channels/:channel/releases' do
@@ -130,6 +133,36 @@ module Starfish
       })
 
       201
+    end
+
+    get '/:project/:pipeline/channels/:channel/config' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @channel = @pipeline.find_channel_by_slug(params[:channel])
+      @config = @channel.current_config
+
+      erb :channel_layout do
+        erb :show_config
+      end
+    end
+
+    post '/:project/:pipeline/channels/:channel/config/keys' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @channel = @pipeline.find_channel_by_slug(params[:channel])
+      @config = @channel.current_config
+
+      $events.record(:channel_config_key_added, {
+        key: params[:config_key],
+        value: params[:config_value],
+        config_version: @config.version,
+        author: current_user,
+        project_id: @project.id,
+        pipeline_id: @pipeline.id,
+        channel_id: @channel.id
+      })
+
+      redirect config_path(@channel)
     end
 
     get '/:project/:pipeline/channels/:channel/:release' do

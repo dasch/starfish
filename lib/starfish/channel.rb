@@ -10,7 +10,7 @@ module Starfish
       @pipeline = pipeline
       @name = name
       @releases = []
-      @configs = []
+      @configs = [Config::Null.new]
       @auto_release_builds = auto_release_builds
     end
 
@@ -23,7 +23,7 @@ module Starfish
     end
 
     def current_config
-      configs.last || Config::Null.new
+      configs.last
     end
 
     def auto_release_builds?
@@ -45,6 +45,11 @@ module Starfish
       config = Config.new(**options.merge(version: @configs.count + 1))
       @configs << config
       config
+    end
+
+    def add_config_key(key, value)
+      env = current_config.env.merge(key => value)
+      add_config(env: env)
     end
 
     def find_config(version:)

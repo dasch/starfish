@@ -27,7 +27,8 @@ module Starfish
             id: SecureRandom.uuid,
             build: build,
             config: channel.current_config,
-            author: build.author
+            author: build.author,
+            event: :new_build
           )
         end
       end

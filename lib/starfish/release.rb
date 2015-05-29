@@ -1,12 +1,13 @@
 module Starfish
   class Release
-    attr_reader :id, :build, :config, :number, :channel
+    attr_reader :id, :build, :config, :number, :channel, :event
 
-    def initialize(id:, build:, config:, number:, channel:, author: nil)
+    def initialize(id: SecureRandom.uuid, build:, config:, number:, channel:, author:, event:)
       @id = id
       @build, @config, @number = build, config, number
       @channel = channel
       @author = author
+      @event = event
     end
 
     def author
@@ -18,11 +19,11 @@ module Starfish
     end
 
     def new_build?
-      @previous_release.nil? || @previous_release.build != build
+      event == :new_build
     end
 
     def new_config?
-      @previous_release.nil? || @previous_release.config != config
+      event == :new_config
     end
 
     def to_s

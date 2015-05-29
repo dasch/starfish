@@ -1,33 +1,25 @@
-<%= erb :project_navigation %>
+<table class="table">
+  <tbody>
+    <% @channel.releases.reverse.each do |release| %>
+      <tr>
+        <td width="10">
+          <span class="label label-info"><%= release %></span>
+        </td>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title"><%= @channel %> releases</h3>
-  </div>
+        <td width="10"><%= erb :avatar, locals: { user: release.author } %></td>
 
-  <table class="table">
-    <tbody>
-      <% @channel.releases.reverse.each do |release| %>
-        <tr>
-          <td width="10">
-            <span class="label label-info"><%= release %></span>
-          </td>
+        <td>
+          <% if release.new_build? %>
+            <em><%= release.author %></em> pushed build <a href="<%= build_path(release.build) %>"><%= release.build %></a>
+          <% elsif release.new_config? %>
+            <em><%= release.author %></em> pushed new config
+          <% end %>
 
-          <td width="10"><%= erb :avatar, locals: { user: release.author } %></td>
+          <br>
 
-          <td>
-            <% if release.new_build? %>
-              <em><%= release.author %></em> pushed build <a href="<%= build_path(release.build) %>"><%= release.build %></a>
-            <% elsif release.new_config? %>
-              <em><%= release.author %></em> pushed config <%= release.config %>
-            <% end %>
-
-            <br>
-
-            <a href="#" class="text-danger">Roll back to here</a>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+          <a href="#" class="text-danger">Roll back to here</a>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

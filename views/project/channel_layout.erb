@@ -1,0 +1,18 @@
+<%= erb :project_navigation %>
+
+<% nav_items = { releases_path(@channel) => "Releases", config_path(@channel) => "Config" } %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @channel %> channel</h3>
+  </div>
+
+  <ul class="nav nav-tabs" style="padding-left:10px; margin-top:10px;">
+    <% nav_items.each do |path, title| %>
+      <li role="presentation"<%= ' class="active"' if env["REQUEST_PATH"].start_with?(path) %>><a href="<%= path %>"><%= title %></a></li>
+    <% end %>
+  </ul>
+
+  <%= yield %>
+
+</div>

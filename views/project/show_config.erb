@@ -1,0 +1,57 @@
+<div class="panel-body">
+  <% if @config.env.empty? %>
+    <p>No configuration added yet. Configuration keys added to this channel will be
+    included in all releases to the channel.</p>
+  <% else %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @config.env.each do |key, value| %>
+          <tr>
+            <td width="10"><code><%= key %></code></td>
+            <td><code><%= value %></code></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<div class="panel-footer">
+  <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-key" value="Add config key...">
+</div>
+</div>
+
+<div class="modal fade" id="add-key">
+<div class="modal-dialog">
+  <form action="<%= config_keys_path(@channel) %>" method="POST">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add config key</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="config_key">Key</label>
+          <input type="text" class="form-control" name="config_key" placeholder="SOME_CONFIG_KEY">
+        </div>
+
+        <div class="form-group">
+          <label for="config_value">Value</label>
+          <input type="text" class="form-control" name="config_value" placeholder="Config value">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Key &amp; Release</button>
+      </div>
+    </div>
+  </form>
+</div>

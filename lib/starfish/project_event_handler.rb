@@ -33,7 +33,8 @@ module Starfish
         id: data[:id],
         build: build,
         config: config,
-        author: author
+        author: author,
+        event: :new_build
       )
 
       $stderr.puts "Added release #{release}"
@@ -62,6 +63,21 @@ module Starfish
       )
 
       $stderr.puts "Added channel #{channel}"
+    end
+
+    def channel_config_key_added(timestamp, data)
+      project = @repo.find_project(data[:project_id])
+      pipeline = project.find_pipeline(data[:pipeline_id])
+      channel = pipeline.find_channel(data[:channel_id])
+
+      channel.add_config_key(data[:key], data[:value])
+
+      channel.add_release(
+        build: channel.current_build,
+        config: channel.current_config,
+        author: data[:author],
+        event: :new_config
+      )
     end
   end
 end
