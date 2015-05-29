@@ -55,37 +55,37 @@ module Starfish
       redirect @project ? project_path(@project) : setup_path
     end
 
-    get '/:slug' do
-      @project = $repo.find_project_by_slug(params[:slug])
+    get '/:project' do
+      @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.pipelines.first
       redirect @pipeline ? pipeline_path(@pipeline) : pipelines_path(@project)
     end
 
-    get '/:slug/pipelines' do
-      @project = $repo.find_project_by_slug(params[:slug])
+    get '/:project/pipelines' do
+      @project = $repo.find_project_by_slug(params[:project])
       erb :list_pipelines
     end
 
-    get '/:slug/:pipeline' do
-      @project = $repo.find_project_by_slug(params[:slug])
+    get '/:project/:pipeline' do
+      @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline]) or halt(404)
       redirect builds_path(@pipeline)
     end
 
-    get '/:slug/:pipeline/builds' do
-      @project = $repo.find_project_by_slug(params[:slug])
+    get '/:project/:pipeline/builds' do
+      @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       erb :list_builds
     end
 
-    get '/:slug/:pipeline/pulls' do
-      @project = $repo.find_project_by_slug(params[:slug])
+    get '/:project/:pipeline/pulls' do
+      @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       erb :list_pull_requests
     end
 
-    get '/:slug/:pipeline/pulls/:pull' do
-      @project = $repo.find_project_by_slug(params[:slug])
+    get '/:project/:pipeline/pulls/:pull' do
+      @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       @pull_request = @pipeline.find_pull_request(params[:pull].to_i)
       erb :show_pull_request
