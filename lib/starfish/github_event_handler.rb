@@ -2,11 +2,20 @@ module Starfish
   class GithubEventHandler
     def initialize(repo)
       @repo = repo
+      @handled_events = Hash.new {|h, k| h[k] = Set.new }
     end
 
     def update(event)
       if respond_to?(event.name)
-        send(event.name, event.timestamp, event.data)
+        event_id = event.data[:event_id]
+        project_id = event.data[:project_id]
+
+        if @handled_events[project_id].include?(event_id)
+          $stderr.puts "Already handled GitHub event #{event_id}"
+        else
+          send(event.name, event.timestamp, event.data)
+          @handled_events[project_id].add(event_id)
+        end
       end
     end
 
