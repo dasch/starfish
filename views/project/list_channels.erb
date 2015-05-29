@@ -1,46 +1,58 @@
 <%= erb :project_navigation %>
 
 <div class="panel panel-default">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Channel</th>
-        <th>Release</th>
-        <th></th>
-        <% @pipeline.channels.map(&:current_release).compact.map(&:build).uniq.sort.reverse.each do |build| %>
-          <th style="text-align:center">Build <%= build %></th>
-        <% end %>
-      </tr>
-    </thead>
-    <tbody>
-      <% @pipeline.channels.each do |channel| %>
+  <% if @pipeline.channels.any? %>
+    <table class="table">
+      <thead>
         <tr>
-          <th width="10"><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
-
-          <td width="10">
-            <% if channel.current_release %>
-              <a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a>
-            <% else %>
-              N/A
-            <% end %>
-          </td>
-
-          <td></td>
-
-          <% @pipeline.channels.map(&:current_release).compact.map(&:build).uniq.sort.reverse.each_with_index do |build, index| %>
-            <td width="100" align="center" class="<%= 'active' if index % 2 == 0 %> <%= 'success' if channel.current_build == build %>">
-              <% if channel.current_build == build %>
-                <span class="glyphicon glyphicon-ok text-success"></span>
-              <% end %>
-            </td>
+          <th>Channel</th>
+          <th>Release</th>
+          <th></th>
+          <% @pipeline.channels.map(&:current_release).compact.map(&:build).uniq.sort.reverse.each do |build| %>
+            <th style="text-align:center">Build <%= build %></th>
           <% end %>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @pipeline.channels.each do |channel| %>
+          <tr>
+            <th width="10"><a href="<%= channel_path(channel) %>"><%= channel %></a></th>
+
+            <td width="10">
+              <% if channel.current_release %>
+                <a href="<%= release_path(channel.current_release) %>"><%= channel.current_release %></a>
+              <% else %>
+                N/A
+              <% end %>
+            </td>
+
+            <td></td>
+
+            <% @pipeline.channels.map(&:current_release).compact.map(&:build).uniq.sort.reverse.each_with_index do |build, index| %>
+              <td width="100" align="center" class="<%= 'active' if index % 2 == 0 %> <%= 'success' if channel.current_build == build %>">
+                <% if channel.current_build == build %>
+                  <span class="glyphicon glyphicon-ok text-success"></span>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="panel-body">
+      <div class="alert alert-warning" role="alert">
+        <p>
+          <strong>No channels have been added yet!</strong>
+          A channel represents a deploy target – that is, something that a release can be pushed to. You'd typically have at least one
+          production channel as well as a channel for staging, QA, etc.
+        </p>
+      </div>
+    </div>
+  <% end %>
 
   <div class="panel-footer">
-    <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-channel" value="Add channel...">
+    <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-channel" value="Add Channel...">
   </div>
 </div>
 
