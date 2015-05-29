@@ -1,26 +1,26 @@
-<div class="panel-body">
-  <% if @config.env.empty? %>
+<% if @config.env.empty? %>
+  <div class="panel-body">
     <p>No configuration added yet. Configuration keys added to this channel will be
     included in all releases to the channel.</p>
-  <% else %>
-    <table class="table">
-      <thead>
+  </div>
+<% else %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @config.env.each do |key, value| %>
         <tr>
-          <th>Key</th>
-          <th>Value</th>
+          <td width="10"><code><%= key %></code></td>
+          <td><code><%= value %></code></td>
         </tr>
-      </thead>
-      <tbody>
-        <% @config.env.each do |key, value| %>
-          <tr>
-            <td width="10"><code><%= key %></code></td>
-            <td><code><%= value %></code></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
-</div>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
 
 <div class="panel-footer">
   <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-key" value="Add config key...">
