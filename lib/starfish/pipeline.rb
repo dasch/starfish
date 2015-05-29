@@ -1,6 +1,7 @@
 require 'starfish/channel'
 require 'starfish/build'
 require 'starfish/pull_request'
+require 'starfish/not_found'
 
 module Starfish
   class Pipeline
@@ -37,7 +38,7 @@ module Starfish
     end
 
     def find_build(number:)
-      @builds.find {|b| b.number == number }
+      @builds.find {|b| b.number == number } or raise NotFound
     end
 
     def find_builds_by_sha(sha)
@@ -55,11 +56,11 @@ module Starfish
     end
 
     def find_channel(id)
-      @channels.find {|c| c.id == id }
+      @channels.find {|c| c.id == id } or raise NotFound
     end
 
     def find_channel_by_slug(slug)
-      @channels.find {|c| c.slug == slug }
+      @channels.find {|c| c.slug == slug } or raise NotFound
     end
 
     def releases_for_build(build)
@@ -77,7 +78,7 @@ module Starfish
     end
 
     def find_pull_request(number)
-      @pull_requests.find {|pr| pr.number == number }
+      @pull_requests.find {|pr| pr.number == number } or raise NotFound
     end
 
     def slug

@@ -1,5 +1,6 @@
 require 'starfish/pipeline'
 require 'starfish/commit'
+require 'starfish/not_found'
 
 module Starfish
   class Project
@@ -30,11 +31,11 @@ module Starfish
     end
 
     def find_pipeline(id)
-      @pipelines.find {|b| b.id == id }
+      @pipelines.find {|b| b.id == id } or raise NotFound
     end
 
     def find_pipeline_by_slug(slug)
-      @pipelines.find {|b| b.slug == slug }
+      @pipelines.find {|b| b.slug == slug } or raise NotFound
     end
 
     def find_pipelines(branch:)

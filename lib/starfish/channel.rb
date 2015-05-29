@@ -1,5 +1,6 @@
 require 'starfish/release'
 require 'starfish/config'
+require 'starfish/not_found'
 
 module Starfish
   class Channel
@@ -38,7 +39,7 @@ module Starfish
     end
 
     def find_release(number:)
-      @releases.find {|b| b.number == number }
+      @releases.find {|b| b.number == number } or raise NotFound
     end
 
     def add_config(**options)
@@ -53,7 +54,7 @@ module Starfish
     end
 
     def find_config(version:)
-      @configs.find {|c| c.version == version }
+      @configs.find {|c| c.version == version } or raise NotFound
     end
 
     def slug

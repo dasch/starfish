@@ -1,5 +1,6 @@
 require 'redis'
 require 'starfish/project'
+require 'starfish/not_found'
 
 module Starfish
   class Repository
@@ -17,11 +18,11 @@ module Starfish
     end
 
     def find_project_by_slug(slug)
-      projects.find {|p| p.slug == slug }
+      projects.find {|p| p.slug == slug } or raise NotFound
     end
 
     def find_project(id)
-      projects.find {|p| p.id == id }
+      projects.find {|p| p.id == id } or raise NotFound
     end
   end
 end

@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'starfish/authentication_helpers'
 require 'starfish/url_helpers'
+require 'starfish/not_found'
 
 module Starfish
   class ProjectApp < Sinatra::Base
@@ -8,6 +9,10 @@ module Starfish
     set :views, -> { File.join(root, "views", "project") }
 
     helpers AuthenticationHelpers, UrlHelpers
+
+    error NotFound do
+      "Page not found"
+    end
 
     helpers do
       def change_status(status)
