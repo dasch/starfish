@@ -22,6 +22,7 @@ module Starfish
         items = {
           "Builds"        => builds_path(pipeline),
           "Channels"      => channels_path(pipeline),
+          "Config"        => pipeline_config_path(pipeline),
           "Pull Requests" => pulls_path(pipeline),
           "Canaries"      => canaries_path(pipeline),
         }
@@ -178,6 +179,12 @@ module Starfish
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       @build = @pipeline.find_build(number: params[:build].to_i)
       erb :show_build
+    end
+
+    get '/:project/:pipeline/config' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      erb :show_pipeline_config
     end
 
     get '/:project/:pipeline/canaries' do

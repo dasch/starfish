@@ -1,0 +1,34 @@
+<%= erb :project_navigation %>
+
+<div class="panel panel-default">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Key</th>
+
+        <th></th>
+
+        <% @pipeline.channels.each do |channel| %>
+          <th><%= channel %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @pipeline.channels.map(&:current_config).flat_map(&:keys).uniq.each do |key| %>
+        <tr>
+          <td width="10"><code><%= key %></code></td>
+
+          <td></td>
+
+          <% @pipeline.channels.each do |channel| %>
+            <td>
+              <% if channel.current_config.env[key] %>
+                <code><%= channel.current_config.env[key] %></code>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
