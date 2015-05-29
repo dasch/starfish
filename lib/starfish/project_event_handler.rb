@@ -29,15 +29,18 @@ module Starfish
       config = channel.find_config(version: data[:config_version])
       author = data[:author]
 
-      release = channel.add_release(
-        id: data[:id],
-        build: build,
-        config: config,
-        author: author,
-        event: :new_build
-      )
+      # TODO: Make sure this can't be nil:
+      unless build.nil?
+        release = channel.add_release(
+          id: data[:id],
+          build: build,
+          config: config,
+          author: author,
+          event: :new_build
+        )
 
-      $stderr.puts "Added release #{release}"
+        $stderr.puts "Added release #{release}"
+      end
     end
 
     def pipeline_added(timestamp, data)
