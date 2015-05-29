@@ -4,22 +4,7 @@
     included in all releases to the channel.</p>
   </div>
 <% else %>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Key</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @config.env.each do |key, value| %>
-        <tr>
-          <td width="10"><code><%= key %></code></td>
-          <td><code><%= value %></code></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <%= erb :config_table, locals: { config: @config } %>
 <% end %>
 
 <div class="panel-footer">

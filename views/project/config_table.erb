@@ -1,0 +1,16 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% config.env.each do |key, value| %>
+      <tr>
+        <td width="10"><code><%= key %></code></td>
+        <td><code><%= value %></code></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

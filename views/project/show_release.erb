@@ -1,19 +1,19 @@
-<ol class="breadcrumb">
-  <li><a href="/">Home</a></li>
-  <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
-  <li><a href="<%= channel_path(@channel) %>"><%= @channel %></a></li>
-  <li class="active">Release <%= @release %></li>
-</ol>
+<%= erb :project_navigation %>
 
-<dl class="dl-horizontal">
-  <dt>Build:</dt>
-  <dd><a href="<%= build_path(@release.build) %>"><%= @release.build %></a></dd>
-</dl>
+<div class="panel panel-default">
+  <ol class="breadcrumb">
+    <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
+    <li><a href="<%= pipeline_path(@pipeline) %>"><%= @pipeline %></a></li>
+    <li><a href="<%= channel_path(@channel) %>"><%= @channel %></a></li>
+    <li class="active">Release <%= @release %></li>
+  </ol>
 
-<h4>Config</h4>
-<dl class="dl-horizontal">
-  <% @release.config.env.each do |key, value| %>
-    <dt><code><%= key %></code></dt>
-    <dd><code><%= value %></code></dd>
-  <% end %>
-</dl>
+  <div class="panel-body">
+    <p>
+      <%= @release.author %> <%= erb @release.event_name, locals: { event: @release.event } %>
+    </p>
+
+    <h5>Config</h5>
+    <%= erb :config_table, locals: { config: @release.config } %>
+  </div>
+</div>
