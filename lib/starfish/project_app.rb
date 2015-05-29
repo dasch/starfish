@@ -146,6 +146,24 @@ module Starfish
       201
     end
 
+    post '/:project/:pipeline/channels/:channel/releases/rollbacks' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @channel = @pipeline.find_channel_by_slug(params[:channel])
+
+      @release = @channel.find_release(number: params[:release_number].to_i)
+
+      $events.record(:rolled_back_to_release, {
+        release_number: @release.number,
+        author: current_user,
+        project_id: @project.id,
+        pipeline_id: @pipeline.id,
+        channel_id: @channel.id
+      })
+
+      redirect releases_path(@channel)
+    end
+
     get '/:project/:pipeline/channels/:channel/config' do
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])

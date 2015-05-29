@@ -34,7 +34,25 @@ module Starfish
         build: build,
         config: config,
         author: author,
-        event: :new_build
+        message: "pushed build #{build}"
+      )
+
+      $stderr.puts "Added release #{release}"
+    end
+
+    def rolled_back_to_release(timestamp, data)
+      project = @repo.find_project(data[:project_id])
+      pipeline = project.find_pipeline(data[:pipeline_id])
+      channel = pipeline.find_channel(data[:channel_id])
+
+      target_release = channel.find_release(number: data[:release_number])
+      author = data[:author]
+
+      release = channel.add_release(
+        build: target_release.build,
+        config: target_release.config,
+        author: author,
+        message: "rolled back to #{target_release}"
       )
 
       $stderr.puts "Added release #{release}"
@@ -79,7 +97,7 @@ module Starfish
           build: channel.current_build,
           config: channel.current_config,
           author: data[:author],
-          event: :new_config
+          message: "added config key #{data[:key]}"
         )
       end
     end

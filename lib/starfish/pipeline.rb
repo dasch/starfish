@@ -29,7 +29,7 @@ module Starfish
             build: build,
             config: channel.current_config,
             author: build.author,
-            event: :new_build
+            message: "automatically released build #{build}"
           )
         end
       end

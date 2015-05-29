@@ -1,5 +1,5 @@
 <% if @channel.releases.any? %>
-  <table class="table">
+  <table class="table releases">
     <tbody>
       <% @channel.releases.reverse.each do |release| %>
         <tr>
@@ -10,18 +10,14 @@
           <td width="10"><%= erb :avatar, locals: { user: release.author } %></td>
 
           <td>
-            <% if release.new_build? %>
-              <em><%= release.author %></em> pushed build <a href="<%= build_path(release.build) %>"><%= release.build %></a>
-            <% elsif release.new_config? %>
-              <em><%= release.author %></em> pushed new config
-            <% end %>
+            <em><%= release.author %></em> <%= release.message %>
 
             <br>
 
             <% if @channel.current_release == release %>
               <em>Current release</em>
             <% else %>
-              <a href="#" class="text-danger">Roll back to here</a>
+              <a href="#rollback" data-release-rollback="<%= release.number %>" class="text-danger">Roll back to here</a>
             <% end %>
           </td>
         </tr>
@@ -33,3 +29,36 @@
     <p>No releases have been made to this channel yet.</p>
   </div>
 <% end %>
+
+<script>
+  $(".releases").on("click", "[data-release-rollback]", function() {
+    var release_number = $(this).data("release-rollback");
+    console.log(release_number);
+    $("#rollback").find("input[name=release_number]").val(release_number);
+    $("#rollback").find("span[data-var=rollback_release]").text(release_number);
+    $("#rollback").modal();
+  });
+</script>
+
+<div class="modal fade" id="rollback">
+  <div class="modal-dialog">
+    <form action="<%= release_rollbacks_path(@channel) %>" method="POST">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Roll back to release</h4>
+        </div>
+
+        <div class="modal-body">
+          <p>Are you sure you want to roll back to release v<span data-var="rollback_release"></span>?</p>
+        </div>
+
+        <div class="modal-footer">
+          <input type="hidden" name="release_number">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Roll Back to v<span data-var="rollback_release"></span></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

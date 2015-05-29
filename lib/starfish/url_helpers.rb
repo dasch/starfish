@@ -64,6 +64,10 @@ module Starfish
       [channel_path(channel), "releases"].join("/")
     end
 
+    def release_rollbacks_path(channel)
+      [channel_path(channel), "releases", "rollbacks"].join("/")
+    end
+
     def release_path(release)
       [channel_path(release.channel), release.number].join("/")
     end
