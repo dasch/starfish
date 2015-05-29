@@ -9,9 +9,7 @@
   </ol>
 
   <div class="panel-body">
-    <p>
-      <%= @release.author %> <%= release_event(@release) %>
-    </p>
+    <p><%= release_event(@release) %></p>
 
     <h5>Config</h5>
     <%= erb :config_table, locals: { config: @release.config } %>

@@ -21,7 +21,6 @@
             <td>
               <% if channel.current_release %>
                 <span class="label label-info"><%= channel.current_release %></span>
-                <%= channel.current_release.author %>
                 <%= release_event(channel.current_release) %>
               <% else %>
                 N/A

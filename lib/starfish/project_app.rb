@@ -42,7 +42,8 @@ module Starfish
       end
 
       def release_event(release)
-        erb release.event_name, locals: { event: release.event }
+        release.author.to_s + " " +
+          erb(release.event_name, locals: { event: release.event })
       end
 
       def build_status(build)
