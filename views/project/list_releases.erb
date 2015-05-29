@@ -18,7 +18,11 @@
 
             <br>
 
-            <a href="#" class="text-danger">Roll back to here</a>
+            <% if @channel.current_release == release %>
+              <em>Current release</em>
+            <% else %>
+              <a href="#" class="text-danger">Roll back to here</a>
+            <% end %>
           </td>
         </tr>
       <% end %>
