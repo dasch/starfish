@@ -17,7 +17,7 @@ module Starfish
     end
 
     def to_s
-      name
+      username || @name
     end
   end
 end
