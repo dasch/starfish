@@ -30,8 +30,8 @@ module Starfish
       @log.empty?
     end
 
-    def replay!
-      @log.events.each do |data|
+    def replay!(since: 0)
+      @log.events(since: since).each do |data|
         changed
         notify_observers(@serializer.deserialize(data))
       end
