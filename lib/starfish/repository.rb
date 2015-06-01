@@ -1,4 +1,3 @@
-require 'redis'
 require 'starfish/project'
 require 'starfish/not_found'
 
@@ -7,7 +6,6 @@ module Starfish
     attr_reader :projects
 
     def initialize
-      @redis = Redis.new
       @projects = []
     end
 
