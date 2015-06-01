@@ -40,6 +40,10 @@ module Starfish
       [pipeline_path(pipeline), "config"].join("/")
     end
 
+    def processes_path(pipeline)
+      [pipeline_path(pipeline), "processes"].join("/")
+    end
+
     def channels_path(pipeline)
       [pipeline_path(pipeline), "channels"].join("/")
     end
