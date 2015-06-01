@@ -5,6 +5,10 @@ module Starfish
         {}
       end
 
+      def key?(key)
+        false
+      end
+
       def keys
         []
       end
@@ -23,6 +27,10 @@ module Starfish
     def initialize(env:, version:)
       @env = env
       @version = version
+    end
+
+    def key?(key)
+      @env.key?(key)
     end
 
     def keys

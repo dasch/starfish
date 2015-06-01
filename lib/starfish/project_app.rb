@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'starfish/authentication_helpers'
+require 'starfish/flash_helpers'
 require 'starfish/url_helpers'
 require 'starfish/not_found'
 require 'starfish/service_manifest'
@@ -9,7 +10,7 @@ module Starfish
     set :root, File.expand_path("../../../", __FILE__)
     set :views, -> { File.join(root, "views", "project") }
 
-    helpers AuthenticationHelpers, UrlHelpers
+    helpers AuthenticationHelpers, UrlHelpers, FlashHelpers
 
     error NotFound do
       "Page not found"
@@ -214,15 +215,19 @@ module Starfish
       @channel = @pipeline.find_channel_by_slug(params[:channel])
       @config = @channel.current_config
 
-      $events.record(:channel_config_key_added, {
-        key: params[:config_key],
-        value: params[:config_value],
-        config_version: @config.version,
-        author: current_user,
-        project_id: @project.id,
-        pipeline_id: @pipeline.id,
-        channel_id: @channel.id
-      })
+      if @config.key?(params[:config_key])
+        flash "Config key <code>#{params[:config_key]}</code> is already in use"
+      else
+        $events.record(:channel_config_key_added, {
+          key: params[:config_key],
+          value: params[:config_value],
+          config_version: @config.version,
+          author: current_user,
+          project_id: @project.id,
+          pipeline_id: @pipeline.id,
+          channel_id: @channel.id
+        })
+      end
 
       redirect config_path(@channel)
     end
