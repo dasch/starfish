@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'starfish/authentication_helpers'
 require 'starfish/url_helpers'
 require 'starfish/not_found'
+require 'starfish/service_manifest'
 
 module Starfish
   class ProjectApp < Sinatra::Base
@@ -29,6 +30,7 @@ module Starfish
           "Channels"      => channels_path(pipeline),
           "Config"        => pipeline_config_path(pipeline),
           "Pull Requests" => pulls_path(pipeline),
+          "Processes"     => processes_path(pipeline),
           "Canaries"      => canaries_path(pipeline),
         }
 
@@ -250,6 +252,20 @@ module Starfish
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       erb :list_canaries
+    end
+
+    get '/:project/:pipeline/processes' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+
+      manifest = ServiceManifest.new(@project, {
+        github_token: session[:auth].credentials.token,
+        branch: @pipeline.branch
+      })
+
+      @processes = manifest.processes
+
+      erb :list_processes
     end
 
     post '/:project/pipelines' do
