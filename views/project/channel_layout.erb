@@ -8,11 +8,11 @@
   }
 %>
 <div class="panel panel-default">
-<ol class="breadcrumb">
-  <li><a href="<%= channels_path(@pipeline) %>">Channels</a></li>
-  <li><a href="<%= channel_path(@channel) %>"><%= @channel %></a></li>
-  <li class="active"><%= nav_items.fetch(env["REQUEST_PATH"]) %></li>
-</ol>
+  <ol class="breadcrumb">
+    <li><a href="<%= channels_path(@pipeline) %>">Channels</a></li>
+    <li><a href="<%= channel_path(@channel) %>"><%= @channel %></a></li>
+    <li class="active"><%= nav_items.fetch(env["REQUEST_PATH"]) %></li>
+  </ol>
 
   <ul class="nav nav-tabs" style="padding-left:10px;">
     <% nav_items.each do |path, title| %>
