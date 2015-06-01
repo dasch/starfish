@@ -57,7 +57,18 @@ module Starfish
       pipelines = project.find_pipelines(branch: branch)
 
       pipelines.each do |pipeline|
-        pipeline.add_build(commits: commits, author: author)
+        build = pipeline.add_build(commits: commits, author: author)
+
+        pipeline.channels.each do |channel|
+          if channel.auto_release_builds?
+            channel.add_release(
+              build: build,
+              config: channel.current_config,
+              author: author,
+              event: AutomaticReleaseEvent.new(build: build)
+            )
+          end
+        end
       end
     end
 
