@@ -4,6 +4,14 @@ module Starfish
       "/setup"
     end
 
+    def environments_path
+      "/environments"
+    end
+
+    def environment_path(environment)
+      [environments_path, environment.slug].join("/")
+    end
+
     def authentication_path
       "/auth/github"
     end

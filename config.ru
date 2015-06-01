@@ -10,6 +10,7 @@ Dotenv.load
 
 require 'starfish/setup_app'
 require 'starfish/project_app'
+require 'starfish/environment_app'
 require 'starfish/authentication_app'
 require 'starfish/webhook_app'
 
@@ -47,4 +48,5 @@ map("/setup") { run Starfish::SetupApp }
 map("/auth") { run Starfish::AuthenticationApp }
 map("/webhooks") { run Starfish::WebhookApp }
 map("/projects") { run Starfish::ProjectApp }
+map("/environments") { run Starfish::EnvironmentApp }
 map("/") { run ->(env) { [301, { "Location" => "/projects" }, []] } }

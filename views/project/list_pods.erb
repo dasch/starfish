@@ -1,0 +1,34 @@
+<div class="panel panel-default">
+  <ol class="breadcrumb">
+    <li><a href="/">Environments</a></li>
+    <li class="active"><%= @environment %></li>
+  </ol>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Project</th>
+        <% @environment.pods.each do |pod| %>
+          <th><%= pod %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @projects.each do |project| %>
+        <% project.pipelines.each do |pipeline| %>
+          <% if @environment.pods.any? {|pod| pipeline.channel_for_pod(pod) } %>
+            <tr>
+              <td>
+                <a href="<%= pipeline_path(pipeline) %>"><%= project %> / <%= pipeline %></a>
+              </td>
+
+              <% @environment.pods.each do |pod| %>
+                <td><%= pipeline.channel_for_pod(pod).current_release %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
