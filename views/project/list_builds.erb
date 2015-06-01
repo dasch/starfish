@@ -1,50 +1,52 @@
 <%= erb :project_navigation %>
 
 <div class="panel panel-default">
-  <table class="table build-history">
-    <thead>
-      <tr>
-        <th>Build</th>
-        <th>Status</th>
-        <th>Approved</th>
-        <th>Author</th>
-        <th>Commit</th>
-
-        <% @pipeline.channels.each do |channel| %>
-          <th><%= channel %></th>
-        <% end %>
-      </tr>
-    </thead>
-    <tbody>
-      <% @pipeline.builds.reverse.each do |build| %>
-        <tr data-build-number="<%= build.number %>" class="build <%= 'success' if @pipeline.channels.any? {|c| c.current_build == build } %>">
-          <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
-
-          <td width="10" align="center"><%= build_status(build) %></td>
-
-          <td width="10" align="center"><% if build.approved? %><span class="glyphicon glyphicon-thumbs-up"></span><% end %></td>
-
-          <td width="10" align="center">
-            <%= erb :avatar, locals: { user: build.author } %>
-          </td>
-
-          <td><%= build.summary %></td>
+  <div class="table-responsive">
+    <table class="table build-history">
+      <thead>
+        <tr>
+          <th>Build</th>
+          <th>Status</th>
+          <th>Approved</th>
+          <th>Author</th>
+          <th>Commit</th>
 
           <% @pipeline.channels.each do |channel| %>
-            <td width="20" align="center" class="channel-status" data-channel="<%= channel.slug %>" data-channel-release-url="<%= releases_path(channel) %>?build=<%= build.number %>">
-              <% if channel.current_build.nil? || channel.current_build.number < build.number %>
-                <span class="glyphicon glyphicon-plus text-muted release-build" title="Release this build"></span>
-              <% elsif channel.current_build == build %>
-                <span class="glyphicon glyphicon-ok text-success" title="Current build"></span>
-              <% else %>
-                <span class="glyphicon glyphicon-minus text-muted release-build" title="Release this build"></span>
-              <% end %>
-            </td>
+            <th><%= channel %></th>
           <% end %>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @pipeline.builds.reverse.each do |build| %>
+          <tr data-build-number="<%= build.number %>" class="build <%= 'success' if @pipeline.channels.any? {|c| c.current_build == build } %>">
+            <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
+
+            <td width="10" align="center"><%= build_status(build) %></td>
+
+            <td width="10" align="center"><% if build.approved? %><span class="glyphicon glyphicon-thumbs-up"></span><% end %></td>
+
+            <td width="10" align="center">
+              <%= erb :avatar, locals: { user: build.author } %>
+            </td>
+
+            <td><%= build.summary %></td>
+
+            <% @pipeline.channels.each do |channel| %>
+              <td width="20" align="center" class="channel-status" data-channel="<%= channel.slug %>" data-channel-release-url="<%= releases_path(channel) %>?build=<%= build.number %>">
+                <% if channel.current_build.nil? || channel.current_build.number < build.number %>
+                  <span class="glyphicon glyphicon-plus text-muted release-build" title="Release this build"></span>
+                <% elsif channel.current_build == build %>
+                  <span class="glyphicon glyphicon-ok text-success" title="Current build"></span>
+                <% else %>
+                  <span class="glyphicon glyphicon-minus text-muted release-build" title="Release this build"></span>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script>
