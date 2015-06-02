@@ -69,6 +69,10 @@ module Starfish
       @pull_requests.find {|pr| pr.number == number } or raise NotFound
     end
 
+    def config_keys
+      @channels.map(&:current_config).flat_map(&:keys).uniq
+    end
+
     def slug
       name.downcase.scan(/\w+/).join("-")
     end

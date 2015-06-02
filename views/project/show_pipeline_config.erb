@@ -1,36 +1,48 @@
 <%= erb :project_navigation %>
 
 <div class="panel panel-default">
-  <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Key</th>
-
-          <th></th>
-
-          <% @pipeline.channels.each do |channel| %>
-            <th><%= channel %></th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <% @pipeline.channels.map(&:current_config).flat_map(&:keys).uniq.each do |key| %>
+  <% if @pipeline.config_keys.any? %>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
           <tr>
-            <td width="10"><code><%= key %></code></td>
+            <th>Key</th>
 
-            <td></td>
+            <th></th>
 
             <% @pipeline.channels.each do |channel| %>
-              <td>
-                <% if channel.current_config.env[key] %>
-                  <code><%= channel.current_config.env[key] %></code>
-                <% end %>
-              </td>
+              <th><%= channel %></th>
             <% end %>
           </tr>
+        </thead>
+        <tbody>
+          <% @pipeline.config_keys.each do |key| %>
+            <tr>
+              <td width="10"><code><%= key %></code></td>
+
+              <td></td>
+
+              <% @pipeline.channels.each do |channel| %>
+                <td>
+                  <% if channel.current_config.env[key] %>
+                    <code><%= channel.current_config.env[key] %></code>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="panel-body">
+      <p class="lead">No config keys defined</p>
+      <p>Add config keys to your channels:</p>
+      <ul>
+        <% @pipeline.channels.each do |channel| %>
+          <li><a href="<%= config_path(channel) %>"><%= channel %></li>
         <% end %>
-      </tbody>
-    </table>
-  </div>
+      </ul>
+    </div>
+  <% end %>
 </div>
