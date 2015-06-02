@@ -40,21 +40,20 @@
         </tbody>
       </table>
     </div>
+
+    <div class="panel-footer">
+      <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-channel" value="Add Channel...">
+    </div>
   <% else %>
     <div class="panel-body">
-      <div class="alert alert-warning" role="alert">
-        <p>
-          <strong>No channels have been added yet!</strong>
-          A channel represents a deploy target – that is, something that a release can be pushed to. You'd typically have at least one
-          production channel as well as a channel for staging, QA, etc.
-        </p>
-      </div>
+      <p class="lead">Add a channel to start deploying</p>
+      <p>A channel represents a release target – that is, something that a release can be pushed to. You'd typically have at least one
+        production channel as well as a channel for staging, QA, etc. A channel can be configured to automatically release new builds
+        as they appear in the pipeline.</p>
+
+      <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-channel" value="Add Channel...">
     </div>
   <% end %>
-
-  <div class="panel-footer">
-    <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-channel" value="Add Channel...">
-  </div>
 </div>
 
 <div class="modal fade" id="add-channel">
