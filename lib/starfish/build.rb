@@ -10,7 +10,7 @@ module Starfish
 
     include Comparable
 
-    attr_reader :number, :author, :commits, :statuses, :image, :pipeline
+    attr_reader :number, :author, :commits, :statuses, :image, :pipeline, :approved_by
 
     def initialize(number:, author:, commits:, image: nil, pipeline:)
       @number = number
@@ -18,6 +18,7 @@ module Starfish
       @author = author
       @commits = commits
       @pipeline = pipeline
+      @approved_by = nil
       @statuses = []
     end
 
@@ -26,7 +27,11 @@ module Starfish
     end
 
     def approved?
-      true
+      !@approved_by.nil?
+    end
+
+    def approve!(user:)
+      @approved_by = user
     end
 
     def update_status(name:, value:, description:, timestamp:)
