@@ -1,33 +1,48 @@
 <div class="panel-body">
-  <blockquote>
-    <p style="white-space:pre"><%= @build.commit.message %></p>
 
-    <footer>
-      <cite><code><%= @build.commit %></code> by <%= @build.commit.author %></cite>
-    </footer>
-  </blockquote>
+  <div class="row">
 
-  <div class="panel panel-default">
-    <div class="panel-heading">Status Checks</div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Context</th>
-          <th>Description</th>
-          <th>Status</th>
-          <th>Duration</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @build.statuses.each do |status| %>
-          <tr>
-            <th><%= status.name %></th>
-            <td><%= status.description %></td>
-            <td><%= status.value %></td>
-            <td><%= "%.2f" % status.duration %>s</td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">Commit</div>
+        <div class="panel-body">
+          <blockquote>
+            <p style="white-space:pre"><%= @build.commit.message %></p>
+            <footer>
+              <cite><code><%= @build.commit %></code> by <%= @build.commit.author %></cite>
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">Status Checks</div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Context</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @build.statuses.each do |status| %>
+              <tr>
+                <th><%= status.name %></th>
+                <td><%= status.description %></td>
+                <td><%= status.value %></td>
+                <td><%= "%.2f" % status.duration %>s</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
   </div>
+
 </div>
