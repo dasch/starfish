@@ -29,11 +29,16 @@ module Starfish
       true
     end
 
-    def add_status(name:, value:)
-      @statuses.delete_if {|s| s.name == name }
+    def update_status(name:, value:, description:, timestamp:)
+      status = @statuses.find {|s| s.name == name }
 
-      status = Status.new(name: name, value: value)
-      @statuses << status
+      if status.nil?
+        status = Status.new(name: name, created_at: timestamp)
+        @statuses << status
+      end
+
+      status.update(value, description: description, timestamp: timestamp)
+
       status
     end
 

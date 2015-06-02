@@ -118,9 +118,11 @@ module Starfish
       value = value_mapping.fetch(payload["state"])
 
       project.find_builds_by_sha(payload["sha"]).each do |build|
-        build.add_status(
+        build.update_status(
           name: payload["context"],
-          value: value
+          value: value,
+          description: payload["description"],
+          timestamp: timestamp
         )
       end
     end
