@@ -96,6 +96,21 @@ module Starfish
       erb :list_builds
     end
 
+    post '/:project/:pipeline/builds/approvals' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @build = @pipeline.find_build(number: params[:build_number].to_i)
+
+      $events.record(:build_approved, {
+        project_id: @project.id,
+        pipeline_id: @pipeline.id,
+        build_number: @build.number,
+        approved_by: current_user
+      })
+
+      redirect builds_path(@pipeline)
+    end
+
     get '/:project/:pipeline/pulls' do
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])

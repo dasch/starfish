@@ -28,6 +28,10 @@ module Starfish
       [pipeline_path(pipeline), "builds"].join("/")
     end
 
+    def build_approvals_path(pipeline)
+      [builds_path(pipeline), "approvals"].join("/")
+    end
+
     def pulls_path(pipeline)
       [pipeline_path(pipeline), "pulls"].join("/")
     end

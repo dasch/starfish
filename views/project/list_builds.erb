@@ -24,7 +24,13 @@
 
               <td width="10" align="center"><%= build_status(build) %></td>
 
-              <td width="10" align="center"><% if build.approved? %><span class="glyphicon glyphicon-thumbs-up"></span><% end %></td>
+              <td width="10" align="center" class="approval-status">
+                <% if build.approved? %>
+                  <span class="glyphicon glyphicon-ok text-success" title="Approved by <%= build.approved_by %>"></span>
+                <% else %>
+                  <span class="glyphicon glyphicon-thumbs-up" title="Approve this build"></span>
+                <% end %>
+              </td>
 
               <td width="10" align="center">
                 <%= erb :avatar, locals: { user: build.author } %>
@@ -103,4 +109,36 @@
       pruneBuildIndicators();
     });
   });
+
+  $(".build").on("click", ".approval-status", function() {
+    var $indicator = $(this);
+    var buildNumber = $indicator.parent(".build").data("build-number");
+
+    $("#approve-build").find("input[name=build_number]").val(buildNumber);
+    $("#approve-build").find("span[data-var=build_number]").text(buildNumber);
+    $("#approve-build").modal();
+  });
 </script>
+
+<div class="modal fade" id="approve-build">
+  <div class="modal-dialog">
+    <form action="<%= build_approvals_path(@pipeline) %>" method="POST">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Approve Build</h4>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" name="build_number">
+          <p>Are you sure you want to approve build #<span data-var="build_number"></span> for release?</p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Approve Build #<span data-var="build_number"></span></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
