@@ -1,12 +1,9 @@
-<ol class="breadcrumb">
-  <li><a href="/">Projects</a></li>
-  <li class="active"><%= @project %></li>
-</ol>
-
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title"><%= @project %> pipelines</h3>
-  </div>
+  <ol class="breadcrumb">
+    <li><a href="/">Projects</a></li>
+    <li><a href="<%= project_path(@project) %>"><%= @project %></a></li>
+    <li class="active">Pipelines</li>
+  </ol>
 
   <% if @project.pipelines.any? %>
     <table class="table">
@@ -33,11 +30,17 @@
         <% end %>
       </tbody>
     </table>
-  <% end %>
 
-  <div class="panel-footer">
-    <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-pipeline" value="Add pipeline...">
-  </div>
+    <div class="panel-footer">
+      <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-pipeline" value="Add pipeline...">
+    </div>
+  <% else %>
+    <div class="panel-body">
+      <p class="lead">Define a pipeline to get started</p>
+      <p>A pipeline controls how commits to a Git branch get turned into builds and released into your infrastructure.</p>
+      <input type="button" class="btn btn-default" data-toggle="modal" data-target="#add-pipeline" value="Add pipeline...">
+    </div>
+  <% end %>
 </div>
 
 <div class="modal fade" id="add-pipeline">
@@ -52,7 +55,7 @@
         <div class="modal-body">
             <div class="form-group">
               <label for="pipeline_name">Pipeline name</label>
-              <input type="text" class="form-control" name="pipeline_name" placeholder="Pipeline name">
+              <input type="text" class="form-control" name="pipeline_name" value="Production">
               <span class="help-block">E.g. <q>Staging</q>, <q>Production</q>, etc.</span>
             </div>
 

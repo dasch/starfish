@@ -26,7 +26,9 @@
   </table>
 <% else %>
   <div class="panel-body">
-    <p>No releases have been made to this channel yet.</p>
+    <p class="lead">No releases have been made to this channel yet</p>
+    <p>Push to your Git repository and see builds appear on the
+      <a href="<%= builds_path(@pipeline) %>">Builds page</a>. Those builds can be released to this channel.</p>
   </div>
 <% end %>
 

@@ -294,19 +294,15 @@ module Starfish
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
 
-      id = SecureRandom.uuid
-
       $events.record(:channel_added, {
-        id: id,
+        id: SecureRandom.uuid,
         name: params[:channel_name],
         auto_release_builds: params[:channel_auto_release] == "1",
         project_id: @project.id,
         pipeline_id: @pipeline.id
       })
 
-      @channel = @pipeline.find_channel(id)
-
-      redirect channel_path(@channel)
+      redirect channels_path(@pipeline)
     end
   end
 end
