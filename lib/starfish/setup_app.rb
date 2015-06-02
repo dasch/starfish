@@ -17,6 +17,9 @@ module Starfish
       @github = Octokit::Client.new(
         access_token: session[:auth].credentials.token
       )
+
+      # Load collections in their entirety rather than just the first page.
+      @github.auto_paginate = true
     end
 
     get '/' do
