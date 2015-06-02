@@ -1,53 +1,14 @@
-<%= erb :project_navigation %>
+<div class="panel-body">
+  <blockquote>
+    <p style="white-space:pre"><%= @build.commit.message %></p>
 
-<div class="panel panel-default">
-  <ol class="breadcrumb">
-    <li><a href="<%= builds_path(@pipeline) %>">Builds</a></li>
-    <li class="active">Build <%= @build %></li>
-  </ol>
+    <footer>
+      <cite><code><%= @build.commit %></code> by <%= @build.commit.author %></cite>
+    </footer>
+  </blockquote>
 
-  <div class="panel-body">
-    <blockquote>
-      <p style="white-space:pre"><%= @build.commit.message %></p>
-
-      <footer>
-        <cite><code><%= @build.commit %></code> by <%= @build.commit.author %></cite>
-      </footer>
-    </blockquote>
-
-    <h4>Changes</h4>
-    <table class="table">
-      <tbody>
-        <% @build.changes.each do |filename, status| %>
-          <tr>
-            <td width="10"><%= change_status(status) %></td>
-            <td><code><%= filename %></code></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-
-    <h4>Commits</h4>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>SHA</th>
-          <th>Author</th>
-          <th>Message</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @build.commits.each do |commit| %>
-          <tr>
-            <td width="10"><a href="<%= commit.url %>"><code><%= commit.sha %></code></a></td>
-            <td><%= commit.author %></td>
-            <td><%= commit.summary %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-
-    <h4>Status updates</h4>
+  <div class="panel panel-default">
+    <div class="panel-heading">Status Checks</div>
     <table class="table">
       <thead>
         <tr>

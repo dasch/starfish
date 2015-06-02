@@ -244,7 +244,30 @@ module Starfish
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       @build = @pipeline.find_build(number: params[:build].to_i)
-      erb :show_build
+
+      erb :build_layout do
+        erb :show_build
+      end
+    end
+
+    get '/:project/:pipeline/builds/:build/changes' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @build = @pipeline.find_build(number: params[:build].to_i)
+
+      erb :build_layout do
+        erb :show_build_changes
+      end
+    end
+
+    get '/:project/:pipeline/builds/:build/commits' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @build = @pipeline.find_build(number: params[:build].to_i)
+
+      erb :build_layout do
+        erb :show_build_commits
+      end
     end
 
     get '/:project/:pipeline/config' do

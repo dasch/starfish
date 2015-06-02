@@ -1,0 +1,10 @@
+<table class="table">
+  <tbody>
+    <% @build.changes.each do |filename, status| %>
+      <tr>
+        <td width="10"><%= change_status(status) %></td>
+        <td><code><%= filename %></code></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

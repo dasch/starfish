@@ -1,0 +1,18 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>SHA</th>
+      <th>Author</th>
+      <th>Message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @build.commits.each do |commit| %>
+      <tr>
+        <td width="10"><a href="<%= commit.url %>"><code><%= commit.sha %></code></a></td>
+        <td><%= commit.author %></td>
+        <td><%= commit.summary %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
