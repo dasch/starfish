@@ -64,10 +64,6 @@ module Starfish
       [channel_path(channel), "config", "keys"].join("/")
     end
 
-    def canaries_path(pipeline)
-      [pipeline_path(pipeline), "canaries"].join("/")
-    end
-
     def releases_path(channel)
       [channel_path(channel), "releases"].join("/")
     end

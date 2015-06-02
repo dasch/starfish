@@ -32,7 +32,6 @@ module Starfish
           "Config"        => pipeline_config_path(pipeline),
           "Pull Requests" => pulls_path(pipeline),
           "Processes"     => processes_path(pipeline),
-          "Canaries"      => canaries_path(pipeline),
         }
 
         current_path = items.values.
@@ -274,12 +273,6 @@ module Starfish
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       erb :show_pipeline_config
-    end
-
-    get '/:project/:pipeline/canaries' do
-      @project = $repo.find_project_by_slug(params[:project])
-      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
-      erb :list_canaries
     end
 
     get '/:project/:pipeline/processes' do
