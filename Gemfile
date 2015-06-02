@@ -14,4 +14,5 @@ group :development, :test do
   gem 'rspec', '~> 3.2.0'
   gem 'byebug'
   gem 'rack-test'
+  gem 'rack-mini-profiler'
 end
