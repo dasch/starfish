@@ -15,8 +15,12 @@ require 'starfish/webhook_app'
 require './boot'
 
 if ENV["RACK_ENV"] == "development"
-  require 'rack-mini-profiler'
-  use Rack::MiniProfiler
+  require 'byebug'
+
+  if ENV["PROFILE"] == "true"
+    require 'rack-mini-profiler'
+    use Rack::MiniProfiler
+  end
 end
 
 use Rack::Session::Cookie, secret: ENV.fetch("SESSION_SECRET")
