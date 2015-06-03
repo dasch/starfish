@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'starfish/flowdock/client'
 require 'starfish/authentication_helpers'
 require 'starfish/flash_helpers'
 require 'starfish/url_helpers'
@@ -32,6 +33,7 @@ module Starfish
           "Config"        => pipeline_config_path(pipeline),
           "Pull Requests" => pulls_path(pipeline),
           "Processes"     => processes_path(pipeline),
+          "Settings"      => pipeline_settings_path(pipeline),
         }
 
         current_path = items.values.
@@ -90,9 +92,61 @@ module Starfish
       end
     end
 
+    get '/:project/:pipeline/settings' do
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+
+      erb :show_pipeline_settings
+    end
+
+    get '/:project/:pipeline/settings/flowdock' do
+      if session[:flowdock_auth].nil?
+        redirect "/auth/flowdock"
+      end
+
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @flowdock = Flowdock::Client.new(session[:flowdock_auth].credentials.token)
+
+      @flows = @flowdock.flows
+
+      erb :flowdock_select_flow
+    end
+
+    post '/:project/:pipeline/settings/flowdock' do
+      if session[:flowdock_auth].nil?
+        redirect "/auth/flowdock"
+      end
+
+      @project = $repo.find_project_by_slug(params[:project])
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+      @flowdock = Flowdock::Client.new(session[:flowdock_auth].credentials.token)
+
+      params[:flowdock_flows].each do |slug|
+        source = @flowdock.add_source(slug, {
+          name: "Starfish (#{@project} / #{@pipeline})",
+          url: pipeline_path(@pipeline)
+        })
+
+        $events.record(:flowdock_source_added, {
+          project_id: @project.id,
+          pipeline_id: @pipeline.id,
+          flowdock_source_id: source.id,
+          flowdock_flow_slug: slug,
+          flowdock_flow_token: source.flow_token,
+          author: current_user
+        })
+      end
+
+      flash "Flowdock integration added to selected flows"
+
+      redirect pipeline_settings_path(@pipeline)
+    end
+
     get '/:project/:pipeline/builds' do
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
+
       erb :list_builds
     end
 

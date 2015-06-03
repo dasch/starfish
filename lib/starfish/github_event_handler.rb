@@ -1,8 +1,11 @@
+require 'starfish/notification_bus'
+
 module Starfish
   class GithubEventHandler
     def initialize(repo)
       @repo = repo
       @handled_events = Hash.new {|h, k| h[k] = Set.new }
+      @notification_bus = NotificationBus.new(@repo)
     end
 
     def update(event)
@@ -59,14 +62,18 @@ module Starfish
       pipelines.each do |pipeline|
         build = pipeline.add_build(commits: commits, author: author)
 
+        @notification_bus.notify(pipeline, :build_added, timestamp, build: build)
+
         pipeline.channels.each do |channel|
           if channel.auto_release_builds?
-            channel.add_release(
+            release = channel.add_release(
               build: build,
               config: channel.current_config,
               author: author,
               event: AutomaticReleaseEvent.new(build: build)
             )
+
+            @notification_bus.notify(pipeline, :release_added, timestamp, release: release)
           end
         end
       end

@@ -24,6 +24,10 @@ module Starfish
       [project_path(pipeline.project), pipeline.slug].join("/")
     end
 
+    def pipeline_settings_path(pipeline)
+      [pipeline_path(pipeline), "settings"].join("/")
+    end
+
     def builds_path(pipeline)
       [pipeline_path(pipeline), "builds"].join("/")
     end
@@ -94,6 +98,10 @@ module Starfish
 
     def github_webhook_url(project)
       [request.base_url, "webhooks", "github", project.slug].join("/")
+    end
+
+    def flowdock_setup_path(pipeline)
+      [pipeline_settings_path(pipeline), "flowdock"].join("/")
     end
   end
 end
