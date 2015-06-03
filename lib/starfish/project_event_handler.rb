@@ -44,6 +44,7 @@ module Starfish
       )
 
       @notification_bus.notify(pipeline, :release_added, timestamp, release: release)
+      @notification_bus.update_timestamp(timestamp)
 
       $stderr.puts "Added release #{release}"
     end
