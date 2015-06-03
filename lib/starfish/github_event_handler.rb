@@ -76,9 +76,9 @@ module Starfish
             @notification_bus.notify(pipeline, :release_added, timestamp, release: release)
           end
         end
-
-        @notification_bus.update_timestamp(timestamp)
       end
+
+      @notification_bus.update_timestamp(timestamp)
     end
 
     def github_pull_request_received(timestamp, data)
