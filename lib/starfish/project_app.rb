@@ -81,7 +81,7 @@ module Starfish
 
     get '/:project/:pipeline' do
       @project = $repo.find_project_by_slug(params[:project])
-      @pipeline = @project.find_pipeline_by_slug(params[:pipeline]) or halt(404)
+      @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
 
       if @pipeline.channels.any?
         redirect builds_path(@pipeline)
