@@ -7,6 +7,7 @@ require 'starfish/automatic_release_event'
 module Starfish
   class Pipeline
     attr_reader :id, :name, :project, :branch, :builds, :channels, :pull_requests
+    attr_reader :notification_targets
 
     def initialize(id: SecureRandom.uuid, name:, branch:, project:)
       @id = id
@@ -16,6 +17,7 @@ module Starfish
       @builds = []
       @channels = []
       @pull_requests = []
+      @notification_targets = []
     end
 
     def add_build(**options)
@@ -71,6 +73,10 @@ module Starfish
 
     def config_keys
       @channels.map(&:current_config).flat_map(&:keys).uniq
+    end
+
+    def add_notification_target(target)
+      @notification_targets << target
     end
 
     def slug

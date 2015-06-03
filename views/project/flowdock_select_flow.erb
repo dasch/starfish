@@ -1,0 +1,19 @@
+<%= erb :project_navigation %>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+
+    <form action="<%= flowdock_setup_path(@pipeline) %>" method="POST">
+      <% @flows.each do |flow| %>
+        <div class="checkbox">
+          <label>
+            <input name="flowdock_flows[]" type="checkbox" value="<%= flow.full_slug %>"> <%= flow %>
+          </label>
+        </div>
+      <% end %>
+
+      <input type="submit" class="btn btn-primary" value="Sends Notifications to Selected Flows">
+    </form>
+
+  </div>
+</div>

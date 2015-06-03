@@ -7,8 +7,14 @@ module Starfish
 
     helpers UrlHelpers
 
-    get '/:provider/callback' do
+    get '/github/callback' do
       session[:auth] = env['omniauth.auth']
+
+      redirect "/"
+    end
+
+    get '/flowdock/callback' do
+      session[:flowdock_auth] = env['omniauth.auth']
 
       redirect "/"
     end

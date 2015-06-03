@@ -1,0 +1,18 @@
+<%= erb :project_navigation %>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h4>Notifications</h4>
+    <% if @pipeline.notification_targets.any? %>
+      <ul>
+        <% @pipeline.notification_targets.each do |target| %>
+          <li><%= target %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="lead">You don't have any notifications set up.</p>
+    <% end %>
+
+    <p><a href="<%= flowdock_setup_path(@pipeline) %>">Start sending notifications to Flowdock flows</a>.</p>
+  </div>
+</div>

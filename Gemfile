@@ -9,6 +9,8 @@ gem 'omniauth'
 gem 'omniauth-github'
 gem 'octokit'
 gem 'redis'
+gem 'omniauth-flowdock'
+gem 'httparty'
 
 group :development, :test do
   gem 'rspec', '~> 3.2.0'

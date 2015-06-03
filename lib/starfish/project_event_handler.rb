@@ -1,11 +1,13 @@
 require 'starfish/manual_release_event'
 require 'starfish/config_changed_event'
 require 'starfish/rollback_event'
+require 'starfish/notification_bus'
 
 module Starfish
   class ProjectEventHandler
     def initialize(repo)
       @repo = repo
+      @notification_bus = NotificationBus.new(@repo)
     end
 
     def update(event)
@@ -40,6 +42,8 @@ module Starfish
         author: author,
         event: ManualReleaseEvent.new(build: build)
       )
+
+      @notification_bus.notify(pipeline, :release_added, timestamp, release: release)
 
       $stderr.puts "Added release #{release}"
     end
