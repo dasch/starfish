@@ -360,6 +360,13 @@ module Starfish
 
     post '/:project/pipelines' do
       @project = $repo.find_project_by_slug(params[:project])
+      branch = params[:pipeline_branch]
+
+      if @project.has_pipeline_for_branch?(branch)
+        pipeline = @project.find_pipeline_by_branch(branch)
+        flash "Branch <code>#{branch}</code> has already been assigned to the #{pipeline} pipeline"
+        redirect pipelines_path(@project)
+      end
 
       id = SecureRandom.uuid
 

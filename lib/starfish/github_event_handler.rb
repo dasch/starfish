@@ -30,36 +30,34 @@ module Starfish
     def github_push_received(timestamp, offset, data)
       project = @repo.find_project(data[:project_id])
       payload = data[:payload]
-
-      commits = payload["commits"].map {|data|
-        author = User.new(
-          name: data["author"]["name"],
-          username: data["author"]["username"]
-        )
-
-        Commit.new(
-          sha: data["id"],
-          author: author,
-          message: data["message"],
-          added: data["added"],
-          removed: data["removed"],
-          modified: data["modified"],
-          url: data["url"]
-        )
-      }
-
-      return if commits.empty?
-
-      author = User.new(
-        username: payload["sender"]["login"],
-        avatar_url: payload["sender"]["avatar_url"],
-      )
-
       branch = payload["ref"].scan(%r(refs/heads/(.+))).flatten.first
 
-      pipelines = project.find_pipelines(branch: branch)
+      if project.has_pipeline_for_branch?(branch)
+        commits = payload["commits"].map {|data|
+          author = User.new(
+            name: data["author"]["name"],
+            username: data["author"]["username"]
+          )
 
-      pipelines.each do |pipeline|
+          Commit.new(
+            sha: data["id"],
+            author: author,
+            message: data["message"],
+            added: data["added"],
+            removed: data["removed"],
+            modified: data["modified"],
+            url: data["url"]
+          )
+        }
+
+        return if commits.empty?
+
+        author = User.new(
+          username: payload["sender"]["login"],
+          avatar_url: payload["sender"]["avatar_url"],
+        )
+
+        pipeline = project.find_pipeline_by_branch(branch)
         build = pipeline.add_build(commits: commits, author: author)
 
         @notification_bus.notify(pipeline, :build_added, offset, build: build)
@@ -76,9 +74,9 @@ module Starfish
             @notification_bus.notify(pipeline, :release_added, offset, release: release)
           end
         end
-      end
 
-      @notification_bus.update_offset(offset)
+        @notification_bus.update_offset(offset)
+      end
     end
 
     def github_pull_request_received(timestamp, offset, data)
@@ -89,27 +87,22 @@ module Starfish
       case payload["action"]
       when "opened"
         target_branch = pr["base"]["ref"]
-        pipelines = project.find_pipelines(branch: target_branch)
+        pipeline = project.find_pipeline_by_branch(target_branch)
 
         author = User.new(
           username: pr["user"]["login"],
           avatar_url: pr["user"]["avatar_url"]
         )
 
-        pipelines.each do |pipeline|
-          pipeline.add_pull_request(
-            number: pr["number"],
-            title: pr["title"],
-            author: author
-          )
-        end
+        pipeline.add_pull_request(
+          number: pr["number"],
+          title: pr["title"],
+          author: author
+        )
       when "closed"
         target_branch = pr["base"]["ref"]
-        pipelines = project.find_pipelines(branch: target_branch)
-
-        pipelines.each do |pipeline|
-          pipeline.remove_pull_request(pr["number"])
-        end
+        pipeline = project.find_pipeline_by_branch(target_branch)
+        pipeline.remove_pull_request(pr["number"])
       end
     end
 

@@ -35,11 +35,15 @@ module Starfish
     end
 
     def find_pipeline_by_slug(slug)
-      @pipelines.find {|b| b.slug == slug } or raise NotFound
+      @pipelines.find {|p| p.slug == slug } or raise NotFound
     end
 
-    def find_pipelines(branch:)
-      @pipelines.select {|p| p.branch == branch }
+    def find_pipeline_by_branch(branch)
+      @pipelines.find {|p| p.branch == branch } or raise NotFound
+    end
+
+    def has_pipeline_for_branch?(branch)
+      @pipelines.any? {|p| p.branch == branch }
     end
 
     def slug
