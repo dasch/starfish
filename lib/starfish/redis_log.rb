@@ -18,7 +18,11 @@ module Starfish
     end
 
     def empty?
-      @redis.llen(@key) == 0
+      size == 0
+    end
+
+    def size
+      @redis.llen(@key)
     end
 
     def clear

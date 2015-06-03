@@ -8,6 +8,7 @@ module Starfish
 
     def initialize(log:)
       @log = log
+      @offset = @log.size
     end
 
     def record(event_name, data = {})
@@ -17,7 +18,9 @@ module Starfish
       $stderr.puts "Stored event #{event_name}:\n#{data.inspect}"
 
       changed
-      notify_observers(event)
+      notify_observers(event, @offset)
+
+      @offset += 1
     end
 
     def empty?
@@ -25,9 +28,9 @@ module Starfish
     end
 
     def replay!
-      @log.events.each do |event|
+      @log.events.each_with_index do |event, offset|
         changed
-        notify_observers(event)
+        notify_observers(event, offset)
       end
     end
 

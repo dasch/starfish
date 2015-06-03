@@ -8,7 +8,7 @@ module Starfish
       @notification_bus = NotificationBus.new(@repo)
     end
 
-    def update(event)
+    def update(event, offset)
       if respond_to?(event.name)
         event_id = event.data[:event_id]
         project_id = event.data[:project_id]
@@ -16,18 +16,18 @@ module Starfish
         if @handled_events[project_id].include?(event_id)
           $stderr.puts "Already handled GitHub event #{event_id}"
         else
-          send(event.name, event.timestamp, event.data)
+          send(event.name, event.timestamp, offset, event.data)
           @handled_events[project_id].add(event_id)
         end
       end
     end
 
     # For backwards compatibility.
-    def github_webhook_received(timestamp, data)
+    def github_webhook_received(timestamp, offset, data)
       github_push_received(timestamp, data)
     end
 
-    def github_push_received(timestamp, data)
+    def github_push_received(timestamp, offset, data)
       project = @repo.find_project(data[:project_id])
       payload = data[:payload]
 
@@ -62,7 +62,7 @@ module Starfish
       pipelines.each do |pipeline|
         build = pipeline.add_build(commits: commits, author: author)
 
-        @notification_bus.notify(pipeline, :build_added, timestamp, build: build)
+        @notification_bus.notify(pipeline, :build_added, offset, build: build)
 
         pipeline.channels.each do |channel|
           if channel.auto_release_builds?
@@ -73,15 +73,15 @@ module Starfish
               event: AutomaticReleaseEvent.new(build: build)
             )
 
-            @notification_bus.notify(pipeline, :release_added, timestamp, release: release)
+            @notification_bus.notify(pipeline, :release_added, offset, release: release)
           end
         end
       end
 
-      @notification_bus.update_timestamp(timestamp)
+      @notification_bus.update_offset(offset)
     end
 
-    def github_pull_request_received(timestamp, data)
+    def github_pull_request_received(timestamp, offset, data)
       project = @repo.find_project(data[:project_id])
       payload = data[:payload]
       pr = payload["pull_request"]
@@ -113,7 +113,7 @@ module Starfish
       end
     end
 
-    def github_status_received(timestamp, data)
+    def github_status_received(timestamp, offset, data)
       project = @repo.find_project(data[:project_id])
       payload = data[:payload]
 
