@@ -3,10 +3,11 @@ require 'starfish/not_found'
 
 module Starfish
   class Pod
-    attr_reader :number
+    attr_reader :number, :environment
 
-    def initialize(number:)
+    def initialize(number:, environment:)
       @number = number
+      @environment = environment
     end
 
     def name
@@ -27,7 +28,7 @@ module Starfish
     end
 
     def add_pod(**options)
-      @pods << Pod.new(**options)
+      @pods << Pod.new(**options.merge(environment: self))
     end
 
     def slug
@@ -75,6 +76,11 @@ module Starfish
 
     def find_environment_by_slug(slug)
       @environments.find {|e| e.slug == slug } or raise NotFound
+    end
+
+    def find_pod_by_name(name)
+      pods = @environments.flat_map(&:pods)
+      pods.find {|p| p.name == name } or raise NotFound
     end
   end
 end

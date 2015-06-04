@@ -48,9 +48,20 @@ module Starfish
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
 
+      if data[:name] == "Master"
+        data[:name] = "Pod98"
+      elsif data[:name] == "Staging"
+        data[:name] = "Pod100"
+      elsif data[:name] == "Production"
+        data[:name] = "Pod5"
+      end
+
+      pod = @repo.find_pod_by_name(data[:name])
+
       channel = pipeline.add_channel(
         id: data[:id],
         name: data[:name],
+        pod: pod,
         auto_release_builds: data[:auto_release_builds]
       )
 
