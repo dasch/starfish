@@ -10,12 +10,11 @@ module Starfish
 
     include Comparable
 
-    attr_reader :id, :number, :author, :commits, :statuses, :image, :pipeline, :approved_by
+    attr_reader :id, :number, :author, :commits, :statuses, :pipeline, :approved_by
 
-    def initialize(id:, number:, author:, commits:, image: nil, pipeline:)
+    def initialize(id:, number:, author:, commits:, pipeline:)
       @id = id
       @number = number
-      @image = image
       @author = author
       @commits = commits
       @pipeline = pipeline
