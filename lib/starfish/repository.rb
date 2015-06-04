@@ -2,6 +2,22 @@ require 'starfish/project'
 require 'starfish/not_found'
 
 module Starfish
+  class Pod
+    attr_reader :number
+
+    def initialize(number:)
+      @number = number
+    end
+
+    def name
+      "Pod#{number}"
+    end
+
+    def to_s
+      name
+    end
+  end
+
   class Environment
     attr_reader :name, :pods
 
@@ -10,8 +26,8 @@ module Starfish
       @pods = []
     end
 
-    def add_pod(name:)
-      @pods << name
+    def add_pod(**options)
+      @pods << Pod.new(**options)
     end
 
     def slug
@@ -32,13 +48,13 @@ module Starfish
       @environments = []
 
       master = Environment.new(name: "Master")
-      %w[Pod98 Pod99].each {|pod| master.add_pod(name: pod) }
+      [98, 99].each {|number| master.add_pod(number: number) }
 
       staging = Environment.new(name: "Staging")
-      %w[Pod100 Pod101].each {|pod| staging.add_pod(name: pod) }
+      [100, 101].each {|number| staging.add_pod(number: number) }
 
       production = Environment.new(name: "Production")
-      %w[Pod1 Pod2 Pod3 Pod4 Pod5 Pod6].each {|pod| production.add_pod(name: pod) }
+      (1..6).each {|number| production.add_pod(number: number) }
 
       @environments << master << staging << production
     end

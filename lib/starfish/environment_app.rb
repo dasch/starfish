@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'starfish/authentication_helpers'
 require 'starfish/url_helpers'
+require 'starfish/flash_helpers'
 require 'starfish/not_found'
 
 module Starfish
@@ -8,7 +9,7 @@ module Starfish
     set :root, File.expand_path("../../../", __FILE__)
     set :views, -> { File.join(root, "views", "project") }
 
-    helpers AuthenticationHelpers, UrlHelpers
+    helpers AuthenticationHelpers, UrlHelpers, FlashHelpers
 
     error NotFound do
       "Page not found"

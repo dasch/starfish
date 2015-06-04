@@ -54,7 +54,7 @@ module Starfish
     end
 
     def channel_for_pod(pod)
-      @channels.find {|c| c.name == pod }
+      @channels.find {|c| c.name == pod.name }
     end
 
     def releases_for_build(build)
