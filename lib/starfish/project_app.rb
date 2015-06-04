@@ -253,7 +253,7 @@ module Starfish
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       @channel = @pipeline.find_channel_by_slug(params[:channel])
 
-      @release = @channel.find_release(number: params[:release_number].to_i)
+      @release = @channel.find_release_by_number(params[:release_number].to_i)
 
       $events.record(:rolled_back_to_release, {
         release_number: @release.number,
@@ -304,7 +304,7 @@ module Starfish
       @project = $repo.find_project_by_slug(params[:project])
       @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
       @channel = @pipeline.find_channel_by_slug(params[:channel])
-      @release = @channel.find_release(number: params[:release].to_i)
+      @release = @channel.find_release_by_number(params[:release].to_i)
       erb :show_release
     end
 

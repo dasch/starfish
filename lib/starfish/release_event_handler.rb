@@ -75,7 +75,7 @@ module Starfish
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])
 
-      target_release = channel.find_release(number: data[:release_number])
+      target_release = channel.find_release_by_number(data[:release_number])
       author = data[:author]
 
       release = channel.add_release(

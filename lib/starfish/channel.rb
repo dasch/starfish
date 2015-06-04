@@ -39,8 +39,12 @@ module Starfish
       release
     end
 
-    def find_release(number:)
-      @releases.find {|b| b.number == number } or raise NotFound
+    def find_release(id)
+      @releases.find {|r| r.id == id } or raise NotFound
+    end
+
+    def find_release_by_number(number)
+      @releases.find {|r| r.number == number } or raise NotFound
     end
 
     def add_config(**options)
