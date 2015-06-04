@@ -6,14 +6,22 @@
       <table class="table build-history">
         <thead>
           <tr>
-            <th>Build</th>
-            <th>Status</th>
-            <th>Approved</th>
-            <th>Author</th>
-            <th>Commit</th>
+            <th rowspan="2">Build</th>
+            <th rowspan="2">Status</th>
+            <th rowspan="2">Approved</th>
+            <th rowspan="2">Author</th>
+            <th rowspan="2">Commit</th>
 
-            <% @pipeline.channels.each do |channel| %>
-              <th><%= channel %></th>
+            <% @pipeline.channels.group_by(&:environment).each do |environment, channels| %>
+              <th style="text-align:center; border-left:1px solid #ddd; border-bottom:0" colspan="<%= channels.count %>"><%= environment %></th>
+            <% end %>
+          </tr>
+
+          <tr>
+            <% @pipeline.channels.group_by(&:environment).each do |environment, channels| %>
+              <% channels.each_with_index do |channel, index| %>
+                <th <%= 'style="border-left:1px solid #ddd"' if index == 0 %>><%= channel %></th>
+              <% end %>
             <% end %>
           </tr>
         </thead>
@@ -38,7 +46,7 @@
 
               <td><%= build.summary %></td>
 
-              <% @pipeline.channels.each do |channel| %>
+              <% @pipeline.channels.group_by(&:environment).values.flatten.each do |channel| %>
                 <td width="20" align="center" class="channel-status" data-channel="<%= channel.slug %>" data-channel-release-url="<%= releases_path(channel) %>?build=<%= build.number %>">
                   <% if channel.current_build.nil? || channel.current_build.number < build.number %>
                     <span class="glyphicon glyphicon-plus text-muted release-build" title="Release this build"></span>
