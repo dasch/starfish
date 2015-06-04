@@ -1,5 +1,4 @@
 require 'starfish/repository'
-require 'starfish/user'
 require 'starfish/event_store'
 require 'starfish/redis_log'
 require 'starfish/project_event_handler'
