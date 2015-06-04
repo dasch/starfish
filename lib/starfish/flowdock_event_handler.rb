@@ -6,7 +6,7 @@ module Starfish
       @repo = repo
     end
 
-    def update(event, offset)
+    def update(event)
       if respond_to?(event.name)
         send(event.name, event.timestamp, event.data)
       end

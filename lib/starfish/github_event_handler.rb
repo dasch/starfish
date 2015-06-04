@@ -1,14 +1,11 @@
-require 'starfish/notification_bus'
-
 module Starfish
   class GithubEventHandler
     def initialize(repo)
       @repo = repo
       @handled_events = Hash.new {|h, k| h[k] = Set.new }
-      @notification_bus = NotificationBus.new(@repo)
     end
 
-    def update(event, offset)
+    def update(event)
       if respond_to?(event.name)
         event_id = event.data[:event_id]
         project_id = event.data[:project_id]
@@ -16,23 +13,22 @@ module Starfish
         if @handled_events[project_id].include?(event_id)
           $stderr.puts "Already handled GitHub event #{event_id}"
         else
-          send(event.name, event.timestamp, offset, event.data)
+          send(event.name, event.timestamp, event.data)
           @handled_events[project_id].add(event_id)
         end
       end
     end
 
-    # For backwards compatibility.
-    def github_webhook_received(timestamp, offset, data)
-      github_push_received(timestamp, data)
-    end
-
-    def github_push_received(timestamp, offset, data)
+    def github_push_received(timestamp, data)
       project = @repo.find_project(data[:project_id])
       payload = data[:payload]
       branch = payload["ref"].scan(%r(refs/heads/(.+))).flatten.first
 
+      return if payload["commits"].empty?
+
       if project.has_pipeline_for_branch?(branch)
+        pipeline = project.find_pipeline_by_branch(branch)
+
         commits = payload["commits"].map {|data|
           author = User.new(
             name: data["author"]["name"],
@@ -50,36 +46,27 @@ module Starfish
           )
         }
 
-        return if commits.empty?
-
         author = User.new(
           username: payload["sender"]["login"],
           avatar_url: payload["sender"]["avatar_url"],
         )
 
-        pipeline = project.find_pipeline_by_branch(branch)
-        build = pipeline.add_build(commits: commits, author: author)
+        build = pipeline.add_build(
+          id: SecureRandom.uuid,
+          commits: commits,
+          author: author
+        )
 
-        @notification_bus.notify(pipeline, :build_added, offset, build: build)
-
-        pipeline.channels.each do |channel|
-          if channel.auto_release_builds?
-            release = channel.add_release(
-              build: build,
-              config: channel.current_config,
-              author: author,
-              event: AutomaticReleaseEvent.new(build: build)
-            )
-
-            @notification_bus.notify(pipeline, :release_added, offset, release: release)
-          end
-        end
-
-        @notification_bus.update_offset(offset)
+        $events.record(:build_pushed, {
+          id: build.id,
+          build_number: build.number,
+          project_id: project.id,
+          pipeline_id: pipeline.id,
+        })
       end
     end
 
-    def github_pull_request_received(timestamp, offset, data)
+    def github_pull_request_received(timestamp, data)
       project = @repo.find_project(data[:project_id])
       payload = data[:payload]
       pr = payload["pull_request"]
@@ -106,7 +93,7 @@ module Starfish
       end
     end
 
-    def github_status_received(timestamp, offset, data)
+    def github_status_received(timestamp, data)
       project = @repo.find_project(data[:project_id])
       payload = data[:payload]
 

@@ -1,22 +1,20 @@
 require 'starfish/manual_release_event'
 require 'starfish/config_changed_event'
 require 'starfish/rollback_event'
-require 'starfish/notification_bus'
 
 module Starfish
   class ProjectEventHandler
     def initialize(repo)
       @repo = repo
-      @notification_bus = NotificationBus.new(@repo)
     end
 
-    def update(event, offset)
+    def update(event)
       if respond_to?(event.name)
-        send(event.name, event.timestamp, offset, event.data)
+        send(event.name, event.timestamp, event.data)
       end
     end
 
-    def project_added(timestamp, offset, data)
+    def project_added(timestamp, data)
       project = @repo.add_project(
         id: data[:id],
         name: data[:name],
@@ -26,30 +24,7 @@ module Starfish
       $stderr.puts "Added project #{project}"
     end
 
-    def build_released(timestamp, offset, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      channel = pipeline.find_channel(data[:channel_id])
-
-      build = pipeline.find_build(number: data[:build_number])
-      config = channel.find_config(version: data[:config_version])
-      author = data[:author]
-
-      release = channel.add_release(
-        id: data[:id],
-        build: build,
-        config: config,
-        author: author,
-        event: ManualReleaseEvent.new(build: build)
-      )
-
-      @notification_bus.notify(pipeline, :release_added, offset, release: release)
-      @notification_bus.update_offset(offset)
-
-      $stderr.puts "Added release #{release}"
-    end
-
-    def build_approved(timestamp, offset, data)
+    def build_approved(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
       build = pipeline.find_build(number: data[:build_number])
@@ -57,25 +32,7 @@ module Starfish
       build.approve!(user: data[:approved_by])
     end
 
-    def rolled_back_to_release(timestamp, offset, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      channel = pipeline.find_channel(data[:channel_id])
-
-      target_release = channel.find_release(number: data[:release_number])
-      author = data[:author]
-
-      release = channel.add_release(
-        build: target_release.build,
-        config: target_release.config,
-        author: author,
-        event: RollbackEvent.new(target_release: target_release)
-      )
-
-      $stderr.puts "Added release #{release}"
-    end
-
-    def pipeline_added(timestamp, offset, data)
+    def pipeline_added(timestamp, data)
       project = @repo.find_project(data[:project_id])
 
       pipeline = project.add_pipeline(
@@ -87,7 +44,7 @@ module Starfish
       $stderr.puts "Added pipeline #{pipeline}"
     end
 
-    def channel_added(timestamp, offset, data)
+    def channel_added(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
 
@@ -100,7 +57,7 @@ module Starfish
       $stderr.puts "Added channel #{channel}"
     end
 
-    def channel_settings_updated(timestamp, offset, data)
+    def channel_settings_updated(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])
@@ -109,7 +66,7 @@ module Starfish
       channel.auto_release_builds = data[:auto_release_builds]
     end
 
-    def channel_config_key_added(timestamp, offset, data)
+    def channel_config_key_added(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])
