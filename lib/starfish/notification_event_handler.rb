@@ -1,0 +1,29 @@
+module Starfish
+  class NotificationEventHandler
+    def initialize(repo)
+      @repo = repo
+    end
+
+    def update(event)
+      if respond_to?(event.name)
+        send(event.name, event.timestamp, event.data)
+      end
+    end
+
+    def build_pushed(timestamp, data)
+      project = @repo.find_project(data[:project_id])
+      pipeline = project.find_pipeline(data[:pipeline_id])
+      build = pipeline.find_build(number: data[:build_number])
+
+      notify(pipeline, :build_added, build: build)
+    end
+
+    private
+
+    def notify(pipeline, event_name, **data)
+      pipeline.notification_targets.each do |target|
+        target.notify(event_name, **data)
+      end
+    end
+  end
+end

@@ -2,7 +2,7 @@ require 'redis'
 
 module Starfish
   class RedisLog
-    DEFAULT_REDIS_KEY = "starfish.events"
+    DEFAULT_REDIS_KEY = "starfish.events.v2"
 
     def initialize(key: DEFAULT_REDIS_KEY)
       @key = key
