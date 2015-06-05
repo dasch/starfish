@@ -44,7 +44,7 @@ module Starfish
           url: github_webhook_url(@project),
           content_type: "json"
         }, {
-          events: ["status", "push", "pull_request", "pull_request_review_comment"]
+          events: %w[status push pull_request pull_request_review_comment issue_comment]
         })
       rescue Octokit::UnprocessableEntity
         # Hook already exists.
