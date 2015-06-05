@@ -1,4 +1,5 @@
 $LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
+$LOAD_PATH.unshift(File.expand_path("../apps", __FILE__))
 
 require 'bundler/setup'
 require 'dotenv'
