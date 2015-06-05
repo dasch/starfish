@@ -42,6 +42,10 @@
                 <% else %>
                   <%= build.summary %>
                 <% end %>
+
+                <% if build.commits.count > 1 %>
+                  <small class="text-muted">(<%= build.commits.count %> commits)</small>
+                <% end %>
               </td>
 
               <% @pipeline.channels.each do |channel| %>
