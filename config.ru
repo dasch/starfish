@@ -14,6 +14,7 @@ require 'starfish/setup_app'
 require 'starfish/project_app'
 require 'starfish/authentication_app'
 require 'starfish/github_webhook_app'
+require 'starfish/shipway_webhook_app'
 
 if ENV["RACK_ENV"] == "development"
   require 'byebug'
@@ -48,5 +49,6 @@ end
 map("/setup") { run Starfish::SetupApp }
 map("/auth") { run Starfish::AuthenticationApp }
 map("/webhooks/github") { run Starfish::GithubWebhookApp }
+map("/webhooks/shipway") { run Starfish::ShipwayWebhookApp }
 map("/projects") { run Starfish::ProjectApp }
 map("/") { run ->(env) { [301, { "Location" => "/projects" }, []] } }
