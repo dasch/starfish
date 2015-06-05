@@ -115,7 +115,7 @@ module Starfish
 
       project.find_builds_by_sha(payload["sha"]).each do |build|
         build.update_status(
-          name: payload["context"],
+          context: payload["context"],
           value: value,
           description: payload["description"],
           timestamp: timestamp

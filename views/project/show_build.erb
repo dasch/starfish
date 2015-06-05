@@ -20,21 +20,15 @@
       <div class="panel panel-default">
         <div class="panel-heading">Status Checks</div>
         <table class="table">
-          <thead>
-            <tr>
-              <th>Context</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
           <tbody>
-            <% @build.statuses.each do |status| %>
+            <% @build.status_checks.each do |status| %>
               <tr>
-                <th><%= status.name %></th>
-                <td><%= status.description %></td>
-                <td><%= status.value %></td>
-                <td><%= "%.2f" % status.duration %>s</td>
+                <td width="10">
+                  <%= status_indicator(status) %>
+                </td>
+
+                <td><strong><%= status.name %>:</strong> <%= status.description %></td>
+                <td><small><%= "%.2f" % status.duration %>s</small></td>
               </tr>
             <% end %>
           </tbody>
