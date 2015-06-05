@@ -29,7 +29,7 @@
             </tr>
           </thead>
           <tbody>
-            <% @build.statuses.each do |status| %>
+            <% @build.status_checks.each do |status| %>
               <tr>
                 <th><%= status.name %></th>
                 <td><%= status.description %></td>

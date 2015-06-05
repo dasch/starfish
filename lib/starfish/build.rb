@@ -1,4 +1,4 @@
-require 'starfish/status'
+require 'starfish/status_check'
 
 module Starfish
   class Build
@@ -10,7 +10,7 @@ module Starfish
 
     include Comparable
 
-    attr_reader :id, :number, :author, :commits, :statuses, :pipeline, :approved_by
+    attr_reader :id, :number, :author, :commits, :status_checks, :pipeline, :approved_by
     attr_accessor :pull_request
 
     def initialize(id:, number:, author:, commits:, pipeline:)
@@ -20,7 +20,7 @@ module Starfish
       @commits = commits
       @pipeline = pipeline
       @approved_by = nil
-      @statuses = []
+      @status_checks = []
     end
 
     def sha
@@ -36,11 +36,11 @@ module Starfish
     end
 
     def update_status(name:, value:, description:, timestamp:)
-      status = @statuses.find {|s| s.name == name }
+      status = @status_checks.find {|s| s.name == name }
 
       if status.nil?
-        status = Status.new(name: name, created_at: timestamp)
-        @statuses << status
+        status = StatusCheck.new(name: name, created_at: timestamp)
+        @status_checks << status
       end
 
       status.update(value, description: description, timestamp: timestamp)
@@ -79,11 +79,11 @@ module Starfish
     end
 
     def status
-      if statuses.all?(&:ok?)
+      if status_checks.all?(&:ok?)
         :ok
-      elsif statuses.any?(&:pending?)
+      elsif status_checks.any?(&:pending?)
         :pending
-      elsif statuses.any?(&:failed?)
+      elsif status_checks.any?(&:failed?)
         :failed
       else
         raise "what now?"

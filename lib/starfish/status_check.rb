@@ -1,5 +1,5 @@
 module Starfish
-  class Status
+  class StatusCheck
     attr_reader :name, :value, :description, :created_at, :updated_at
 
     def initialize(name:, created_at:)
