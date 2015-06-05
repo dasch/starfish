@@ -3,10 +3,10 @@ require 'json'
 require 'starfish/url_helpers'
 
 module Starfish
-  class WebhookApp < Sinatra::Base
+  class GithubWebhookApp < Sinatra::Base
     set :root, File.expand_path("../../../", __FILE__)
 
-    post '/github/:project' do
+    post '/:project' do
       event_id = env["HTTP_X_GITHUB_DELIVERY"]
       event = env["HTTP_X_GITHUB_EVENT"]
       project = $repo.find_project_by_slug(params[:project])
