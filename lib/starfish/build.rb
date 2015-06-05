@@ -1,4 +1,5 @@
 require 'starfish/status_check'
+require 'starfish/build_status'
 
 module Starfish
   class Build
@@ -35,11 +36,11 @@ module Starfish
       @approved_by = user
     end
 
-    def update_status(name:, value:, description:, timestamp:)
-      status = @status_checks.find {|s| s.name == name }
+    def update_status(context:, value:, description:, timestamp:)
+      status = @status_checks.find {|s| s.context == context }
 
       if status.nil?
-        status = StatusCheck.new(name: name, created_at: timestamp)
+        status = StatusCheck.new(context: context, created_at: timestamp)
         @status_checks << status
       end
 
@@ -79,27 +80,7 @@ module Starfish
     end
 
     def status
-      if status_checks.all?(&:ok?)
-        :ok
-      elsif status_checks.any?(&:pending?)
-        :pending
-      elsif status_checks.any?(&:failed?)
-        :failed
-      else
-        raise "what now?"
-      end
-    end
-
-    def ok?
-      status == :ok
-    end
-
-    def failed?
-      status == :failed
-    end
-
-    def pending?
-      status == :pending
+      BuildStatus.new(status_checks)
     end
 
     def commit

@@ -52,13 +52,13 @@ module Starfish
           erb(release.event_name, locals: { event: release.event })
       end
 
-      def build_status(build)
-        status = "glyphicon-"
-        status << "ok text-success" if build.ok?
-        status << "remove text-danger" if build.failed?
-        status << "refresh text-info" if build.pending?
+      def status_indicator(status)
+        classes = "glyphicon-"
+        classes << "ok text-success" if status.ok?
+        classes << "remove text-danger" if status.failed?
+        classes << "refresh text-info" if status.pending?
 
-        %(<span class="glyphicon #{status}" aria-hidden="true"></span>)
+        %(<span class="glyphicon #{classes}" aria-hidden="true"></span>)
       end
     end
 

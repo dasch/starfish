@@ -1,13 +1,25 @@
 module Starfish
   class StatusCheck
-    attr_reader :name, :value, :description, :created_at, :updated_at
+    CONTEXT_NAMES = {
+      "ci/circleci" => "CircleCI",
+      "continuous-integration/codeship" => "Codeship",
+      "continuous-integration/travis-ci/push" => "Travis CI",
+      "codeclimate" => "Code Climate",
+      "semaphoreci" => "Semaphore CI",
+    }
 
-    def initialize(name:, created_at:)
-      @name = name
+    attr_reader :context, :value, :description, :created_at, :updated_at
+
+    def initialize(context:, created_at:)
+      @context = context
       @created_at = created_at
       @updated_at = created_at
       @description = name
       @value = :pending
+    end
+
+    def name
+      CONTEXT_NAMES.fetch(context, context)
     end
 
     def update(value, description:, timestamp:)

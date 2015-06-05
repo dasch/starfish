@@ -22,7 +22,7 @@
             <tr data-build-number="<%= build.number %>" class="build <%= 'success' if @pipeline.channels.any? {|c| c.current_build == build } %>">
               <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
 
-              <td width="10" align="center"><%= build_status(build) %></td>
+              <td width="10" align="center"><%= status_indicator(build.status) %></td>
 
               <td width="10" align="center" class="approval-status">
                 <% if build.approved? %>
