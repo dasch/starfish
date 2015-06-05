@@ -1,11 +1,13 @@
 require 'starfish/base_app'
 require 'starfish/channel_app'
 require 'starfish/pipeline_app'
+require 'starfish/build_app'
 
 module Starfish
   class ProjectApp < BaseApp
     use ChannelApp
     use PipelineApp
+    use BuildApp
 
     get '/' do
       @project = @projects.first

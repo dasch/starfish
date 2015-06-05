@@ -5,12 +5,6 @@ require 'starfish/base_app'
 module Starfish
   class PipelineApp < BaseApp
     namespace '/:project/:pipeline' do
-      helpers do
-        def commit_link(commit)
-          %(<a href="#{commit.url}"><code>#{commit.sha}</code></a>)
-        end
-      end
-
       before do
         @project = $repo.find_project_by_slug(params[:project])
         @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
@@ -99,30 +93,6 @@ module Starfish
         })
 
         redirect channels_path(@pipeline)
-      end
-
-      get '/builds/:build' do
-        @build = @pipeline.find_build(number: params[:build].to_i)
-
-        erb :build_layout do
-          erb :show_build
-        end
-      end
-
-      get '/builds/:build/changes' do
-        @build = @pipeline.find_build(number: params[:build].to_i)
-
-        erb :build_layout do
-          erb :show_build_changes
-        end
-      end
-
-      get '/builds/:build/commits' do
-        @build = @pipeline.find_build(number: params[:build].to_i)
-
-        erb :build_layout do
-          erb :show_build_commits
-        end
       end
 
       get '/config' do
