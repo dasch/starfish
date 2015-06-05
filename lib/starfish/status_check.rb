@@ -8,13 +8,14 @@ module Starfish
       "semaphoreci" => "Semaphore CI",
     }
 
-    attr_reader :context, :value, :description, :created_at, :updated_at
+    attr_reader :context, :value, :description, :created_at, :updated_at, :url
 
-    def initialize(context:, created_at:)
+    def initialize(context:, url:, created_at:)
       @context = context
       @created_at = created_at
       @updated_at = created_at
       @description = name
+      @url = url
       @value = :pending
     end
 
@@ -38,10 +39,6 @@ module Starfish
 
     def failed?
       value == :failed
-    end
-
-    def duration
-      updated_at - created_at
     end
   end
 end

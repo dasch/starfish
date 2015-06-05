@@ -27,8 +27,11 @@
                   <%= status_indicator(status) %>
                 </td>
 
-                <td><strong><%= status.name %>:</strong> <%= status.description %></td>
-                <td><small><%= "%.2f" % status.duration %>s</small></td>
+                <td>
+                  <strong><%= status.name %>:</strong> <%= status.description %>
+                </td>
+
+                <td align="right"><a href="<%= status.url %>">Details</a></td>
               </tr>
             <% end %>
           </tbody>

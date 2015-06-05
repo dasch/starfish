@@ -118,6 +118,7 @@ module Starfish
           context: payload["context"],
           value: value,
           description: payload["description"],
+          url: payload["target_url"],
           timestamp: timestamp
         )
       end

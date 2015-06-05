@@ -36,11 +36,11 @@ module Starfish
       @approved_by = user
     end
 
-    def update_status(context:, value:, description:, timestamp:)
+    def update_status(context:, value:, url:, description:, timestamp:)
       status = @status_checks.find {|s| s.context == context }
 
       if status.nil?
-        status = StatusCheck.new(context: context, created_at: timestamp)
+        status = StatusCheck.new(context: context, url: url, created_at: timestamp)
         @status_checks << status
       end
 
