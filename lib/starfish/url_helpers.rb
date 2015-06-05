@@ -41,7 +41,7 @@ module Starfish
     end
 
     def pull_path(pull)
-      [pulls_path(pull.pipeline), pull.number].join("/")
+      ["https://github.com", pull.pipeline.project.repo, "pull", pull.number].join("/")
     end
 
     def pipeline_config_path(pipeline)

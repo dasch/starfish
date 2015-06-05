@@ -7,6 +7,11 @@ module Starfish
       @title = title
       @author = author
       @pipeline = pipeline
+      @status = :open
+    end
+
+    def close!
+      @status = :closed
     end
 
     def to_s

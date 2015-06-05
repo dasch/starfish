@@ -11,6 +11,7 @@ module Starfish
     include Comparable
 
     attr_reader :id, :number, :author, :commits, :statuses, :pipeline, :approved_by
+    attr_accessor :pull_request
 
     def initialize(id:, number:, author:, commits:, pipeline:)
       @id = id
