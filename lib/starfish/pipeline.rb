@@ -53,6 +53,10 @@ module Starfish
       @channels.find {|c| c.slug == slug } or raise NotFound
     end
 
+    def channel_for_pod(pod)
+      @channels.find {|c| c.name == pod.name }
+    end
+
     def releases_for_build(build)
       @channels.find_all {|c| c.current_build == build }.map(&:current_release)
     end

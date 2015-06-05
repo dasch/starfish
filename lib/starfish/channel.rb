@@ -4,16 +4,21 @@ require 'starfish/not_found'
 
 module Starfish
   class Channel
-    attr_reader :id, :pipeline, :name, :releases, :configs
+    attr_reader :id, :pipeline, :name, :releases, :configs, :pod
     attr_writer :name, :auto_release_builds
 
-    def initialize(id: SecureRandom.uuid, pipeline:, name:, auto_release_builds: false)
+    def initialize(id:, pod:, pipeline:, name:, auto_release_builds: false)
       @id = id
+      @pod = pod
       @pipeline = pipeline
       @name = name
       @releases = []
       @configs = [Config::Null.new]
       @auto_release_builds = auto_release_builds
+    end
+
+    def environment
+      pod.environment
     end
 
     def current_release
