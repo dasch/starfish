@@ -3,7 +3,7 @@ require 'starfish/config_changed_event'
 require 'starfish/rollback_event'
 
 module Starfish
-  class ProjectEventHandler
+  class ProjectSubscriber
     def initialize(repo)
       @repo = repo
     end

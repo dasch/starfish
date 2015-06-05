@@ -1,5 +1,5 @@
 module Starfish
-  class ReleaseEventHandler
+  class ReleaseSubscriber
     def initialize(repo)
       @repo = repo
     end
