@@ -63,10 +63,6 @@ module Starfish
       pull_request
     end
 
-    def remove_pull_request(number)
-      @pull_requests.delete_if {|pr| pr.number == number }
-    end
-
     def find_pull_request(number)
       @pull_requests.find {|pr| pr.number == number } or raise NotFound
     end

@@ -57,6 +57,10 @@ module Starfish
           author: author
         )
 
+        if payload["head_commit"]["message"] =~ /Merge pull request #(\d+) from/
+          build.pull_request = pipeline.find_pull_request($1.to_i) rescue nil
+        end
+
         $events.record(:build_pushed, {
           id: build.id,
           build_number: build.number,
@@ -89,7 +93,10 @@ module Starfish
       when "closed"
         target_branch = pr["base"]["ref"]
         pipeline = project.find_pipeline_by_branch(target_branch)
-        pipeline.remove_pull_request(pr["number"])
+
+        if pull_request = pipeline.find_pull_request(pr["number"]) rescue nil
+          pull_request.close!
+        end
       end
     end
 

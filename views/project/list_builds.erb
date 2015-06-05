@@ -36,7 +36,13 @@
                 <%= erb :avatar, locals: { user: build.author } %>
               </td>
 
-              <td><%= build.summary %></td>
+              <td>
+                <% if pr = build.pull_request %>
+                  <a href="<%= pull_path(pr) %>">#<%= pr.number %></a> <%= pr.title %>
+                <% else %>
+                  <%= build.summary %>
+                <% end %>
+              </td>
 
               <% @pipeline.channels.each do |channel| %>
                 <td width="20" align="center" class="channel-status" data-channel="<%= channel.slug %>" data-channel-release-url="<%= releases_path(channel) %>?build=<%= build.number %>">
