@@ -5,6 +5,12 @@ require 'starfish/base_app'
 module Starfish
   class PipelineApp < BaseApp
     namespace '/:project/:pipeline' do
+      helpers do
+        def commit_link(commit)
+          %(<a href="#{commit.url}"><code>#{commit.sha}</code></a>)
+        end
+      end
+
       before do
         @project = $repo.find_project_by_slug(params[:project])
         @pipeline = @project.find_pipeline_by_slug(params[:pipeline])

@@ -9,7 +9,7 @@
   <tbody>
     <% @build.commits.each do |commit| %>
       <tr>
-        <td width="10"><a href="<%= commit.url %>"><code><%= commit.sha %></code></a></td>
+        <td width="10"><%= commit_link(commit) %></td>
         <td><%= commit.author %></td>
         <td><%= commit.summary %></td>
       </tr>

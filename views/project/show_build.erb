@@ -9,7 +9,7 @@
           <blockquote>
             <p style="white-space:pre-wrap"><%= @build.commit.message %></p>
             <footer>
-              <cite><code><%= @build.commit %></code> by <%= @build.commit.author %></cite>
+              <cite><%= commit_link(@build.commit) %> by <%= @build.commit.author %></cite>
             </footer>
           </blockquote>
         </div>
