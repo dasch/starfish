@@ -1,5 +1,5 @@
 module Starfish
-  class NotificationEventHandler
+  class NotificationSubscriber
     def initialize(repo)
       @repo = repo
     end

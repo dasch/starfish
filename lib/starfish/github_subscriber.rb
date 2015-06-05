@@ -1,5 +1,5 @@
 module Starfish
-  class GithubEventHandler
+  class GithubSubscriber
     def initialize(repo)
       @repo = repo
       @handled_events = Hash.new {|h, k| h[k] = Set.new }

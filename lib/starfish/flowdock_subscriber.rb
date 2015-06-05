@@ -1,7 +1,7 @@
 require 'starfish/flowdock/notification_target'
 
 module Starfish
-  class FlowdockEventHandler
+  class FlowdockSubscriber
     def initialize(repo)
       @repo = repo
     end
