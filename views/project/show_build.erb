@@ -38,6 +38,28 @@
         </table>
       </div>
 
+      <div class="panel panel-default">
+        <div class="panel-heading">Docker Build</div>
+        <table class="table">
+          <tbody>
+            <% @build.docker_builds.each do |build| %>
+              <tr>
+                <td width="10">
+                  <% if build.success? %>
+                    <span class="glyphicon glyphicon-ok text-success"></span>
+                  <% else %>
+                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                  <% end %>
+                </td>
+
+                <td>
+                  <a href="<%= build.build_url %>"><code><%= build.image_id %></code></a>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </div>

@@ -1,5 +1,6 @@
 require 'starfish/status_check'
 require 'starfish/build_status'
+require 'starfish/docker_build'
 
 module Starfish
   class Build
@@ -12,7 +13,7 @@ module Starfish
     include Comparable
 
     attr_reader :id, :number, :author, :commits, :status_checks, :pipeline, :approved_by
-    attr_accessor :pull_request
+    attr_accessor :pull_request, :docker_builds
 
     def initialize(id:, number:, author:, commits:, pipeline:)
       @id = id
@@ -22,6 +23,7 @@ module Starfish
       @pipeline = pipeline
       @approved_by = nil
       @status_checks = []
+      @docker_builds = []
     end
 
     def sha
@@ -77,6 +79,10 @@ module Starfish
           end
         end
       end
+    end
+
+    def add_docker_build(**options)
+      @docker_builds << DockerBuild.new(**options)
     end
 
     def status
