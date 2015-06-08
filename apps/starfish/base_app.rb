@@ -63,6 +63,8 @@ module Starfish
     end
 
     error NotFound do
+      status 404
+
       "Page not found"
     end
   end
