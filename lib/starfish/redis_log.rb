@@ -10,11 +10,11 @@ module Starfish
     end
 
     def write(event)
-      @redis.rpush(@key, Marshal.dump(event))
+      @redis.rpush(@key, event)
     end
 
     def events
-      @redis.lrange(@key, 0, -1).map {|data| Marshal.load(data) }
+      @redis.lrange(@key, 0, -1)
     end
 
     def empty?

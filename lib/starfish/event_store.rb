@@ -18,7 +18,7 @@ module Starfish
 
       event = Event.new(event_name, Time.now, data)
 
-      @log.write(event)
+      @log.write(Marshal.dump(event))
       $stderr.puts "Stored event #{event_name}:\n#{data.inspect}"
 
       changed
@@ -31,9 +31,9 @@ module Starfish
 
     def replay!
       @replay_mode = true
-      @log.events.each do |event|
+      @log.events.each do |data|
         changed
-        notify_observers(event)
+        notify_observers(Marshal.load(data))
       end
     ensure
       @replay_mode = false
