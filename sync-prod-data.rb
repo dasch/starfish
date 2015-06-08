@@ -1,6 +1,6 @@
 require 'redis'
 
-key = "starfish.events.v2"
+key = "starfish.events.v3"
 production_redis = Redis.new(url: ENV["PRODUCTION_REDIS_URL"])
 data = production_redis.dump(key)
 
