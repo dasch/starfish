@@ -52,10 +52,12 @@ map("/webhooks/github") { run Starfish::GithubWebhookApp }
 map("/webhooks/shipway") { run Starfish::ShipwayWebhookApp }
 
 map("/projects") do
-  use Starfish::ProjectApp
-  use Starfish::PipelineApp
-  use Starfish::BuildApp
-  run Starfish::ChannelApp
+  run Rack::Cascade.new([
+    Starfish::ProjectApp,
+    Starfish::PipelineApp,
+    Starfish::BuildApp,
+    Starfish::ChannelApp
+  ])
 end
 
 map("/") { run ->(env) { [301, { "Location" => "/projects" }, []] } }
