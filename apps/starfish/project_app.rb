@@ -5,10 +5,6 @@ require 'starfish/build_app'
 
 module Starfish
   class ProjectApp < BaseApp
-    use ChannelApp
-    use PipelineApp
-    use BuildApp
-
     get '/' do
       @project = @projects.first
       redirect @project ? project_path(@project) : setup_path
