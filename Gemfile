@@ -11,6 +11,7 @@ gem 'octokit'
 gem 'redis'
 gem 'omniauth-flowdock'
 gem 'httparty'
+gem 'snappy'
 
 group :development, :test do
   gem 'rspec', '~> 3.2.0'
