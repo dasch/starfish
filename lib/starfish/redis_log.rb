@@ -5,9 +5,9 @@ module Starfish
   class RedisLog
     DEFAULT_REDIS_KEY = "starfish.events.v3"
 
-    def initialize(key: DEFAULT_REDIS_KEY, compress: true)
+    def initialize(key: DEFAULT_REDIS_KEY, compress: true, redis: Redis.new)
       @key = key
-      @redis = Redis.new
+      @redis = redis
       @compress = compress
     end
 
