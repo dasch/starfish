@@ -15,6 +15,9 @@ RUN gem install bundler
 RUN mkdir /app
 WORKDIR /app
 
+# Snappy dependencies.
+RUN apt-get install -y --force-yes libsnappy1 libsnappy-dev
+
 ADD Gemfile /app/Gemfile
 ADD Gemfile.lock /app/Gemfile.lock
 RUN bundle install --deployment
