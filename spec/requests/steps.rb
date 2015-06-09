@@ -29,6 +29,17 @@ module Steps
     expect(last_response.status).to eq 200
   end
 
+  def receive_github_status_event(project:)
+    json = read_fixture("github_status_event.json")
+
+    post "/webhooks/github/skynet", json, {
+      "HTTP_X_GITHUB_DELIVERY" => "23r9fjfsda-0e98-11e5-8696-65a2b4ca4938",
+      "HTTP_X_GITHUB_EVENT" => "status",
+    }
+
+    expect(last_response.status).to eq 200
+  end
+
   def sign_in_with_github
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({
       provider: 'github',
