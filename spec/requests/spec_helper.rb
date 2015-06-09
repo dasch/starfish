@@ -16,6 +16,7 @@ RSpec.configure do |config|
 
   config.after do
     $events.clear
+    $repo.clear
   end
 
   def app

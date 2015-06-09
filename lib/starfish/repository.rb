@@ -9,6 +9,10 @@ module Starfish
       @projects = []
     end
 
+    def clear
+      @projects.clear
+    end
+
     def add_project(**options)
       project = Project.new(**options)
       @projects << project
