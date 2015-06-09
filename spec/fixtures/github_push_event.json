@@ -30,11 +30,11 @@
     }
   ],
   "head_commit": {
-    "id": "3767424ecf0580aedb5ebfb212cb2e8a26bb77bf",
+    "id": "84dcef18aa7d73547628436c4040e1582484e6fb",
     "distinct": true,
-    "message": "Extract request spec steps",
-    "timestamp": "2015-06-09T13:12:33+02:00",
-    "url": "https://github.com/luke/deathstar/commit/3767424ecf0580aedb5ebfb212cb2e8a26bb77bf",
+    "message": "Add ventilation channel",
+    "timestamp": "2015-06-09T11:59:37+02:00",
+    "url": "https://github.com/luke/deathstar/commit/84dcef18aa7d73547628436c4040e1582484e6fb",
     "author": {
       "name": "Luke Skywalker",
       "email": "luke@example.com",
