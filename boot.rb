@@ -8,7 +8,7 @@ require 'starfish/flowdock_subscriber'
 require 'starfish/notification_subscriber'
 require 'starfish/release_subscriber'
 
-$stderr.puts "=== Booting ==="
+$logger.info "=== Booting ==="
 
 $repo = Starfish::Repository.new
 

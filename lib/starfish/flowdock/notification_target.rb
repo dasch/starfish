@@ -61,9 +61,9 @@ module Starfish
         response = Flowdock::Client.post("/messages", body: payload)
 
         if response.success?
-          $stderr.puts "Sent Flowdock notification"
+          $logger.info "Sent Flowdock notification"
         else
-          $stderr.puts "Failed to send Flowdock notification:\n#{response}"
+          $logger.error "Failed to send Flowdock notification:\n#{response}"
         end
       end
     end

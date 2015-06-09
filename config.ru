@@ -9,6 +9,7 @@ require 'omniauth/strategies/github'
 require 'omniauth/strategies/flowdock'
 
 Dotenv.load
+Dotenv.load(".env.test") if ENV["RACK_ENV"] == "test"
 
 require 'starfish/setup_app'
 require 'starfish/project_app'
@@ -24,6 +25,8 @@ if ENV["RACK_ENV"] == "development"
     use Rack::MiniProfiler
   end
 end
+
+$logger = Logger.new(ENV["LOG_FILE"] || $stderr)
 
 require './boot'
 

@@ -21,7 +21,7 @@ module Starfish
         repo: data[:repo]
       )
 
-      $stderr.puts "Added project #{project}"
+      $logger.info "Added project #{project}"
     end
 
     def build_approved(timestamp, data)
@@ -41,7 +41,7 @@ module Starfish
         branch: data[:branch]
       )
 
-      $stderr.puts "Added pipeline #{pipeline}"
+      $logger.info "Added pipeline #{pipeline}"
     end
 
     def channel_added(timestamp, data)
@@ -54,7 +54,7 @@ module Starfish
         auto_release_builds: data[:auto_release_builds]
       )
 
-      $stderr.puts "Added channel #{channel}"
+      $logger.info "Added channel #{channel}"
     end
 
     def channel_settings_updated(timestamp, data)
