@@ -28,7 +28,18 @@ module Steps
   end
 
   def stub_github_webhook_api
-    stub_request(:post, "https://api.github.com/repos/dasch/dummy/hooks")
+    stub_request(:post, "https://api.github.com/repos/luke/deathstar/hooks")
+  end
+
+  def receive_github_push_event(project:)
+    json = read_fixture("github_push_event.json")
+
+    post "/webhooks/github/skynet", json, {
+      "HTTP_X_GITHUB_DELIVERY" => "7aa32c00-0e98-11e5-8696-65a2b4ca4938",
+      "HTTP_X_GITHUB_EVENT" => "push",
+    }
+
+    expect(last_response.status).to eq 200
   end
 end
 
@@ -65,5 +76,9 @@ RSpec.configure do |config|
 
     get '/auth/github/callback'
     follow_redirect!
+  end
+
+  def read_fixture(filename)
+    File.read(File.join("spec", "fixtures", filename))
   end
 end

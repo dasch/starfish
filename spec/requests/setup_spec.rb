@@ -6,19 +6,19 @@ describe "Project Setup" do
   end
 
   example "setting up a project" do
-    create_project name: "Skynet", repo: "dasch/dummy"
+    create_project name: "Skynet", repo: "luke/deathstar"
 
     expect(last_request.url).to eq "http://example.org/projects/skynet"
   end
 
   example "adding a pipeline" do
-    create_project name: "Skynet", repo: "dasch/dummy"
+    create_project name: "Skynet", repo: "luke/deathstar"
     create_pipeline project: "skynet", pipeline_name: "Production", pipeline_branch: "master"
     expect(last_request.url).to eq "http://example.org/projects/skynet/production"
   end
 
   example "adding a channel" do
-    create_project name: "Skynet", repo: "dasch/dummy"
+    create_project name: "Skynet", repo: "luke/deathstar"
     create_pipeline project: "skynet", pipeline_name: "Production", pipeline_branch: "master"
 
     create_channel(
