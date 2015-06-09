@@ -19,7 +19,7 @@ module Starfish
       event = Event.new(event_name, Time.now, data)
 
       @log.write(Marshal.dump(event))
-      $stderr.puts "Stored event #{event_name}:\n#{data.inspect}"
+      $logger.info "Stored event #{event_name}:\n#{data.inspect}"
 
       changed
       notify_observers(event)

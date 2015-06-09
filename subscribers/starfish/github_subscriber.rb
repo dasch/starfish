@@ -11,7 +11,7 @@ module Starfish
         project_id = event.data[:project_id]
 
         if @handled_events[project_id].include?(event_id)
-          $stderr.puts "Already handled GitHub event #{event_id}"
+          $logger.warn "Already handled GitHub event #{event_id}"
         else
           send(event.name, event.timestamp, event.data)
           @handled_events[project_id].add(event_id)

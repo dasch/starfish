@@ -47,7 +47,7 @@ module Starfish
         event: AutomaticReleaseEvent.new(build: build)
       )
 
-      $stderr.puts "Automatically added release #{release}"
+      $logger.info "Automatically added release #{release}"
     end
 
     def build_released(timestamp, data)
@@ -67,7 +67,7 @@ module Starfish
         event: ManualReleaseEvent.new(build: build)
       )
 
-      $stderr.puts "Added release #{release}"
+      $logger.info "Added release #{release}"
     end
 
     def rolled_back_to_release(timestamp, data)
@@ -85,7 +85,7 @@ module Starfish
         event: RollbackEvent.new(target_release: target_release)
       )
 
-      $stderr.puts "Added release #{release}"
+      $logger.info "Added release #{release}"
     end
   end
 end
