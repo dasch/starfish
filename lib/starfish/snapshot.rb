@@ -1,4 +1,5 @@
 require 'starfish/repository'
+require 'snappy'
 
 module Starfish
   class Snapshot
@@ -13,7 +14,7 @@ module Starfish
 
     def save
       redis = Redis.new
-      redis.set(REDIS_KEY, Marshal.dump(self))
+      redis.set(REDIS_KEY, Snappy.deflate(Marshal.dump(self)))
 
       $logger.info "Saved snapshot at offset #{offset}"
     end
@@ -26,7 +27,7 @@ module Starfish
       redis = Redis.new
 
       if data = redis.get(REDIS_KEY)
-        snapshot = Marshal.load(data)
+        snapshot = Marshal.load(Snappy.inflate(data))
         $logger.info "Loading snapshot at offset #{snapshot.offset}"
         snapshot
       else
