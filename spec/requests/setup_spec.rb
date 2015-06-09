@@ -25,7 +25,6 @@ describe "Project Setup" do
 
   def create_pipeline(project:, **params)
     post "/projects/#{project}/pipelines", params
-    expect(last_response.body).to eq ""
     follow_redirect!
   end
 
