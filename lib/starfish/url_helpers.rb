@@ -1,5 +1,9 @@
 module Starfish
   module UrlHelpers
+    def current_path
+      request.fullpath
+    end
+
     def setup_path
       "/setup"
     end

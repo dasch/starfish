@@ -11,12 +11,12 @@
   <ol class="breadcrumb">
     <li><a href="<%= builds_path(@pipeline) %>">Builds</a></li>
     <li><a href="<%= build_path(@build) %>">Build <%= @build %></a></li>
-    <li class="active"><%= nav_items.fetch(env["REQUEST_PATH"]) %></li>
+    <li class="active"><%= nav_items.fetch(current_path) %></li>
   </ol>
 
   <ul class="nav nav-tabs" style="padding-left:10px;">
     <% nav_items.each do |path, title| %>
-      <li role="presentation"<%= ' class="active"' if path == env["REQUEST_PATH"] %>><a href="<%= path %>"><%= title %></a></li>
+      <li role="presentation"<%= ' class="active"' if path == current_path %>><a href="<%= path %>"><%= title %></a></li>
     <% end %>
   </ul>
 

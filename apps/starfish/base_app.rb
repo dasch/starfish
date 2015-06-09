@@ -38,12 +38,12 @@ module Starfish
           "Settings"      => pipeline_settings_path(pipeline),
         }
 
-        current_path = items.values.
-          select {|path| env["REQUEST_PATH"].start_with?(path) }.
+        active_path = items.values.
+          select {|path| current_path.start_with?(path) }.
           max_by(&:length)
 
         items.map do |title, path|
-          [title, path, path == current_path]
+          [title, path, path == active_path]
         end
       end
 
