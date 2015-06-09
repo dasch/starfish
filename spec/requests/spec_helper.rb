@@ -11,8 +11,34 @@ OmniAuth.config.test_mode = true
 
 APP_UNDER_TEST = Rack::Builder.parse_file('config.ru').first
 
+module Steps
+  def create_project(**params)
+    post "/setup", params
+    follow_redirect!
+  end
+
+  def create_pipeline(project:, **params)
+    post "/projects/#{project}/pipelines", params
+    follow_redirect!
+  end
+
+  def create_channel(project:, pipeline:, **params)
+    post "/projects/#{project}/#{pipeline}/channels", params
+    follow_redirect!
+  end
+
+  def stub_github_webhook_api
+    stub_request(:post, "https://api.github.com/repos/dasch/dummy/hooks")
+  end
+end
+
 RSpec.configure do |config|
   config.include Rack::Test::Methods
+  config.include Steps
+
+  config.before do
+    stub_github_webhook_api
+  end
 
   config.after do
     $events.clear
