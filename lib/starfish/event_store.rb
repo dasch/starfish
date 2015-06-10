@@ -1,28 +1,55 @@
 require 'observer'
+require 'starfish/redis_log'
 
 module Starfish
   class EventStore
     include Observable
 
     Event = Struct.new(:name, :timestamp, :data)
+    ConcurrentWriteError = Class.new(StandardError)
+
+    class VersionedEvents
+      def initialize(version, event_store)
+        @version, @event_store = version, event_store
+      end
+
+      def record(event_name, **data)
+        @event_store.record(event_name, if_version_equals: @version, **data)
+      end
+    end
 
     attr_reader :log
 
-    def initialize(log:)
+    def initialize(log: RedisLog.new)
       @log = log
       @replay_mode = false
     end
 
-    def record(event_name, data = {})
+    def record(event_name, if_version_equals: nil, **data)
       return if @replay_mode
 
       event = Event.new(event_name, Time.now, data)
 
-      @log.write(Marshal.dump(event))
-      $logger.info "Stored event #{event_name}:\n#{data.inspect}"
+      if @log.write(Marshal.dump(event), if_size_equals: if_version_equals)
+        $logger.info "Stored event #{event_name}:\n#{data.inspect}"
+      else
+        raise ConcurrentWriteError
+      end
 
       changed
       notify_observers(event)
+    end
+
+    def version
+      @log.size
+    end
+
+    def atomically
+      yield VersionedEvents.new(version, self)
+    end
+
+    def events
+      @log.events.map {|data| Marshal.load(data) }
     end
 
     def empty?
@@ -31,9 +58,9 @@ module Starfish
 
     def replay!
       @replay_mode = true
-      @log.events.each do |data|
+      events.each do |event|
         changed
-        notify_observers(Marshal.load(data))
+        notify_observers(event)
       end
     ensure
       @replay_mode = false

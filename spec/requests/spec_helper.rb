@@ -1,5 +1,4 @@
 ENV["RACK_ENV"] = "test"
-ENV["STARFISH_EVENTS_KEY"] = "starfish.test.events"
 
 require 'bundler/setup'
 require 'byebug'

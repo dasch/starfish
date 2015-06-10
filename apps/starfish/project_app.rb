@@ -26,21 +26,22 @@ module Starfish
 
       post '/pipelines' do
         branch = params[:pipeline_branch]
-
-        if @project.has_pipeline_for_branch?(branch)
-          pipeline = @project.find_pipeline_by_branch(branch)
-          flash "Branch <code>#{branch}</code> has already been assigned to the #{pipeline} pipeline"
-          redirect pipelines_path(@project)
-        end
-
         id = SecureRandom.uuid
 
-        $events.record(:pipeline_added, {
-          id: id,
-          name: params[:pipeline_name],
-          branch: params[:pipeline_branch],
-          project_id: @project.id
-        })
+        $events.atomically do |events|
+          if @project.has_pipeline_for_branch?(branch)
+            pipeline = @project.find_pipeline_by_branch(branch)
+            flash "Branch <code>#{branch}</code> has already been assigned to the #{pipeline} pipeline"
+            redirect pipelines_path(@project)
+          end
+
+          events.record(:pipeline_added, {
+            id: id,
+            name: params[:pipeline_name],
+            branch: params[:pipeline_branch],
+            project_id: @project.id
+          })
+        end
 
         @pipeline = @project.find_pipeline(id)
 
