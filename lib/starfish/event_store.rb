@@ -8,6 +8,16 @@ module Starfish
     Event = Struct.new(:name, :timestamp, :data)
     ConcurrentWriteError = Class.new(StandardError)
 
+    class VersionedEvents
+      def initialize(version, event_store)
+        @version, @event_store = version, event_store
+      end
+
+      def record(event_name, **data)
+        @event_store.record(event_name, if_version_equals: @version, **data)
+      end
+    end
+
     attr_reader :log
 
     def initialize(log: RedisLog.new)
@@ -32,6 +42,10 @@ module Starfish
 
     def version
       @log.size
+    end
+
+    def atomically
+      yield VersionedEvents.new(version, self)
     end
 
     def events
