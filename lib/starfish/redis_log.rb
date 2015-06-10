@@ -3,7 +3,7 @@ require 'snappy'
 
 module Starfish
   class RedisLog
-    DEFAULT_KEY = ENV.fetch("STARFISH_EVENTS_KEY")
+    DEFAULT_KEY = ENV.fetch("STARFISH_EVENTS_KEY", "starfish.events")
 
     def initialize(key: DEFAULT_KEY, compress: true, redis: Redis.new)
       @key = key
@@ -11,8 +11,18 @@ module Starfish
       @compress = compress
     end
 
-    def write(data)
-      @redis.rpush(@key, compress(data))
+    def write(data, if_size_equals: nil)
+      @redis.watch(@key) unless if_size_equals.nil?
+
+      if if_size_equals != nil && if_size_equals != size
+        return nil
+      end
+
+      result = @redis.multi {|transaction|
+        transaction.rpush(@key, compress(data))
+      }
+
+      true
     end
 
     def events

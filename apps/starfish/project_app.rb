@@ -25,6 +25,8 @@ module Starfish
       end
 
       post '/pipelines' do
+        version = $events.version
+
         branch = params[:pipeline_branch]
 
         if @project.has_pipeline_for_branch?(branch)
@@ -35,12 +37,13 @@ module Starfish
 
         id = SecureRandom.uuid
 
-        $events.record(:pipeline_added, {
+        $events.record(:pipeline_added,
+          if_version_equals: version,
           id: id,
           name: params[:pipeline_name],
           branch: params[:pipeline_branch],
           project_id: @project.id
-        })
+        )
 
         @pipeline = @project.find_pipeline(id)
 
