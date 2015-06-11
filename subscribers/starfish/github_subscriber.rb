@@ -19,54 +19,42 @@ module Starfish
       end
     end
 
-    def github_push_received(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      payload = data[:payload]
-      branch = payload["ref"].scan(%r(refs/heads/(.+))).flatten.first
+    def build_added(timestamp, data)
+      project = @repo.find_project(data.fetch(:project_id))
+      branch = data.fetch(:branch)
 
-      return if payload["commits"].empty?
+      pipeline = project.find_pipeline_by_branch(branch)
 
-      if project.has_pipeline_for_branch?(branch)
-        pipeline = project.find_pipeline_by_branch(branch)
-
-        commits = payload["commits"].map {|data|
-          author = User.new(
-            name: data["author"]["name"],
-            username: data["author"]["username"]
-          )
-
-          Commit.new(
-            sha: data["id"],
-            author: author,
-            message: data["message"],
-            added: data["added"],
-            removed: data["removed"],
-            modified: data["modified"],
-            url: data["url"]
-          )
-        }
-
+      commits = data[:commits].map {|data|
         author = User.new(
-          username: payload["sender"]["login"],
-          avatar_url: payload["sender"]["avatar_url"],
+          name: data[:author][:name],
+          username: data[:author][:username]
         )
 
-        build = pipeline.add_build(
-          id: SecureRandom.uuid,
-          commits: commits,
-          author: author
+        Commit.new(
+          sha: data[:id],
+          author: author,
+          message: data[:message],
+          added: data[:added],
+          removed: data[:removed],
+          modified: data[:modified],
+          url: data[:url]
         )
+      }
 
-        if payload["head_commit"]["message"] =~ /Merge pull request #(\d+) from/
-          build.pull_request = pipeline.find_pull_request($1.to_i) rescue nil
-        end
+      author = User.new(
+        username: data[:username],
+        avatar_url: data[:avatar_url]
+      )
 
-        $events.record(:build_pushed, {
-          id: build.id,
-          build_number: build.number,
-          project_id: project.id,
-          pipeline_id: pipeline.id,
-        })
+      build = pipeline.add_build(
+        id: SecureRandom.uuid,
+        commits: commits,
+        author: author
+      )
+
+      if data[:commits].last[:message] =~ /Merge pull request #(\d+) from/
+        build.pull_request = pipeline.find_pull_request($1.to_i) rescue nil
       end
     end
 

@@ -29,15 +29,14 @@ module Starfish
     end
 
     post '/' do
-      id = SecureRandom.uuid
+      aggregate = ProjectAggregate.create
 
-      $events.record(:project_added, {
-        id: id,
+      aggregate.add_project(
         name: params[:name],
-        repo: params[:repo]
-      })
+        repository: params[:repo]
+      )
 
-      @project = $repo.find_project(id)
+      @project = $repo.find_project(aggregate.id)
 
       begin
         @github.create_hook(@project.repo, "web", {

@@ -1,10 +1,9 @@
 require 'observer'
+require 'starfish/event'
 
 module Starfish
   class EventStore
     include Observable
-
-    Event = Struct.new(:name, :event_id, :entity_id, :timestamp, :data)
 
     attr_reader :log
 
@@ -13,13 +12,13 @@ module Starfish
       @replay_mode = false
     end
 
-    def record(event_name, event_id: SecureRandom.uuid, entity_id: nil, **data)
+    def record(event_name, aggregate_id:, **data)
       return if @replay_mode
 
-      event = Event.new(event_name, event_id, entity_id, Time.now, data)
+      event = Event.create(event_name, aggregate_id: aggregate_id, data: data)
 
       @log.write(Marshal.dump(event))
-      $logger.info "Stored event #{event_name}:\n#{data.inspect}"
+      $logger.info "Stored event #{event.name}:\n#{data.inspect}"
 
       changed
       notify_observers(event)
