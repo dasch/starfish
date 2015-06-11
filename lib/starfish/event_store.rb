@@ -4,7 +4,7 @@ module Starfish
   class EventStore
     include Observable
 
-    Event = Struct.new(:name, :timestamp, :data)
+    Event = Struct.new(:name, :event_id, :entity_id, :timestamp, :data)
 
     attr_reader :log
 
@@ -13,10 +13,10 @@ module Starfish
       @replay_mode = false
     end
 
-    def record(event_name, data = {})
+    def record(event_name, event_id: SecureRandom.uuid, entity_id: nil, **data)
       return if @replay_mode
 
-      event = Event.new(event_name, Time.now, data)
+      event = Event.new(event_name, event_id, entity_id, Time.now, data)
 
       @log.write(Marshal.dump(event))
       $logger.info "Stored event #{event_name}:\n#{data.inspect}"

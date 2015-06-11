@@ -13,11 +13,12 @@ module Starfish
       payload = JSON.parse(request.body.read)
 
       unless event == "ping"
-        $events.record(:"github_#{event}_received", {
+        $events.record(:"github_#{event}_received",
           event_id: event_id,
+          entity_id: project.id,
           project_id: project.id,
           payload: payload
-        })
+        )
       end
 
       status 200
