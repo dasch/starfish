@@ -78,24 +78,30 @@ module Starfish
       case payload["action"]
       when "opened"
         target_branch = pr["base"]["ref"]
-        pipeline = project.find_pipeline_by_branch(target_branch)
 
-        author = User.new(
-          username: pr["user"]["login"],
-          avatar_url: pr["user"]["avatar_url"]
-        )
+        if project.has_pipeline_for_branch?(target_branch)
+          pipeline = project.find_pipeline_by_branch(target_branch)
 
-        pipeline.add_pull_request(
-          number: pr["number"],
-          title: pr["title"],
-          author: author
-        )
+          author = User.new(
+            username: pr["user"]["login"],
+            avatar_url: pr["user"]["avatar_url"]
+          )
+
+          pipeline.add_pull_request(
+            number: pr["number"],
+            title: pr["title"],
+            author: author
+          )
+        end
       when "closed"
         target_branch = pr["base"]["ref"]
-        pipeline = project.find_pipeline_by_branch(target_branch)
 
-        if pull_request = pipeline.find_pull_request(pr["number"]) rescue nil
-          pull_request.close!
+        if project.has_pipeline_for_branch?(target_branch)
+          pipeline = project.find_pipeline_by_branch(target_branch)
+
+          if pull_request = pipeline.find_pull_request(pr["number"]) rescue nil
+            pull_request.close!
+          end
         end
       end
     end
