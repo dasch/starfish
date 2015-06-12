@@ -27,7 +27,7 @@ module Starfish
     def build_approved(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
-      build = pipeline.find_build(number: data[:build_number])
+      build = pipeline.find_build_by_number(data[:build_number])
 
       build.approve!(user: data[:approved_by])
     end
