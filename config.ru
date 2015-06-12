@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
 $LOAD_PATH.unshift(File.expand_path("../apps", __FILE__))
 $LOAD_PATH.unshift(File.expand_path("../subscribers", __FILE__))
+$LOAD_PATH.unshift(File.expand_path("../aggregates", __FILE__))
 
 require 'bundler/setup'
 require 'dotenv'

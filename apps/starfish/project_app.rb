@@ -25,24 +25,14 @@ module Starfish
       end
 
       post '/pipelines' do
-        branch = params[:pipeline_branch]
+        aggregate = ProjectAggregate.find(@project.id)
 
-        if @project.has_pipeline_for_branch?(branch)
-          pipeline = @project.find_pipeline_by_branch(branch)
-          flash "Branch <code>#{branch}</code> has already been assigned to the #{pipeline} pipeline"
-          redirect pipelines_path(@project)
-        end
-
-        id = SecureRandom.uuid
-
-        $events.record(:pipeline_added, {
-          id: id,
+        pipeline_id = aggregate.add_pipeline(
           name: params[:pipeline_name],
-          branch: params[:pipeline_branch],
-          project_id: @project.id
-        })
+          branch: params[:pipeline_branch]
+        )
 
-        @pipeline = @project.find_pipeline(id)
+        @pipeline = @project.find_pipeline(pipeline_id)
 
         redirect pipeline_path(@pipeline)
       end

@@ -84,13 +84,13 @@ module Starfish
       end
 
       post '/channels' do
-        $events.record(:channel_added, {
-          id: SecureRandom.uuid,
+        aggregate = ProjectAggregate.find(@project.id)
+
+        aggregate.add_channel(
           name: params[:channel_name],
           auto_release_builds: params[:channel_auto_release] == "1",
-          project_id: @project.id,
           pipeline_id: @pipeline.id
-        })
+        )
 
         redirect channels_path(@pipeline)
       end

@@ -29,13 +29,12 @@ module Starfish
     end
 
     post '/' do
-      id = SecureRandom.uuid
+      aggregate = ProjectAggregate.new
 
-      $events.record(:project_added, {
-        id: id,
+      id = aggregate.add_project(
         name: params[:name],
         repo: params[:repo]
-      })
+      )
 
       @project = $repo.find_project(id)
 
