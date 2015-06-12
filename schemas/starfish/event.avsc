@@ -1,0 +1,10 @@
+{
+  "name": "event",
+  "namespace": "starfish",
+  "type": "record",
+  "fields": [
+    { "name": "name", "type": "string" },
+    { "name": "timestamp", "type": "long" },
+    { "name": "data", "type": "bytes" }
+  ]
+}

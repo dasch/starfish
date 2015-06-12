@@ -12,6 +12,7 @@ gem 'redis'
 gem 'omniauth-flowdock'
 gem 'httparty'
 gem 'snappy'
+gem 'avro_turf'
 
 group :development, :test do
   gem 'rspec', '~> 3.2.0'
