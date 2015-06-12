@@ -67,7 +67,7 @@ module Starfish
       end
 
       post '/builds/approvals' do
-        @build = @pipeline.find_build(number: params[:build_number].to_i)
+        @build = @pipeline.find_build_by_number(params[:build_number].to_i)
 
         $events.record(:build_approved, {
           project_id: @project.id,

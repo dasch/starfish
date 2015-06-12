@@ -21,13 +21,16 @@ module Starfish
     end
 
     def add_build(**options)
-      number = @builds.count + 1
-      build = Build.new(**options.merge(pipeline: self, number: number))
+      build = Build.new(**options.merge(pipeline: self))
       @builds << build
       build
     end
 
-    def find_build(number:)
+    def find_build(id)
+      @builds.find {|b| b.id == id } or raise NotFound
+    end
+
+    def find_build_by_number(number)
       @builds.find {|b| b.number == number } or raise NotFound
     end
 

@@ -46,7 +46,7 @@ module Starfish
       post '/releases' do
         @channel = @pipeline.find_channel_by_slug(params[:channel])
 
-        build = @pipeline.find_build(number: params[:build].to_i) or halt(404)
+        build = @pipeline.find_build_by_number(params[:build].to_i) or halt(404)
         config = @channel.current_config
 
         $events.record(:build_released, {

@@ -12,7 +12,7 @@ module Starfish
       before do
         @project = $repo.find_project_by_slug(params[:project])
         @pipeline = @project.find_pipeline_by_slug(params[:pipeline])
-        @build = @pipeline.find_build(number: params[:build].to_i)
+        @build = @pipeline.find_build_by_number(params[:build].to_i)
       end
 
       get '' do

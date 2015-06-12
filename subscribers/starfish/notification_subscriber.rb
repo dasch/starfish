@@ -13,7 +13,7 @@ module Starfish
     def build_pushed(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
-      build = pipeline.find_build(number: data[:build_number])
+      build = pipeline.find_build(data[:id])
 
       notify(pipeline, :build_added, build: build)
     end

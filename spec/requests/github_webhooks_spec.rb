@@ -20,8 +20,19 @@ describe "Builds" do
 
     project = $repo.find_project_by_slug("skynet")
     pipeline = project.find_pipeline_by_slug("production")
-    build = pipeline.find_build(number: 1)
+    build = pipeline.find_build_by_number(1)
 
     expect(build.status).to be_ok
+  end
+
+  example "receiving a GitHub pull request opened event" do
+    receive_github_push_event(project: "skynet")
+    receive_github_status_event(project: "skynet")
+    receive_github_pull_request_opened_event(project: "skynet")
+
+    project = $repo.find_project_by_slug("skynet")
+    pipeline = project.find_pipeline_by_slug("production")
+
+    expect(pipeline.pull_requests.last.title).to eq "Improve ventilation"
   end
 end

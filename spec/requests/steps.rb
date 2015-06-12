@@ -29,6 +29,17 @@ module Steps
     expect(last_response.status).to eq 200
   end
 
+  def receive_github_pull_request_opened_event(project:)
+    json = read_fixture("github_pull_request_opened_event.json")
+
+    post "/webhooks/github/skynet", json, {
+      "HTTP_X_GITHUB_DELIVERY" => "7aa32c00-3e98-11e5-7696-65a2b4ca4938",
+      "HTTP_X_GITHUB_EVENT" => "pull_request",
+    }
+
+    expect(last_response.status).to eq 200
+  end
+
   def receive_github_status_event(project:)
     json = read_fixture("github_status_event.json")
 

@@ -10,12 +10,9 @@ module Starfish
 
     def initialize(log:)
       @log = log
-      @replay_mode = false
     end
 
     def record(event_name, data = {})
-      return if @replay_mode
-
       event = Event.new(event_name, Time.now, data)
 
       @log.write(Marshal.dump(event))
@@ -30,13 +27,10 @@ module Starfish
     end
 
     def replay!
-      @replay_mode = true
       @log.events.each do |data|
         changed
         notify_observers(Marshal.load(data))
       end
-    ensure
-      @replay_mode = false
     end
 
     def clear

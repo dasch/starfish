@@ -10,32 +10,12 @@ module Starfish
       end
     end
 
-    def build_pushed(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      build = pipeline.find_build(number: data[:build_number])
-
-      pipeline.channels.each do |channel|
-        if channel.auto_release_builds?
-          $events.record(:build_automatically_released, {
-            id: SecureRandom.uuid,
-            build_number: build.number,
-            config_version: channel.current_config.version,
-            author: build.author,
-            project_id: project.id,
-            pipeline_id: pipeline.id,
-            channel_id: channel.id
-          })
-        end
-      end
-    end
-
     def build_automatically_released(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])
 
-      build = pipeline.find_build(number: data[:build_number])
+      build = pipeline.find_build_by_number(data[:build_number])
       config = channel.find_config(version: data[:config_version])
       author = data[:author]
 
@@ -55,7 +35,7 @@ module Starfish
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])
 
-      build = pipeline.find_build(number: data[:build_number])
+      build = pipeline.find_build_by_number(data[:build_number])
       config = channel.find_config(version: data[:config_version])
       author = data[:author]
 
