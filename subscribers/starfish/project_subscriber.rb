@@ -10,15 +10,15 @@ module Starfish
 
     def update(event)
       if respond_to?(event.name)
-        send(event.name, event.timestamp, event.data)
+        send(event.name, event)
       end
     end
 
-    def project_added(timestamp, data)
+    def project_added(event)
       project = @repo.add_project(
-        id: data[:id],
-        name: data[:name],
-        repo: data[:repo]
+        id: event.aggregate_id,
+        name: event.data[:name],
+        repo: event.data[:repo]
       )
 
       $logger.info "Added project #{project}"
@@ -32,19 +32,21 @@ module Starfish
       build.approve!(user: data[:approved_by])
     end
 
-    def pipeline_added(timestamp, data)
-      project = @repo.find_project(data[:project_id])
+    def pipeline_added(event)
+      data = event.data
+      project = @repo.find_project(event.aggregate_id)
 
       pipeline = project.add_pipeline(
-        id: data[:id],
-        name: data[:name],
-        branch: data[:branch]
+        id: data.fetch(:pipeline_id),
+        name: data.fetch(:name),
+        branch: data.fetch(:branch)
       )
 
       $logger.info "Added pipeline #{pipeline}"
     end
 
-    def channel_added(timestamp, data)
+    def channel_added(event)
+      data = event.data
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
 

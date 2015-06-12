@@ -1,16 +1,19 @@
 module Steps
   def create_project(**params)
     post "/setup", params
+    expect(last_response.status).to eq 302
     follow_redirect!
   end
 
   def create_pipeline(project:, **params)
     post "/projects/#{project}/pipelines", params
+    expect(last_response.status).to eq 302
     follow_redirect!
   end
 
   def create_channel(project:, pipeline:, **params)
     post "/projects/#{project}/#{pipeline}/channels", params
+    expect(last_response.status).to eq 302
     follow_redirect!
   end
 

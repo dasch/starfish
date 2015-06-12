@@ -29,14 +29,14 @@ module Starfish
     end
 
     post '/' do
-      aggregate = ProjectAggregate.create
+      aggregate = ProjectAggregate.new
 
-      aggregate.add_project(
+      id = aggregate.add_project(
         name: params[:name],
-        repository: params[:repo]
+        repo: params[:repo]
       )
 
-      @project = $repo.find_project(aggregate.id)
+      @project = $repo.find_project(id)
 
       begin
         @github.create_hook(@project.repo, "web", {

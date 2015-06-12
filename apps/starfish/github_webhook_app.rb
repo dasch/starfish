@@ -41,7 +41,7 @@ module Starfish
 
       branch = payload["ref"].scan(%r(refs/heads/(.+))).flatten.first
 
-      handler.add_build(
+      aggregate.add_build(
         branch: branch,
         commits: commits,
         author: author
@@ -64,8 +64,8 @@ module Starfish
       @payload ||= JSON.parse(request.body.read)
     end
 
-    def handler
-      @handler ||= ProjectHandler.find(params[:project_id])
+    def aggregate
+      @aggregate ||= ProjectAggregate.find(params[:project_id])
     end
   end
 end
