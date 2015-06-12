@@ -1,0 +1,15 @@
+{
+  "name": "github_pull_request",
+  "namespace": "starfish",
+  "type": "record",
+  "fields": [
+    { "name": "number", "type": "long" },
+    { "name": "state", "type": "string" },
+    { "name": "author", "type": "starfish.author" },
+    { "name": "title", "type": "string" },
+    { "name": "body", "type": "string" },
+    { "name": "created_at", "type": "string" },
+    { "name": "head", "type": "starfish.github_ref" },
+    { "name": "base", "type": "starfish.github_ref" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "github_ref",
+  "namespace": "starfish",
+  "type": "record",
+  "fields": [
+    { "name": "label", "type": "string" },
+    { "name": "ref", "type": "string" },
+    { "name": "sha", "type": "string" }
+  ]
+}

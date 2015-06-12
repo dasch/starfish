@@ -1,0 +1,12 @@
+{
+  "name": "github_status",
+  "namespace": "starfish",
+  "type": "record",
+  "fields": [
+    { "name": "state", "type": "string" },
+    { "name": "context", "type": "string" },
+    { "name": "description", "type": "string" },
+    { "name": "url", "type": "string" },
+    { "name": "timestamp", "type": "string" }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "commit",
+  "namespace": "starfish",
+  "type": "record",
+  "fields": [
+    { "name": "sha", "type": "string" },
+    { "name": "message", "type": "string" },
+    { "name": "url", "type": "string" },
+    { "name": "author", "type": "starfish.author" },
+    { "name": "committer", "type": "starfish.author" },
+    { "name": "added", "type": { "type": "array", "items": "string" } },
+    { "name": "removed", "type": { "type": "array", "items": "string" } },
+    { "name": "modified", "type": { "type": "array", "items": "string" } }
+  ]
+}

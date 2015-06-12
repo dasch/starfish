@@ -13,6 +13,7 @@ gem 'omniauth-flowdock'
 gem 'httparty'
 gem 'snappy'
 gem 'avro_turf'
+gem 'activesupport'
 
 group :development, :test do
   gem 'rspec', '~> 3.2.0'

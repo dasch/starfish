@@ -1,4 +1,5 @@
 require 'observer'
+require 'active_support/core_ext/hash/indifferent_access'
 require 'starfish/avro_event_serializer'
 
 module Starfish
@@ -16,12 +17,13 @@ module Starfish
 
     def record(event_name, data = {})
       event = Event.new(event_name, Time.now, data)
+      data = @serializer.serialize(event)
 
-      @log.write(@serializer.serialize(event))
+      @log.write(data)
       $logger.info "Stored event #{event_name}:\n#{data.inspect}"
 
       changed
-      notify_observers(event)
+      notify_observers(@serializer.deserialize(data))
     end
 
     def empty?
