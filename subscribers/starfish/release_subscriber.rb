@@ -89,5 +89,30 @@ module Starfish
 
       $logger.info "Added release #{release}"
     end
+
+    def config_change_released(timestamp, data)
+      config_key, config_value = data.values_at(:config_key, :config_value)
+      data = data[:release]
+      project = @repo.find_project(data[:project_id])
+      pipeline = project.find_pipeline(data[:pipeline_id])
+      channel = pipeline.find_channel(data[:channel_id])
+
+      build = pipeline.find_build_by_number(data[:build_number])
+      config = channel.find_config(version: data[:config_version])
+
+      author = User.new(
+        name: data[:author][:name],
+        username: data[:author][:username],
+        avatar_url: data[:author][:avatar_url],
+      )
+
+      channel.add_release(
+        id: data[:id],
+        build: build,
+        config: config,
+        author: author,
+        event: ConfigChangedEvent.new(key: config_key, value: config_value)
+      )
+    end
   end
 end

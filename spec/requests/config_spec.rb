@@ -22,6 +22,26 @@ describe "Config" do
       config_key: "RACK_ENV",
       config_value: "production"
     )
+
+    get "/projects/skynet/production/channels/production/releases/1"
+  end
+
+  example "automatically releasing config changes" do
+    receive_github_push_event(project: "skynet")
+
+    get "/projects/skynet/production/channels/staging/1"
+    expect(last_response.status).to eq 200
+
+    create_config_key(
+      project: "skynet",
+      pipeline: "production",
+      channel: "staging",
+      config_key: "RACK_ENV",
+      config_value: "production"
+    )
+
+    get "/projects/skynet/production/channels/staging/2"
+    expect(last_response.status).to eq 200
   end
 
   def create_config_key(project:, pipeline:, channel:, **params)
