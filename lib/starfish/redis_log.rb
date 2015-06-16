@@ -3,7 +3,8 @@ require 'snappy'
 
 module Starfish
   class RedisLog
-    DEFAULT_KEY = ENV.fetch("STARFISH_EVENTS_KEY")
+    VERSION = 5
+    DEFAULT_KEY = "#{ENV.fetch("STARFISH_EVENTS_KEY")}.v#{VERSION}"
 
     def initialize(key: DEFAULT_KEY, compress: true, redis: Redis.new)
       @key = key
