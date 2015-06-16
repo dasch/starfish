@@ -1,6 +1,6 @@
 require 'requests/spec_helper'
 
-describe "Builds" do
+describe "GitHub webhooks" do
   before do
     sign_in_with_github
     create_project name: "Skynet", repo: "luke/deathstar"

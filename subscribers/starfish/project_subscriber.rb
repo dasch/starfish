@@ -72,17 +72,6 @@ module Starfish
       channel = pipeline.find_channel(data[:channel_id])
 
       channel.add_config_key(data[:key], data[:value])
-
-      # We only want to release the config if there's a build we can release it
-      # with.
-      if channel.releases.any?
-        channel.add_release(
-          build: channel.current_build,
-          config: channel.current_config,
-          author: data[:author],
-          event: ConfigChangedEvent.new(key: data[:key], value: data[:value])
-        )
-      end
     end
   end
 end

@@ -89,7 +89,8 @@ module Starfish
           name: params[:channel_name],
           auto_release_builds: params[:channel_auto_release] == "1",
           project_id: @project.id,
-          pipeline_id: @pipeline.id
+          pipeline_id: @pipeline.id,
+          author: current_user,
         })
 
         redirect channels_path(@pipeline)

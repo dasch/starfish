@@ -1,0 +1,14 @@
+{
+  "name": "build_pushed",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "id", "type": "string" },
+    { "name": "project_id", "type": "string" },
+    { "name": "pipeline_id", "type": "string" },
+    { "name": "build_number", "type": "long" },
+    { "name": "author", "type": "starfish.author" },
+    { "name": "head_commit", "type": "starfish.commit" },
+    { "name": "commits", "type": { "type": "array", "items": "starfish.commit" } }
+  ]
+}

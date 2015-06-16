@@ -1,0 +1,9 @@
+{
+  "name": "rollback_released",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "target_release_id", "type": "string" },
+    { "name": "release", "type": "starfish.release" }
+  ]
+}

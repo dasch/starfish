@@ -1,0 +1,10 @@
+{
+  "name": "config_change_released",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "config_key", "type": "string" },
+    { "name": "config_value", "type": "string" },
+    { "name": "release", "type": "starfish.release" }
+  ]
+}

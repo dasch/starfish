@@ -9,6 +9,7 @@ require 'starfish/flowdock_subscriber'
 require 'starfish/notification_subscriber'
 require 'starfish/release_subscriber'
 require 'starfish/auto_release_subscriber'
+require 'starfish/deploy_subscriber'
 
 $logger.info "=== Booting ==="
 
@@ -26,3 +27,4 @@ $events.replay!
 
 $events.add_observer(Starfish::AutoReleaseSubscriber.new($repo))
 $events.add_observer(Starfish::NotificationSubscriber.new($repo))
+$events.add_observer(Starfish::DeploySubscriber.new($repo))

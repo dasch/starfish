@@ -1,6 +1,11 @@
+require 'starfish/avro_serialization'
+
 module Starfish
   class User
+    include AvroSerialization
+
     attr_reader :avatar_url, :username
+    attributes :name, :username, :avatar_url
 
     def initialize(name: nil, avatar_url: nil, username: nil)
       @name = name

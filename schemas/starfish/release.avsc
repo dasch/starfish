@@ -1,0 +1,14 @@
+{
+  "name": "release",
+  "namespace": "starfish",
+  "type": "record",
+  "fields": [
+    { "name": "id", "type": "string" },
+    { "name": "project_id", "type": "string" },
+    { "name": "pipeline_id", "type": "string" },
+    { "name": "channel_id", "type": "string" },
+    { "name": "build_number", "type": "long" },
+    { "name": "config_version", "type": "long" },
+    { "name": "author", "type": "starfish.author" }
+  ]
+}

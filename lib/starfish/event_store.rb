@@ -1,4 +1,6 @@
 require 'observer'
+require 'active_support/core_ext/hash/indifferent_access'
+require 'starfish/avro_event_serializer'
 
 module Starfish
   class EventStore
@@ -8,18 +10,20 @@ module Starfish
 
     attr_reader :log
 
-    def initialize(log:)
+    def initialize(log:, serializer: AvroEventSerializer.new)
       @log = log
+      @serializer = serializer
     end
 
     def record(event_name, data = {})
       event = Event.new(event_name, Time.now, data)
+      data = @serializer.serialize(event)
 
-      @log.write(Marshal.dump(event))
+      @log.write(data)
       $logger.info "Stored event #{event_name}:\n#{data.inspect}"
 
       changed
-      notify_observers(event)
+      notify_observers(@serializer.deserialize(data))
     end
 
     def empty?
@@ -29,7 +33,7 @@ module Starfish
     def replay!
       @log.events.each do |data|
         changed
-        notify_observers(Marshal.load(data))
+        notify_observers(@serializer.deserialize(data))
       end
     end
 

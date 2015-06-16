@@ -1,0 +1,11 @@
+{
+  "name": "author",
+  "namespace": "starfish",
+  "type": "record",
+  "fields": [
+    { "name": "username", "type": "string" },
+    { "name": "email", "type": ["null", "string"] },
+    { "name": "name", "type": ["null", "string"] },
+    { "name": "avatar_url", "type": ["null", "string"] }
+  ]
+}
