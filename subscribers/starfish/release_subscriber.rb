@@ -18,7 +18,12 @@ module Starfish
 
       build = pipeline.find_build_by_number(data[:build_number])
       config = channel.find_config(version: data[:config_version])
-      author = data[:author]
+
+      author = User.new(
+        name: data[:author][:name],
+        username: data[:author][:username],
+        avatar_url: data[:author][:avatar_url],
+      )
 
       release = channel.add_release(
         id: data[:id],
@@ -39,7 +44,12 @@ module Starfish
 
       build = pipeline.find_build_by_number(data[:build_number])
       config = channel.find_config(version: data[:config_version])
-      author = data[:author]
+
+      author = User.new(
+        name: data[:author][:name],
+        username: data[:author][:username],
+        avatar_url: data[:author][:avatar_url],
+      )
 
       release = channel.add_release(
         id: data[:id],
@@ -58,7 +68,12 @@ module Starfish
       channel = pipeline.find_channel(data[:channel_id])
 
       target_release = channel.find_release_by_number(data[:release_number])
-      author = data[:author]
+
+      author = User.new(
+        name: data[:author][:name],
+        username: data[:author][:username],
+        avatar_url: data[:author][:avatar_url],
+      )
 
       release = channel.add_release(
         build: target_release.build,
