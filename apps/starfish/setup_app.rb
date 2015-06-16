@@ -34,7 +34,8 @@ module Starfish
       $events.record(:project_added, {
         id: id,
         name: params[:name],
-        repo: params[:repo]
+        repo: params[:repo],
+        owner: current_user
       })
 
       @project = $repo.find_project(id)

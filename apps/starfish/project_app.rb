@@ -39,7 +39,8 @@ module Starfish
           id: id,
           name: params[:pipeline_name],
           branch: params[:pipeline_branch],
-          project_id: @project.id
+          project_id: @project.id,
+          author: current_user,
         })
 
         @pipeline = @project.find_pipeline(id)

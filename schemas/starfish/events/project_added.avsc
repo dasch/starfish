@@ -5,6 +5,7 @@
   "fields": [
     { "name": "id", "type": "string" },
     { "name": "name", "type": "string" },
-    { "name": "repo", "type": "string" }
+    { "name": "repo", "type": "string" },
+    { "name": "owner", "type": "starfish.author" }
   ]
 }

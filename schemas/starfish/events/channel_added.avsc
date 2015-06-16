@@ -7,6 +7,7 @@
     { "name": "project_id", "type": "string" },
     { "name": "pipeline_id", "type": "string" },
     { "name": "name", "type": "string" },
-    { "name": "auto_release_builds", "type": "boolean" }
+    { "name": "auto_release_builds", "type": "boolean" },
+    { "name": "author", "type": "starfish.author" }
   ]
 }
