@@ -10,7 +10,7 @@ GEM
     addressable (2.3.8)
     avro (1.7.7)
       multi_json
-    avro_turf (0.3.0)
+    avro_turf (0.4.1)
       avro (~> 1.7.7)
     backports (3.6.4)
     byebug (5.0.0)
@@ -108,7 +108,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
-  avro_turf
+  avro_turf (~> 0.4.1)
   byebug
   dotenv
   httparty

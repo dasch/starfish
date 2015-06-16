@@ -1,39 +1,5 @@
 require 'avro_turf'
 
-[String, Numeric, TrueClass, FalseClass, NilClass].each do |klass|
-  klass.class_eval do
-    def as_avro
-      self
-    end
-  end
-end
-
-class Symbol
-  def as_avro
-    to_s
-  end
-end
-
-class Array
-  def as_avro
-    map(&:as_avro)
-  end
-end
-
-class Hash
-  def as_avro
-    new_hash = {}
-    each {|key, value| new_hash[key.as_avro] = value.as_avro }
-    new_hash
-  end
-end
-
-class Time
-  def as_avro
-    iso8601
-  end
-end
-
 module Starfish
   class AvroEventSerializer
     def initialize

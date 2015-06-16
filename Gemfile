@@ -12,7 +12,7 @@ gem 'redis'
 gem 'omniauth-flowdock'
 gem 'httparty'
 gem 'snappy'
-gem 'avro_turf'
+gem 'avro_turf', '~> 0.4.1'
 gem 'activesupport'
 
 group :development, :test do
