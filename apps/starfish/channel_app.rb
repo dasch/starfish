@@ -69,12 +69,17 @@ module Starfish
 
         @release = @channel.find_release_by_number(params[:release_number].to_i)
 
-        $events.record(:rolled_back_to_release, {
-          release_number: @release.number,
-          author: current_user,
-          project_id: @project.id,
-          pipeline_id: @pipeline.id,
-          channel_id: @channel.id
+        $events.record(:rollback_released, {
+          target_release_id: @release.id,
+          release: {
+            id: SecureRandom.uuid,
+            build_number: @release.build.number,
+            config_version: @release.config.version,
+            author: current_user,
+            project_id: @project.id,
+            pipeline_id: @pipeline.id,
+            channel_id: @channel.id,
+          }
         })
 
         redirect releases_path(@channel)

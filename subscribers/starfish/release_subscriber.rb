@@ -62,12 +62,16 @@ module Starfish
       $logger.info "Added release #{release}"
     end
 
-    def rolled_back_to_release(timestamp, data)
+    def rollback_released(timestamp, data)
+      target_release_id = data[:target_release_id]
+      data = data[:release]
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])
 
-      target_release = channel.find_release_by_number(data[:release_number])
+      target_release = channel.find_release(target_release_id)
+      build = pipeline.find_build_by_number(data[:build_number])
+      config = channel.find_config(version: data[:config_version])
 
       author = User.new(
         name: data[:author][:name],
@@ -76,8 +80,9 @@ module Starfish
       )
 
       release = channel.add_release(
-        build: target_release.build,
-        config: target_release.config,
+        id: data[:id],
+        build: build,
+        config: config,
         author: author,
         event: RollbackEvent.new(target_release: target_release)
       )
