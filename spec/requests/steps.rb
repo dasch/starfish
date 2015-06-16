@@ -14,6 +14,11 @@ module Steps
     follow_redirect!
   end
 
+  def release_build(project:, pipeline:, channel:, **params)
+    post "/projects/#{project}/#{pipeline}/channels/#{channel}/releases", params
+    expect(last_response.status).to eq 201
+  end
+
   def stub_github_webhook_api
     stub_request(:post, "https://api.github.com/repos/luke/deathstar/hooks")
   end

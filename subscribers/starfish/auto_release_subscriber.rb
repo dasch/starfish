@@ -18,13 +18,15 @@ module Starfish
       pipeline.channels.each do |channel|
         if channel.auto_release_builds?
           $events.record(:build_automatically_released, {
-            id: SecureRandom.uuid,
-            build_number: build.number,
-            config_version: channel.current_config.version,
-            author: build.author,
-            project_id: project.id,
-            pipeline_id: pipeline.id,
-            channel_id: channel.id
+            release: {
+              id: SecureRandom.uuid,
+              build_number: build.number,
+              config_version: channel.current_config.version,
+              author: build.author,
+              project_id: project.id,
+              pipeline_id: pipeline.id,
+              channel_id: channel.id
+            }
           })
         end
       end

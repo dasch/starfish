@@ -19,6 +19,7 @@ module Starfish
     end
 
     def build_automatically_released(timestamp, data)
+      data = data[:release]
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])

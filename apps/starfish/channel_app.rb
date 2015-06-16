@@ -50,13 +50,15 @@ module Starfish
         config = @channel.current_config
 
         $events.record(:build_released, {
-          id: SecureRandom.uuid,
-          build_number: build.number,
-          config_version: config.version,
-          author: current_user,
-          project_id: @project.id,
-          pipeline_id: @pipeline.id,
-          channel_id: @channel.id
+          release: {
+            id: SecureRandom.uuid,
+            build_number: build.number,
+            config_version: config.version,
+            author: current_user,
+            project_id: @project.id,
+            pipeline_id: @pipeline.id,
+            channel_id: @channel.id
+          }
         })
 
         201

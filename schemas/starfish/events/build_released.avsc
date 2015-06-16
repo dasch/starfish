@@ -1,0 +1,8 @@
+{
+  "name": "build_released",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "release", "type": "starfish.release" }
+  ]
+}
