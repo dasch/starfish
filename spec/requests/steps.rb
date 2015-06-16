@@ -19,8 +19,9 @@ module Steps
     expect(last_response.status).to eq 201
   end
 
-  def stub_github_webhook_api
-    stub_request(:post, "https://api.github.com/repos/luke/deathstar/hooks")
+  def stub_github_webhook_api(hook_id: 42)
+    stub_request(:post, "https://api.github.com/repos/luke/deathstar/hooks").
+      to_return(body: { "id" => hook_id }.to_json, headers: { "Content-Type" => "application/json" })
   end
 
   def receive_github_push_event(project:)

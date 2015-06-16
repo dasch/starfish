@@ -1,0 +1,9 @@
+{
+  "name": "github_hook_created",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "hook_id", "type": "long" },
+    { "name": "project_id", "type": "string" }
+  ]
+}
