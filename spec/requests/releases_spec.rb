@@ -41,4 +41,45 @@ describe "Releases" do
     get "/projects/skynet/production/channels/production/1"
     expect(last_response.status).to eq 200
   end
+
+  example "rolling back a release" do
+    create_channel(
+      project: "skynet",
+      pipeline: "production",
+      channel_name: "Production",
+      channel_auto_release: "0"
+    )
+
+    receive_github_push_event(project: "skynet")
+    receive_github_push_event(project: "skynet")
+
+    release_build(
+      project: "skynet",
+      pipeline: "production",
+      channel: "production",
+      build: "1",
+    )
+
+    release_build(
+      project: "skynet",
+      pipeline: "production",
+      channel: "production",
+      build: "2",
+    )
+
+    roll_back_to_release(
+      project: "skynet",
+      pipeline: "production",
+      channel: "production",
+      release_number: "1"
+    )
+
+    get "/projects/skynet/production/channels/production/3"
+    expect(last_response.status).to eq 200
+  end
+
+  def roll_back_to_release(project:, pipeline:, channel:, **params)
+    post "/projects/#{project}/#{pipeline}/channels/#{channel}/releases/rollbacks", params
+    expect(last_response.status).to eq 302
+  end
 end

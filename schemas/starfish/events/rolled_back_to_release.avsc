@@ -1,0 +1,12 @@
+{
+  "name": "rolled_back_to_release",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "release_number", "type": "long" },
+    { "name": "author", "type": "starfish.author" },
+    { "name": "project_id", "type": "string" },
+    { "name": "pipeline_id", "type": "string" },
+    { "name": "channel_id", "type": "string" }
+  ]
+}
