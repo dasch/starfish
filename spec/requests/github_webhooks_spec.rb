@@ -35,4 +35,17 @@ describe "GitHub webhooks" do
 
     expect(pipeline.pull_requests.last.title).to eq "Improve ventilation"
   end
+
+  example "receiving a duplicate GitHub event" do
+    event_id = "7aa32c00-0e98-11e5-8696-65a2b4ca4938"
+
+    receive_github_push_event(project: "skynet", event_id: event_id)
+    receive_github_push_event(project: "skynet", event_id: event_id)
+
+    get "/projects/skynet/production/builds/1"
+    expect(last_response.status).to eq 200
+
+    get "/projects/skynet/production/builds/2"
+    expect(last_response.status).to eq 404
+  end
 end

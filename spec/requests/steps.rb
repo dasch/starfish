@@ -24,34 +24,25 @@ module Steps
       to_return(body: { "id" => hook_id }.to_json, headers: { "Content-Type" => "application/json" })
   end
 
-  def receive_github_push_event(project:)
+  def receive_github_push_event(**options)
     json = read_fixture("github_push_event.json")
-
-    post "/webhooks/github/skynet", json, {
-      "HTTP_X_GITHUB_DELIVERY" => "7aa32c00-0e98-11e5-8696-65a2b4ca4938",
-      "HTTP_X_GITHUB_EVENT" => "push",
-    }
-
-    expect(last_response.status).to eq 200
+    receive_github_event(json: json, type: "push", **options)
   end
 
-  def receive_github_pull_request_opened_event(project:)
+  def receive_github_pull_request_opened_event(**options)
     json = read_fixture("github_pull_request_opened_event.json")
-
-    post "/webhooks/github/skynet", json, {
-      "HTTP_X_GITHUB_DELIVERY" => "7aa32c00-3e98-11e5-7696-65a2b4ca4938",
-      "HTTP_X_GITHUB_EVENT" => "pull_request",
-    }
-
-    expect(last_response.status).to eq 200
+    receive_github_event(json: json, type: "pull_request", **options)
   end
 
-  def receive_github_status_event(project:)
+  def receive_github_status_event(**options)
     json = read_fixture("github_status_event.json")
+    receive_github_event(json: json, type: "status", **options)
+  end
 
-    post "/webhooks/github/skynet", json, {
-      "HTTP_X_GITHUB_DELIVERY" => "23r9fjfsda-0e98-11e5-8696-65a2b4ca4938",
-      "HTTP_X_GITHUB_EVENT" => "status",
+  def receive_github_event(project:, type:, json:, event_id: SecureRandom.uuid)
+    post "/webhooks/github/#{project}", json, {
+      "HTTP_X_GITHUB_DELIVERY" => event_id,
+      "HTTP_X_GITHUB_EVENT" => type,
     }
 
     expect(last_response.status).to eq 200

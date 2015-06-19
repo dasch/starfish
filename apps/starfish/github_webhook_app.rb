@@ -1,16 +1,20 @@
 require 'sinatra/base'
+require 'active_support/cache'
 require 'json'
 require 'starfish/url_helpers'
 
 module Starfish
   class GithubWebhookApp < Sinatra::Base
+    CACHE = ActiveSupport::Cache::MemoryStore.new
+
     set :root, File.expand_path("../../../", __FILE__)
 
     post '/:project' do
       event = env["HTTP_X_GITHUB_EVENT"]
 
       if respond_to?("handle_#{event}")
-        send("handle_#{event}")
+        send("handle_#{event}") unless event_already_handled?
+        mark_event_as_handled!
       end
 
       status 200
@@ -122,6 +126,14 @@ module Starfish
           sha: pr["base"]["sha"],
         },
       }
+    end
+
+    def event_already_handled?
+      CACHE.read(event_id) != nil
+    end
+
+    def mark_event_as_handled!
+      CACHE.write(event_id, true)
     end
 
     def event_id
