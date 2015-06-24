@@ -1,4 +1,26 @@
+require 'sinatra/base'
+require 'sinatra/json'
+
 module Steps
+  class FakeGitHubApi
+    attr_reader :secret
+
+    def call(env)
+      params = JSON.parse(env["rack.input"].read)
+
+      @secret = params.fetch("config").fetch("secret")
+
+      headers = { "Content-Type" => "application/json" }
+      body = { "id" => 42 }
+
+      [200, headers, [body.to_json]]
+    end
+  end
+
+  def fake_github
+    @fake_github ||= FakeGitHubApi.new
+  end
+
   def create_project(**params)
     post "/setup", params
     follow_redirect!
@@ -19,9 +41,9 @@ module Steps
     expect(last_response.status).to eq 201
   end
 
-  def stub_github_webhook_api(hook_id: 42)
+  def stub_github_webhook_api
     stub_request(:post, "https://api.github.com/repos/luke/deathstar/hooks").
-      to_return(body: { "id" => hook_id }.to_json, headers: { "Content-Type" => "application/json" })
+      to_rack(fake_github)
   end
 
   def receive_github_push_event(**options)
@@ -40,9 +62,14 @@ module Steps
   end
 
   def receive_github_event(project:, type:, json:, event_id: SecureRandom.uuid)
+    secret = fake_github.secret
+    digest = OpenSSL::Digest.new('sha1')
+    signature = 'sha1=' << OpenSSL::HMAC.hexdigest(digest, secret, json)
+
     post "/webhooks/github/#{project}", json, {
       "HTTP_X_GITHUB_DELIVERY" => event_id,
       "HTTP_X_GITHUB_EVENT" => type,
+      "HTTP_X_HUB_SIGNATURE" => signature,
     }
 
     expect(last_response.status).to eq 200

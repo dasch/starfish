@@ -5,6 +5,7 @@ require 'starfish/not_found'
 module Starfish
   class Project
     attr_reader :id, :name, :repo, :commits, :pipelines
+    attr_accessor :github_webhook_secret
 
     def initialize(id:, name:, repo: nil)
       @id = id

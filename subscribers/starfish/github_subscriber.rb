@@ -10,6 +10,11 @@ module Starfish
       end
     end
 
+    def github_hook_created(timestamp, data)
+      project = @repo.find_project(data[:project_id])
+      project.github_webhook_secret = data.fetch(:secret)
+    end
+
     def github_pull_request_opened(timestamp, data)
       project = @repo.find_project(data[:project_id])
       target_branch = data[:target_branch]
