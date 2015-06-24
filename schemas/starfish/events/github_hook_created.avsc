@@ -4,6 +4,7 @@
   "type": "record",
   "fields": [
     { "name": "hook_id", "type": "long" },
-    { "name": "project_id", "type": "string" }
+    { "name": "project_id", "type": "string" },
+    { "name": "secret", "type": "string" }
   ]
 }

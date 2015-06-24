@@ -41,8 +41,11 @@ module Starfish
       @project = $repo.find_project(id)
 
       begin
+        secret = SecureRandom.hex
+
         hook = @github.create_hook(@project.repo, "web", {
           url: github_webhook_url(@project),
+          secret: secret,
           content_type: "json"
         }, {
           events: %w[status push pull_request pull_request_review_comment issue_comment]
@@ -51,6 +54,7 @@ module Starfish
         $events.record(:github_hook_created, {
           project_id: id,
           hook_id: hook.id,
+          secret: secret,
         })
       rescue Octokit::UnprocessableEntity
         # Hook already exists.
