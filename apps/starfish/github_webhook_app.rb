@@ -129,11 +129,15 @@ module Starfish
     end
 
     def event_already_handled?
-      CACHE.read(event_id) != nil
+      CACHE.read(event_key) != nil
     end
 
     def mark_event_as_handled!
-      CACHE.write(event_id, true)
+      CACHE.write(event_key, true)
+    end
+
+    def event_key
+      [project.id, event_id].join(":")
     end
 
     def event_id
