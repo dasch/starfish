@@ -12,7 +12,7 @@ module Starfish
 
     include Comparable
 
-    attr_reader :id, :number, :author, :commits, :status_checks, :pipeline, :approved_by
+    attr_reader :id, :number, :author, :commits, :status_checks, :pipeline
     attr_accessor :pull_request, :docker_builds
 
     def initialize(id:, number:, author:, commits:, pipeline:)
@@ -21,21 +21,12 @@ module Starfish
       @author = author
       @commits = commits
       @pipeline = pipeline
-      @approved_by = nil
       @status_checks = []
       @docker_builds = []
     end
 
     def sha
       commit && commit.sha
-    end
-
-    def approved?
-      !@approved_by.nil?
-    end
-
-    def approve!(user:)
-      @approved_by = user
     end
 
     def update_status(context:, value:, url:, description:, timestamp:)

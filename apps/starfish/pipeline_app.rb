@@ -66,19 +66,6 @@ module Starfish
         erb :list_builds
       end
 
-      post '/builds/approvals' do
-        @build = @pipeline.find_build_by_number(params[:build_number].to_i)
-
-        $events.record(:build_approved, {
-          project_id: @project.id,
-          pipeline_id: @pipeline.id,
-          build_number: @build.number,
-          approved_by: current_user
-        })
-
-        redirect builds_path(@pipeline)
-      end
-
       get '/channels' do
         erb :list_channels
       end

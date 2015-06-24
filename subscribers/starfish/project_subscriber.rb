@@ -24,14 +24,6 @@ module Starfish
       $logger.info "Added project #{project}"
     end
 
-    def build_approved(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      build = pipeline.find_build_by_number(data[:build_number])
-
-      build.approve!(user: data[:approved_by])
-    end
-
     def pipeline_added(timestamp, data)
       project = @repo.find_project(data[:project_id])
 
