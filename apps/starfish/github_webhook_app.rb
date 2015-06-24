@@ -13,6 +13,7 @@ module Starfish
       event = env["HTTP_X_GITHUB_EVENT"]
 
       if respond_to?("handle_#{event}")
+        authenticate_webhook!
         send("handle_#{event}") unless event_already_handled?
         mark_event_as_handled!
       end
@@ -83,6 +84,22 @@ module Starfish
 
     private
 
+    def authenticate_webhook!
+      signature = env["HTTP_X_HUB_SIGNATURE"]
+
+      if signature != compute_signature
+        $logger.error "Invalid GitHub signature: #{signature}"
+        halt 401
+      end
+    end
+
+    def compute_signature
+      secret = project.github_webhook_secret
+      digest = OpenSSL::Digest.new('sha1')
+
+      'sha1=' << OpenSSL::HMAC.hexdigest(digest, secret, request_body)
+    end
+
     def map_commit(data)
       {
         sha: data["id"],
@@ -149,7 +166,11 @@ module Starfish
     end
 
     def payload
-      @payload ||= JSON.parse(request.body.read)
+      @payload ||= JSON.parse(request_body)
+    end
+
+    def request_body
+      @body ||= request.body.read
     end
   end
 end
