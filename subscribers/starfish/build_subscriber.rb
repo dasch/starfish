@@ -21,7 +21,7 @@ module Starfish
         )
 
         Commit.new(
-          sha: c[:id],
+          sha: c[:sha],
           author: author,
           message: c[:message],
           added: c[:added],
