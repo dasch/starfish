@@ -25,4 +25,4 @@ RUN bundle install --deployment
 ADD . /app
 
 EXPOSE 80
-CMD bundle exec rackup -p 80
+CMD bundle exec rackup --host 0.0.0.0 --port 80
