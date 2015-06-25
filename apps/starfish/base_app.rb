@@ -47,6 +47,13 @@ module Starfish
         end
       end
 
+      def pipeline_title(pipeline)
+        project = pipeline.project
+        title = pipeline.project.to_s.dup
+        title << " / " << pipeline.to_s if project.pipelines.count > 1
+        title
+      end
+
       def release_event(release)
         release.author.to_s + " " +
           erb(release.event_name, locals: { event: release.event })
