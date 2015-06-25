@@ -10,18 +10,17 @@ module Starfish
       end
     end
 
-    def shipway_build_finish_received(data)
-      project = @repo.find_project(data[:project_id])
-      payload = data[:payload]
-      commit_sha = payload["commit"]["sha"]
-      build_number = payload["build"]["build_num"]
+    def docker_build_finished(data)
+      project = @repo.find_project(data.fetch(:project_id))
+      commit_sha = data.fetch(:commit_sha)
+      build_number = data.fetch(:build_number)
 
       builds = project.find_builds_by_sha(commit_sha)
 
       builds.each do |build|
         build.add_docker_build(
-          image_id: payload["images"].first["id"],
-          status: payload["build"]["status"],
+          image_id: data.fetch(:image_id),
+          status: data.fetch(:status),
           build_url: "https://shipway.io/#{project.repo}/builds/#{build_number}"
         )
       end

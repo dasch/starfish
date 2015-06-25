@@ -1,0 +1,57 @@
+{
+  "build": {
+    "build_num": 14,
+    "created_at": "2014-12-18T10:44:22+00:00",
+    "dockerfile_dir": "/",
+    "exit_code": 0,
+    "status": "succeeded",
+    "finished_at": "2014-12-18T10:47:42+00:00",
+    "updated_at": "2014-12-18T10:44:22+00:00"
+  },
+  "commit": {
+    "author": {
+      "login": "luke",
+      "name": "Luke Skywalker"
+    },
+    "message": "Add ventilation channel",
+    "sha": "84dcef18aa7d73547628436c4040e1582484e6fb"
+  },
+  "image_tags": [
+    {
+      "full_name": "shipway.io/grosskur/docker-hello:latest",
+      "id": "4cdd9808a0d64fc04e92be2832895ab2de9bf86dd60cf6d846e886904925186d",
+      "name": "latest"
+    }
+  ],
+  "images": [
+    {
+      "id": "4cdd9808a0d64fc04e92be2832895ab2de9bf86dd60cf6d846e886904925186d",
+      "pushed": true
+    },
+    {
+      "id": "aab4e5cb6c913c9801d1e0872f930d97b665edeb1344e01dd6e57daa9eefed15",
+      "pushed": true
+    },
+    {
+      "id": "d76986f1db3e3d98364088b98384d612ba5f8207cdf0575e5512da55d53c4490",
+      "pushed": true
+    },
+    {
+      "id": "60dbd5ce6f07db5d392da675f6ab1fadcea5c129d9853058dd487d55b3a655d3",
+      "pushed": false
+    },
+    {
+      "id": "fcf984186c72de37469b8a049f6bb4a3f128e9b60f3b3e279a9abbce689f6274",
+      "pushed": false
+    }
+  ],
+  "repository": {
+    "clone_url": "https://github.com/grosskur/docker-hello.git",
+    "id": 27844253,
+    "name": "docker-hello",
+    "owner": {
+      "id": 40483,
+      "login": "grosskur"
+    }
+  }
+}
