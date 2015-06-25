@@ -44,8 +44,10 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Projects <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <% @projects.flat_map(&:pipelines).each do |pipeline| %>
-                  <li><a href="<%= builds_path(pipeline) %>"><%= pipeline.project %> / <%= pipeline %></a></li>
+                <% @projects.each do |project| %>
+                  <% project.pipelines.each do |pipeline| %>
+                    <li><a href="<%= builds_path(pipeline) %>"><%= pipeline.project %><% if project.pipelines.count > 1 %> / <%= pipeline %><% end %></a></li>
+                  <% end %>
                 <% end %>
                 <li class="divider"></li>
                 <li><a href="<%= setup_path %>">Add project...</a></li>
