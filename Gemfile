@@ -14,7 +14,7 @@ gem 'httparty'
 gem 'snappy'
 gem 'avro_turf', '~> 0.4.1'
 gem 'activesupport'
-gem 'marathon-ruby'
+gem 'excon'
 
 group :development, :test do
   gem 'rspec', '~> 3.2.0'
