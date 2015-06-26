@@ -1,13 +1,15 @@
 require 'excon'
 
 class Marathon
-  def initialize(url)
+  URL = ENV.fetch("MARATHON_URL")
+
+  def initialize
     headers = {
       "Accept" => "application/json",
       "Content-Type" => "application/json",
     }
 
-    @connection = Excon.new(url, headers: headers)
+    @connection = Excon.new(URL, headers: headers)
   end
 
   def create_app(config)
@@ -63,7 +65,7 @@ module Starfish
         force: true,
       }
 
-      marathon = Marathon.new(ENV.fetch("MARATHON_URL"))
+      marathon = Marathon.new
       $logger.info "Creating Marathon app #{app_id.inspect}..."
       app = marathon.create_app(configuration)
       $logger.info "Created app: #{app}"
