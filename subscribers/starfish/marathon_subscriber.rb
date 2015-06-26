@@ -12,17 +12,46 @@ class Marathon
     @connection = Excon.new(URL, headers: headers)
   end
 
-  def create_app(config)
-    post "/v2/apps", config
+  def create_or_update_app(id, config)
+    if app_exist?(id)
+      update_app(id, config)
+    else
+      create_app(id, config)
+    end
+  end
+
+  def app_exist?(id)
+    response = @connection.get(path: "/v2/apps/#{id}")
+    response.status == 200
+  end
+
+  def update_app(id, config)
+    put "/v2/apps/#{id}", config
+  end
+
+  def create_app(id, config)
+    post "/v2/apps", config.merge(id: id)
   end
 
   private
 
-  def post(path, payload = {})
-    response = @connection.post(path: path, body: payload.to_json)
+  def get(path, payload = {})
+    request(:get, path, payload)
+  end
 
-    if response.status != 201
-      raise "Unexpected response status #{response.status}"
+  def put(path, payload = {})
+    request(:put, path, payload)
+  end
+
+  def post(path, payload = {})
+    request(:post, path, payload)
+  end
+
+  def request(method, path, payload = {})
+    response = @connection.request(method: method, path: path, body: payload.to_json)
+
+    unless [200, 201].include?(response.status)
+      raise "Unexpected response status #{response.status}: #{response.body}"
     end
 
     JSON.parse(response.body) unless response.body == "null"
@@ -51,19 +80,17 @@ module Starfish
       app_id = "#{project.slug}-#{channel.slug}"
 
       configuration = {
-        id: app_id,
         cmd: "",
         instances: 1,
         container: {
           type: "DOCKER",
           docker: {
-            image: "docker-registry.zende.sk/dasch/starfish",
+            image: "docker-registry.zende.sk/starfish",
             forcePullImage: true,
             network: "HOST",
           },
         },
         env: release.config.env,
-        instances: 1,
         force: true,
         constraints: [
           ["hostname", "CLUSTER", "mesos-slave1.pod99.aws1.zdsystest.com"]
@@ -75,7 +102,7 @@ module Starfish
 
       marathon = Marathon.new
       $logger.info "Creating Marathon app #{app_id.inspect}..."
-      app = marathon.create_app(configuration)
+      app = marathon.create_or_update_app(app_id, configuration)
       $logger.info "Created app: #{app}"
     end
   end
