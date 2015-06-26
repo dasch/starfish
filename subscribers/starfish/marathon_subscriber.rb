@@ -94,7 +94,7 @@ module Starfish
       app_id = "#{project.slug}-#{channel.slug}"
 
       configuration = {
-        cmd: "",
+        args: [],
         instances: 1,
         container: {
           type: "DOCKER",
