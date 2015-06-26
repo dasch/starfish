@@ -48,21 +48,29 @@ module Starfish
       channel = pipeline.find_channel(data[:channel_id])
       release = channel.find_release(data[:id])
 
-      app_id = "/#{channel.slug}/#{project.slug}-#{pipeline.slug}"
-      app_id = project.slug
+      app_id = "#{project.slug}-#{channel.slug}"
 
       configuration = {
         id: app_id,
-        cmd: "while true; do; echo yolo; sleep 10; done",
+        cmd: "",
         instances: 1,
         container: {
           type: "DOCKER",
           docker: {
-            image: "ubuntu:latest",
-            network: "BRIDGE",
+            image: "docker-registry.zende.sk/dasch/starfish",
+            forcePullImage: true,
+            network: "HOST",
           },
         },
+        env: release.config.env,
+        instances: 1,
         force: true,
+        constraints: [
+          ["hostname", "CLUSTER", "mesos-slave1.pod99.aws1.zdsystest.com"]
+        ],
+        upgradeStrategy: {
+          minimumHealthCapacity: 0
+        }
       }
 
       marathon = Marathon.new
