@@ -8,8 +8,8 @@ require 'omniauth'
 require 'omniauth/strategies/github'
 require 'omniauth/strategies/flowdock'
 
-Dotenv.load
 Dotenv.load(".env.test") if ENV["RACK_ENV"] == "test"
+Dotenv.load
 
 require 'starfish/setup_app'
 require 'starfish/project_app'
