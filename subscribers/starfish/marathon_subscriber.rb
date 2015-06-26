@@ -51,7 +51,7 @@ module Starfish
 
       configuration = {
         id: app_id,
-        cmd: "while true; sleep 10; fi",
+        cmd: "while true; do; echo yolo; sleep 10; done",
         instances: 1,
         container: {
           type: "DOCKER",
