@@ -1,0 +1,9 @@
+{
+  "name": "release_failed",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "release_id", "type": "string" },
+    { "name": "error", "type": "string" }
+  ]
+}

@@ -1,6 +1,7 @@
 require 'excon'
 
 class Marathon
+  Error = Class.new(StandardError)
   URL = ENV.fetch("MARATHON_URL")
 
   def initialize
@@ -51,7 +52,7 @@ class Marathon
     response = @connection.request(method: method, path: path, body: payload.to_json)
 
     unless [200, 201].include?(response.status)
-      raise "Unexpected response status #{response.status}: #{response.body}"
+      raise Error, "Unexpected response status #{response.status}: #{response.body}"
     end
 
     JSON.parse(response.body) unless response.body == "null"
@@ -71,7 +72,20 @@ module Starfish
     end
 
     def build_released(data)
-      data = data[:release]
+      deploy(data[:release])
+    end
+
+    def build_automatically_released(timestamp, data)
+      deploy(data[:release])
+    end
+
+    def config_change_released(timestamp, data)
+      deploy(data[:release])
+    end
+
+    private
+
+    def deploy(data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])
@@ -100,10 +114,24 @@ module Starfish
         }
       }
 
-      marathon = Marathon.new
-      $logger.info "Creating Marathon app #{app_id.inspect}..."
-      app = marathon.create_or_update_app(app_id, configuration)
-      $logger.info "Created app: #{app}"
+      begin
+        marathon = Marathon.new
+
+        $logger.info "Creating Marathon app #{app_id.inspect}..."
+        app = marathon.create_or_update_app(app_id, configuration)
+        $logger.info "Created app: #{app}"
+
+        $events.record(:release_deployed, {
+          release_id: release.id,
+        })
+      rescue Marathon::Error => e
+        $events.record(:release_failed, {
+          release_id: release.id,
+          error: e.message,
+        })
+
+        $logger.error "Release failed: #{e}"
+      end
     end
   end
 end
