@@ -79,6 +79,8 @@ GEM
     sawyer (0.6.0)
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
+    shotgun (0.9)
+      rack (>= 1.0)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -120,6 +122,7 @@ DEPENDENCIES
   rack-test
   redis
   rspec (~> 3.2.0)
+  shotgun
   sinatra (~> 1.4.6)
   sinatra-contrib (~> 1.4.2)
   snappy

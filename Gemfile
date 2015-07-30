@@ -22,3 +22,7 @@ group :development, :test do
   gem 'rack-test'
   gem 'rack-mini-profiler'
 end
+
+group :development do
+  gem 'shotgun'
+end
