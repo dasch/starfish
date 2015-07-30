@@ -75,11 +75,11 @@ module Starfish
       deploy(data[:release])
     end
 
-    def build_automatically_released(timestamp, data)
+    def build_automatically_released(data)
       deploy(data[:release])
     end
 
-    def config_change_released(timestamp, data)
+    def config_change_released(data)
       deploy(data[:release])
     end
 
