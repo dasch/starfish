@@ -3,7 +3,7 @@ require 'requests/spec_helper'
 describe "Releases" do
   before do
     sign_in_with_github
-    stub_marathon_create_app_api
+    stub_marathon_api
     create_project name: "Skynet", repo: "luke/deathstar"
     create_pipeline project: "skynet", pipeline_name: "Production", pipeline_branch: "master"
   end

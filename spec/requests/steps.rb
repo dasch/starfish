@@ -46,9 +46,12 @@ module Steps
       to_rack(fake_github)
   end
 
-  def stub_marathon_create_app_api
-    stub_request(:post, "#{ENV.fetch('MARATHON_URL')}/v2/apps").
-      to_return(status: 201, body: "null")
+  def stub_marathon_api
+    base = ENV.fetch("MARATHON_URL")
+
+    stub_request(:get, %r"#{base}/v2/apps/.+")
+    stub_request(:put, %r"#{base}/v2/apps/.+").to_return(body: JSON.dump({}))
+    stub_request(:post, "#{base}/v2/apps").to_return(status: 201, body: "null") 
   end
 
   def receive_github_push_event(**options)
