@@ -40,7 +40,8 @@ module Starfish
         id: data.fetch(:id),
         number: data.fetch(:build_number),
         commits: commits,
-        author: author
+        author: author,
+        timestamp: timestamp,
       )
 
       if commits.last.message =~ /Merge pull request #(\d+) from/
