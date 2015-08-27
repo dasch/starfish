@@ -22,7 +22,7 @@
               <td>
                 <% if channel.current_release %>
                   <span class="label label-info"><%= channel.current_release %></span>
-                  <%= release_event(channel.current_release) %>
+                  <%= release_event(channel.current_release) %> <%= relative_time(channel.current_release.timestamp) %>
                 <% else %>
                   N/A
                 <% end %>
