@@ -12,15 +12,16 @@ module Starfish
 
     include Comparable
 
-    attr_reader :id, :number, :author, :commits, :status_checks, :pipeline
+    attr_reader :id, :number, :author, :commits, :status_checks, :pipeline, :timestamp
     attr_accessor :pull_request, :docker_builds
 
-    def initialize(id:, number:, author:, commits:, pipeline:)
+    def initialize(id:, number:, author:, commits:, pipeline:, timestamp:)
       @id = id
       @number = number
       @author = author
       @commits = commits
       @pipeline = pipeline
+      @timestamp = timestamp
       @status_checks = []
       @docker_builds = []
     end

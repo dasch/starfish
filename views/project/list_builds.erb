@@ -34,9 +34,17 @@
                   <%= build.summary %>
                 <% end %>
 
-                <% if build.commits.count > 1 %>
-                  <small class="text-muted">(<%= build.commits.count %> commits)</small>
-                <% end %>
+                <small class="text-muted">
+                  &mdash;
+
+                  <%= relative_time(build.timestamp) %>
+
+                  <% if build.commits.count > 1 %>
+                    &middot;
+                    <%= build.commits.count %> commits
+                  <% end %>
+
+                </small>
               </td>
 
               <% @pipeline.channels.each do |channel| %>

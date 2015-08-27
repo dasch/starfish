@@ -29,6 +29,14 @@ module Starfish
         end
       end
 
+      def relative_time(timestamp)
+        <<-HTML.strip
+          <time class="relative" datetime="#{timestamp.iso8601}">
+            #{timestamp}
+          </time>
+        HTML
+      end
+
       def pipeline_nav_items(pipeline)
         items = {
           "Builds"        => builds_path(pipeline),

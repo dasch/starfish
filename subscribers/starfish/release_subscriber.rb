@@ -13,7 +13,7 @@ module Starfish
     def build_automatically_released(timestamp, data)
       build = find_build(data[:release])
       event = AutomaticReleaseEvent.new(build: build)
-      release = add_release(data[:release], event: event)
+      release = add_release(data[:release], event: event, timestamp: timestamp)
 
       $logger.info "Automatically added release #{release}"
     end
@@ -21,7 +21,7 @@ module Starfish
     def build_released(timestamp, data)
       build = find_build(data[:release])
       event = ManualReleaseEvent.new(build: build)
-      release = add_release(data[:release], event: event)
+      release = add_release(data[:release], event: event, timestamp: timestamp)
 
       $logger.info "Added release #{release}"
     end
@@ -30,7 +30,7 @@ module Starfish
       target_release = find_release(data[:release], data[:target_release_id])
       event = RollbackEvent.new(target_release: target_release)
 
-      release = add_release(data[:release], event: event)
+      release = add_release(data[:release], event: event, timestamp: timestamp)
 
       $logger.info "Added release #{release} (rolled back to #{target_release})"
     end
@@ -38,14 +38,14 @@ module Starfish
     def config_change_released(timestamp, data)
       config_key, config_value = data.values_at(:config_key, :config_value)
       event = ConfigChangedEvent.new(key: config_key, value: config_value)
-      release = add_release(data[:release], event: event)
+      release = add_release(data[:release], event: event, timestamp: timestamp)
 
       $logger.info "Added release #{release} (config key #{config_key} changed)"
     end
 
     private
 
-    def add_release(data, event:)
+    def add_release(data, event:, timestamp:)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
       channel = pipeline.find_channel(data[:channel_id])
@@ -64,7 +64,8 @@ module Starfish
         build: build,
         config: config,
         author: author,
-        event: event
+        event: event,
+        timestamp: timestamp,
       )
     end
 
