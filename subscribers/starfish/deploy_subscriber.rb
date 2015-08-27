@@ -10,10 +10,6 @@ module Starfish
       end
     end
 
-    def build_released(timestamp, data)
-      deploy(data[:release])
-    end
-
     def build_automatically_released(timestamp, data)
       deploy(data[:release])
     end

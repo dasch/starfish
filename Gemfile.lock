@@ -22,6 +22,7 @@ GEM
     diff-lcs (1.2.5)
     dotenv (2.0.1)
     eventmachine (1.0.7)
+    excon (0.45.3)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     hashie (3.4.2)
@@ -113,6 +114,7 @@ DEPENDENCIES
   avro_turf (~> 0.4.1)
   byebug
   dotenv
+  excon
   httparty
   octokit
   omniauth
