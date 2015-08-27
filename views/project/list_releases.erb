@@ -10,7 +10,7 @@
           <td width="10"><%= erb :avatar, locals: { user: release.author } %></td>
 
           <td>
-            <%= release_event(release) %>
+            <%= release_event(release) %> <time class="relative" datetime="<%= release.timestamp.iso8601 %>"><%= release.timestamp %></time>
 
             <br>
 

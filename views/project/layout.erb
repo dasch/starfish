@@ -13,6 +13,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 
     <style type="text/css">
       .avatar { width: 24px; height: 24px; border-radius: 16px; }
@@ -82,5 +84,14 @@
         <%= yield %>
       </div>
     </div>
+
+    <script>
+      // Make all <time> tags with the `relative` class show relative times.
+      $('time.relative').each(function() {
+        var $time = $(this);
+        var ts = moment($time.attr('datetime'));
+        $time.text(ts.fromNow());
+      });
+    </script>
   </body>
 </html>
