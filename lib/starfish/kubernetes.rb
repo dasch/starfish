@@ -9,6 +9,18 @@ module Starfish
       @client = Kubeclient::Client.new(KUBERNETES_URL)
     end
 
+    def build(build)
+      project = build.pipeline.project
+
+      job = BuildJob.new(
+        kubernetes: @client,
+        repository: "https://github.com/#{project.repo}.git",
+        commit_id: build.sha,
+      )
+
+      job.start
+    end
+
     def deploy(release)
       rc = Kubeclient::ReplicationController.new
 

@@ -27,6 +27,7 @@ module Starfish
         }
 
         pod.spec = {
+          restartPolicy: "OnFailure",
           containers: [container_spec],
           volumes: [volume_spec],
         }
