@@ -1,4 +1,5 @@
 require 'kubeclient'
+require 'starfish/kubernetes/build_job'
 
 module Starfish
   class Kubernetes
