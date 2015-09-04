@@ -12,15 +12,7 @@ module Starfish
     end
 
     def build(build)
-      project = build.pipeline.project
-
-      job = BuildJob.new(
-        kubernetes: @client,
-        repository: project.repo_url,
-        commit_id: build.sha,
-        tag: build.image_tag
-      )
-
+      job = BuildJob.new(kubernetes: @client, build: build)
       job.start
     end
 

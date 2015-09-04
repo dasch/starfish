@@ -7,11 +7,10 @@ module Starfish
 
       attr_reader :status
 
-      def initialize(kubernetes:, repository:, commit_id:, tag:)
+      def initialize(kubernetes:, build:)
         @kubernetes = kubernetes
-        @repository = repository
-        @commit_id = commit_id
-        @tag = tag
+        @build = build
+        @project = build.pipeline.project
         @pod_name = "build-job-#{rand(10000)}"
       end
 
@@ -62,7 +61,7 @@ module Starfish
         {
           name: "builder",
           image: DOCKER_IMAGE,
-          command: ["/build.sh", @repository, @tag],
+          command: ["/build.sh", @project.repo_url, @build.image_tag],
           volumeMounts: [
             {
               mountPath: "/var/run/docker.sock",
