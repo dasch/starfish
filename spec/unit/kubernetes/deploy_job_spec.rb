@@ -7,7 +7,11 @@ describe Starfish::Kubernetes::DeployJob do
 
     env = { "SOME_ENV_VAR" => "something" }
     config = double(:config, env: env)
-    release = double(:release, config: config)
+    project = double(:project, slug: "test-app")
+    pipeline = double(:pipeline, project: project)
+    channel = double(:channel, pipeline: pipeline)
+    build = double(:build, image_tag: "nginx")
+    release = double(:release, build: build, channel: channel, config: config, to_s: "v1")
 
     job = described_class.new(
       kubernetes: kubernetes,

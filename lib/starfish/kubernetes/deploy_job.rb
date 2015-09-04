@@ -4,7 +4,8 @@ module Starfish
       def initialize(release:, kubernetes:)
         @release = release
         @kubernetes = kubernetes
-        @controller_name = "test-controller-#{rand(10000)}"
+        @app_name = @release.channel.pipeline.project.slug
+        @controller_name = "#{@app_name}-#{@release}"
         @replicas = 4
       end
 
@@ -33,7 +34,7 @@ module Starfish
         rc.spec = {
           replicas: @replicas,
           selector: {
-            app: "test",
+            app: @app_name,
           },
           template: pod_spec
         }
@@ -45,7 +46,7 @@ module Starfish
         {
           metadata: {
             labels: {
-              app: "test",
+              app: @app_name,
             },
           },
           spec: {
@@ -56,8 +57,8 @@ module Starfish
 
       def container_spec
         {
-          name: "nginx",
-          image: "nginx",
+          name: @release.channel.pipeline.project.slug,
+          image: @release.build.image_tag,
           env: env_spec,
         }
       end
