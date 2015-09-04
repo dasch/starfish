@@ -9,11 +9,19 @@ module Starfish
         @kubernetes = kubernetes
         @repository = repository
         @commit_id = commit_id
+        @pod_name = "build-job-#{rand(10000)}"
       end
 
       def start
-        pod = pod_spec
-        @kubernetes.create_pod(pod)
+        pod = @kubernetes.create_pod(pod_spec)
+
+        @kubernetes.watch_pods(pod.metadata.resourceVersion).each do |event|
+          next unless event.object.metadata.name == @pod_name
+
+          if event.object.status.phase == "Succeeded"
+            break
+          end
+        end
       end
 
       private
@@ -22,7 +30,7 @@ module Starfish
         pod = Kubeclient::Pod.new
 
         pod.metadata = {
-          name: "builder",
+          name: @pod_name,
           namespace: "dasch",
         }
 
