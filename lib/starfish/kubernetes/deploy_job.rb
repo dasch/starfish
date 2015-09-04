@@ -58,6 +58,13 @@ module Starfish
         {
           name: "nginx",
           image: "nginx",
+          env: env_spec,
+        }
+      end
+
+      def env_spec
+        @release.config.env.map {|key, value|
+          { name: key, value: value }
         }
       end
     end
