@@ -10,6 +10,15 @@ module Starfish
       end
 
       def start
+        previous_rcs = @kubernetes.get_replication_controllers(
+          label_selector: "app=#{@app_name}"
+        )
+
+        previous_rcs.each do |rc|
+          next unless rc.metadata.namespace == Kubernetes::NAMESPACE
+          @kubernetes.delete_replication_controller(rc.metadata.name, Kubernetes::NAMESPACE)
+        end
+
         rc = @kubernetes.create_replication_controller(controller_spec)
 
         @kubernetes.watch_replication_controllers(rc.metadata.resourceVersion).each do |event|
