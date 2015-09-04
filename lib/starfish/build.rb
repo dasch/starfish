@@ -30,6 +30,10 @@ module Starfish
       commit && commit.sha
     end
 
+    def image_tag
+      [pipeline.project.repo, sha].join(":")
+    end
+
     def update_status(context:, value:, url:, description:, timestamp:)
       status = @status_checks.find {|s| s.context == context }
 

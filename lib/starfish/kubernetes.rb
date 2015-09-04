@@ -16,9 +16,9 @@ module Starfish
 
       job = BuildJob.new(
         kubernetes: @client,
-        repository: "https://github.com/#{project.repo}.git",
+        repository: project.repo_url,
         commit_id: build.sha,
-        tag: "#{project.repo}:#{build.sha}"
+        tag: build.image_tag
       )
 
       job.start
