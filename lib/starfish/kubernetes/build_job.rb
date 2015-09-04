@@ -35,6 +35,7 @@ module Starfish
           end
         end
 
+      ensure
         @kubernetes.delete_pod(@pod_name, NAMESPACE)
       end
 
