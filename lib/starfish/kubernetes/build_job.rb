@@ -3,7 +3,6 @@ require 'starfish/kubernetes'
 module Starfish
   class Kubernetes
     class BuildJob
-      NAMESPACE = "dasch"
       DOCKER_IMAGE = "dasch/builder:latest"
 
       attr_reader :status
@@ -36,7 +35,7 @@ module Starfish
         end
 
       ensure
-        @kubernetes.delete_pod(@pod_name, NAMESPACE)
+        @kubernetes.delete_pod(@pod_name, Kubernetes::NAMESPACE)
       end
 
       private

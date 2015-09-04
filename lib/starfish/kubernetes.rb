@@ -1,8 +1,10 @@
 require 'kubeclient'
 require 'starfish/kubernetes/build_job'
+require 'starfish/kubernetes/deploy_job'
 
 module Starfish
   class Kubernetes
+    NAMESPACE = "dasch"
     KUBERNETES_URL = 'http://localhost:8080/api/'
 
     def initialize
@@ -22,36 +24,8 @@ module Starfish
     end
 
     def deploy(release)
-      rc = Kubeclient::ReplicationController.new
-
-      rc.metadata = {
-        name: "test-controller",
-        namespace: "dasch",
-      }
-
-      rc.spec = {
-        replicas: 1,
-        selector: {
-          app: "test",
-        },
-        template: {
-          metadata: {
-            labels: {
-              app: "test",
-            },
-          },
-          spec: {
-            containers: [
-              {
-                name: "nginx",
-                image: "nginx",
-              }
-            ]
-          }
-        }
-      }
-
-      @client.create_replication_controller(rc)
+      job = DeployJob.new(release: release, kubernetes: @client)
+      job.start
     end
   end
 end
