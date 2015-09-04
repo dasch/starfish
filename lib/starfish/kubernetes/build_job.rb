@@ -3,7 +3,10 @@ require 'starfish/kubernetes'
 module Starfish
   class Kubernetes
     class BuildJob
+      NAMESPACE = "dasch"
       DOCKER_IMAGE = "dasch/builder:latest"
+
+      attr_reader :status
 
       def initialize(kubernetes:, repository:, commit_id:)
         @kubernetes = kubernetes
@@ -18,10 +21,21 @@ module Starfish
         @kubernetes.watch_pods(pod.metadata.resourceVersion).each do |event|
           next unless event.object.metadata.name == @pod_name
 
-          if event.object.status.phase == "Succeeded"
+          case event.object.status.phase
+          when "Succeeded"
+            @status = :succeeded
             break
+          when "Failed"
+            @status = :failed
+            break
+          when "Pending"
+            @status = :pending
+          when "Running"
+            @status = :running
           end
         end
+
+        @kubernetes.delete_pod(@pod_name, NAMESPACE)
       end
 
       private
@@ -31,7 +45,7 @@ module Starfish
 
         pod.metadata = {
           name: @pod_name,
-          namespace: "dasch",
+          namespace: NAMESPACE,
         }
 
         pod.spec = {

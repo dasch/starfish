@@ -14,5 +14,7 @@ describe Starfish::Kubernetes::BuildJob do
     )
 
     build_job.start
+
+    expect(build_job.status).to eq :succeeded
   end
 end
