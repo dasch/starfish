@@ -10,7 +10,8 @@ describe Starfish::Kubernetes::BuildJob do
     build_job = described_class.new(
       kubernetes: kubernetes,
       repository: repository,
-      commit_id: commit_id
+      commit_id: commit_id,
+      tag: "test"
     )
 
     build_job.start

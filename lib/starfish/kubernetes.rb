@@ -18,6 +18,7 @@ module Starfish
         kubernetes: @client,
         repository: "https://github.com/#{project.repo}.git",
         commit_id: build.sha,
+        tag: "#{project.repo}:#{build.sha}"
       )
 
       job.start
