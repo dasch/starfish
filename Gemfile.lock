@@ -24,6 +24,8 @@ GEM
     eventmachine (1.0.7)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    faraday-http-cache (1.1.1)
+      faraday (~> 0.8)
     hashie (3.4.2)
     httparty (0.13.5)
       json (~> 1.8)
@@ -113,6 +115,7 @@ DEPENDENCIES
   avro_turf (~> 0.4.1)
   byebug
   dotenv
+  faraday-http-cache
   httparty
   octokit
   omniauth
@@ -128,3 +131,6 @@ DEPENDENCIES
   snappy
   thin
   webmock
+
+BUNDLED WITH
+   1.10.6
