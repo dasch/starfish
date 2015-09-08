@@ -8,8 +8,7 @@ module Starfish
       handler = "handle_#{event.type.underscore}"
 
       if respond_to?(handler)
-        puts "handling event #{handler}"
-        send(handler, project, event)
+        send(handler, project, event.payload)
       end
     end
 
