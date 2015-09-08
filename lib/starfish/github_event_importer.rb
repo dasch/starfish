@@ -1,4 +1,5 @@
 require 'octokit'
+require 'faraday/http_cache'
 require 'starfish/github_event_handlers'
 
 module Starfish
@@ -7,9 +8,16 @@ module Starfish
     GITHUB_CLIENT_SECRET = ENV.fetch("GITHUB_CLIENT_SECRET")
 
     def initialize(repo:, event_store:)
+      stack = Faraday::RackBuilder.new do |builder|
+        builder.use Faraday::HttpCache
+        builder.use Octokit::Response::RaiseError
+        builder.adapter Faraday.default_adapter
+      end
+
       @github = Octokit::Client.new(
         client_id: GITHUB_CLIENT_ID,
         client_secret: GITHUB_CLIENT_SECRET,
+        middleware: stack,
       )
 
       @repo = repo
