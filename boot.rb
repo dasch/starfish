@@ -10,12 +10,17 @@ require 'starfish/notification_subscriber'
 require 'starfish/release_subscriber'
 require 'starfish/auto_release_subscriber'
 require 'starfish/deploy_subscriber'
+require 'starfish/github_sync_subscriber'
+require 'starfish/github_event_importer'
 
 $logger.info "=== Booting ==="
 
 $repo = Starfish::Repository.new
-
 $events = Starfish::EventStore.new(log: Starfish::RedisLog.new)
+
+github_event_importer = Starfish::GithubEventImporter.new(repo: $repo, event_store: $events)
+
+$events.add_observer(Starfish::GithubSyncSubscriber.new($repo, importer: github_event_importer))
 $events.add_observer(Starfish::ProjectSubscriber.new($repo))
 $events.add_observer(Starfish::BuildSubscriber.new($repo))
 $events.add_observer(Starfish::GithubSubscriber.new($repo))
@@ -28,3 +33,6 @@ $events.replay!
 $events.add_observer(Starfish::AutoReleaseSubscriber.new($repo))
 $events.add_observer(Starfish::NotificationSubscriber.new($repo))
 $events.add_observer(Starfish::DeploySubscriber.new($repo))
+
+import_thread = Thread.start { github_event_importer.start }
+import_thread.abort_on_exception = true

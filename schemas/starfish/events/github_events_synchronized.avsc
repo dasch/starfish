@@ -1,0 +1,9 @@
+{
+  "name": "github_events_synchronized",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "project_id", "type": "string" },
+    { "name": "github_event_id", "type": "string" }
+  ]
+}
