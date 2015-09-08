@@ -8,7 +8,7 @@ require 'omniauth'
 require 'omniauth/strategies/github'
 require 'omniauth/strategies/flowdock'
 
-Dotenv.load
+Dotenv.load unless ENV["RACK_ENV"] == "production"
 Dotenv.load(".env.test") if ENV["RACK_ENV"] == "test"
 
 require 'starfish/setup_app'
