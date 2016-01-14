@@ -15,6 +15,10 @@ module Starfish
       @commits = []
     end
 
+    def repo_url
+      "https://github.com/#{repo}.git"
+    end
+
     def add_commit(**options)
       commit = Commit.new(**options)
       @commits << commit

@@ -1,7 +1,10 @@
+require 'starfish/kubernetes'
+
 module Starfish
   class DeploySubscriber
     def initialize(repo)
       @repo = repo
+      @kubernetes = Kubernetes.new
     end
 
     def update(event)
@@ -25,6 +28,8 @@ module Starfish
     private
 
     def deploy(release)
+      @kubernetes.deploy(release)
+
       $events.record(:release_deployed, {
         release_id: release[:id],
       })
