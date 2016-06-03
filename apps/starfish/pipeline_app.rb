@@ -11,11 +11,7 @@ module Starfish
       end
 
       get '' do
-        if @pipeline.channels.any?
-          redirect builds_path(@pipeline)
-        else
-          redirect channels_path(@pipeline)
-        end
+        redirect builds_path(@pipeline)
       end
 
       get '/settings' do
