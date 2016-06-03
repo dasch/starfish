@@ -40,3 +40,53 @@
     </form>
   </div>
 </div>
+
+<div class="modal fade" id="edit-key">
+  <div class="modal-dialog">
+    <form action="#" method="POST">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Change config value</h4>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" name="_method" value="put">
+
+          <div class="form-group">
+            <label for="config_key">Key</label>
+            <input type="text" disabled class="form-control" name="config_key" placeholder="SOME_CONFIG_KEY">
+          </div>
+
+          <div class="form-group">
+            <label for="config_value">Value</label>
+            <input type="text" class="form-control" name="config_value" placeholder="Config value">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Change Value &amp; Release</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  $('#edit-key').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    var configUrl = button.data("config-url");
+    var configKey = button.data("config-key");
+    var configValue = button.data("config-value");
+    var modal = $(this);
+
+    modal.find("form").attr("action", configUrl);
+    modal.find("input[name=config_key]").attr("value", configKey);
+    modal.find("input[name=config_value]").attr("value", configValue);
+
+    modal.on('shown.bs.modal', function (event) {
+      $(this).find("input[name=config_value]").select();
+    });
+  })
+</script>

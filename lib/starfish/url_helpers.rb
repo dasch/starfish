@@ -72,6 +72,10 @@ module Starfish
       [channel_path(channel), "config", "keys"].join("/")
     end
 
+    def config_key_path(channel, key)
+      [channel_path(channel), "config", "keys", key].join("/")
+    end
+
     def releases_path(channel)
       [channel_path(channel), "releases"].join("/")
     end

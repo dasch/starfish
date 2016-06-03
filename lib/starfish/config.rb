@@ -33,6 +33,10 @@ module Starfish
       @env.key?(key)
     end
 
+    def fetch(key)
+      @env.fetch(key)
+    end
+
     def keys
       @env.keys
     end

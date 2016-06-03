@@ -58,6 +58,11 @@ module Starfish
       add_config(env: env)
     end
 
+    def change_config_value(key, value)
+      env = current_config.env.merge(key => value)
+      add_config(env: env)
+    end
+
     def find_config(version:)
       @configs.find {|c| c.version == version } or raise NotFound
     end
