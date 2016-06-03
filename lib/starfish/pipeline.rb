@@ -83,7 +83,7 @@ module Starfish
     end
 
     def to_s
-      name
+      branch
     end
   end
 end
