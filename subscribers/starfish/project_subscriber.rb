@@ -39,7 +39,7 @@ module Starfish
     def pipeline_removed(timestamp, data)
       project = @repo.find_project(data[:project_id])
 
-      project.remove_pipeline(data[:id])
+      project.remove_pipeline(data[:pipeline_id])
 
       $logger.info "Removed pipeline #{pipeline}"
     end
