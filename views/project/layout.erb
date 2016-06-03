@@ -47,9 +47,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Projects <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <% @projects.each do |project| %>
-                  <% project.pipelines.each do |pipeline| %>
-                    <li><a href="<%= builds_path(pipeline) %>"><%= pipeline_title(pipeline) %></a></li>
-                  <% end %>
+                  <li><a href="<%= project_path(project) %>"><%= project %></a></li>
                 <% end %>
                 <li class="divider"></li>
                 <li><a href="<%= setup_path %>">Add project...</a></li>
