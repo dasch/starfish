@@ -36,6 +36,14 @@ module Starfish
       $logger.info "Added pipeline #{pipeline}"
     end
 
+    def pipeline_removed(timestamp, data)
+      project = @repo.find_project(data[:project_id])
+
+      project.remove_pipeline(data[:id])
+
+      $logger.info "Removed pipeline #{pipeline}"
+    end
+
     def channel_added(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])

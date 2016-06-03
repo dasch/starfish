@@ -19,15 +19,15 @@
 
       <ul class="nav navbar-nav navbar-right hidden-xs">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pipelines <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Branches <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
             <% @project.pipelines.each do |pipeline| %>
-              <li><a href="<%= pipeline_path(pipeline) %>"><%= pipeline %></a></li>
+              <li><a href="<%= pipeline_path(pipeline) %>"><code><%= pipeline.branch %></code></a></li>
             <% end %>
 
             <li class="divider"></li>
 
-            <li><a href="<%= pipelines_path(@project) %>">Configure pipelines...</a></li>
+            <li><a href="<%= pipelines_path(@project) %>">Configure branches...</a></li>
           </ul>
         </li>
       </ul>

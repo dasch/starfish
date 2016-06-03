@@ -7,6 +7,6 @@
     { "name": "project_id", "type": "string" },
     { "name": "name", "type": "string" },
     { "name": "branch", "type": "string" },
-    { "name": "author", "type": "starfish.author" }
+    { "name": "author", "type": ["null", "starfish.author"] }
   ]
 }

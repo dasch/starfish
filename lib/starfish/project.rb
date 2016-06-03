@@ -31,6 +31,10 @@ module Starfish
       pipeline
     end
 
+    def remove_pipeline(id)
+      @pipelines.delete_if {|p| p.id == id }
+    end
+
     def find_pipeline(id)
       @pipelines.find {|b| b.id == id } or raise NotFound
     end
