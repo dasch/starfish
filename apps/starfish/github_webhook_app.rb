@@ -24,8 +24,6 @@ module Starfish
     def handle_push
       branch = payload["ref"].scan(%r(refs/heads/(.+))).flatten.first
 
-      return if payload["commits"].empty?
-
       if !project.has_pipeline_for_branch?(branch)
         $events.record(:pipeline_added, {
           id: SecureRandom.uuid,
