@@ -37,21 +37,28 @@ module Starfish
 
       pipeline = project.find_pipeline_by_branch(branch)
 
-      author = {
-        username: payload["sender"]["login"],
-        email: payload["pusher"]["email"],
-        avatar_url: payload["sender"]["avatar_url"],
-      }
+      if payload["deleted"]
+        $events.record(:pipeline_removed, {
+          pipeline_id: pipeline.id,
+          project_id: project.id,
+        })
+      else
+        author = {
+          username: payload["sender"]["login"],
+          email: payload["pusher"]["email"],
+          avatar_url: payload["sender"]["avatar_url"],
+        }
 
-      $events.record(:build_pushed, {
-        id: SecureRandom.uuid,
-        build_number: pipeline.builds.count + 1,
-        project_id: project.id,
-        pipeline_id: pipeline.id,
-        commits: payload["commits"].map {|c| map_commit(c) },
-        head_commit: map_commit(payload["head_commit"]),
-        author: author,
-      })
+        $events.record(:build_pushed, {
+          id: SecureRandom.uuid,
+          build_number: pipeline.builds.count + 1,
+          project_id: project.id,
+          pipeline_id: pipeline.id,
+          commits: payload["commits"].map {|c| map_commit(c) },
+          head_commit: map_commit(payload["head_commit"]),
+          author: author,
+        })
+      end
     end
 
     def handle_pull_request
@@ -87,21 +94,6 @@ module Starfish
           timestamp: Time.now
         },
       })
-    end
-
-    def handle_delete
-      return unless payload.fetch("ref_type") == "branch"
-
-      branch = payload.fetch("ref").scan(%r(refs/heads/(.+))).flatten.first
-
-      if project.has_pipeline_for_branch?(branch)
-        pipeline = project.find_pipeline_by_branch(branch)
-
-        $events.record(:pipeline_removed, {
-          pipeline_id: pipeline.id,
-          project_id: project.id,
-        })
-      end
     end
 
     private
