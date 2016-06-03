@@ -1,0 +1,14 @@
+{
+  "name": "channel_config_value_changed",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "key", "type": "string" },
+    { "name": "value", "type": "string" },
+    { "name": "config_version", "type": "long" },
+    { "name": "author", "type": "starfish.author" },
+    { "name": "project_id", "type": "string" },
+    { "name": "pipeline_id", "type": "string" },
+    { "name": "channel_id", "type": "string" }
+  ]
+}

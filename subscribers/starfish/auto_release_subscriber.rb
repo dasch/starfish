@@ -32,6 +32,10 @@ module Starfish
       end
     end
 
+    def channel_config_value_changed(timestamp, data)
+      channel_config_key_added(timestamp, data)
+    end
+
     def channel_config_key_added(timestamp, data)
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])

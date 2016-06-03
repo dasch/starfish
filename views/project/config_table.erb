@@ -3,6 +3,7 @@
     <tr>
       <th>Key</th>
       <th>Value</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -10,6 +11,9 @@
       <tr>
         <td width="10"><code><%= key %></code></td>
         <td><code><%= value %></code></td>
+        <td align="right">
+          <a href="#" data-toggle="modal" data-target="#edit-key" data-config-key="<%= key %>" data-config-value="<%= value %>" data-config-url="<%= config_key_path(@channel, key) %>"><span class="glyphicon glyphicon-pencil"></span></a>
+        </td>
       </tr>
     <% end %>
   </tbody>

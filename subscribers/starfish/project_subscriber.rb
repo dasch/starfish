@@ -65,5 +65,13 @@ module Starfish
 
       channel.add_config_key(data[:key], data[:value])
     end
+
+    def channel_config_value_changed(timestamp, data)
+      project = @repo.find_project(data[:project_id])
+      pipeline = project.find_pipeline(data[:pipeline_id])
+      channel = pipeline.find_channel(data[:channel_id])
+
+      channel.change_config_value(data[:key], data[:value])
+    end
   end
 end

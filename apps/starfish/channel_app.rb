@@ -115,6 +115,31 @@ module Starfish
         redirect config_path(@channel)
       end
 
+      put '/config/keys/:config_key' do
+        @channel = @pipeline.find_channel_by_slug(params[:channel])
+        @config = @channel.current_config
+
+        if @config.key?(params[:config_key])
+          if params[:config_value] == @config.fetch(params[:config_key])
+            flash "The value is the same as before"
+          else
+            $events.record(:channel_config_value_changed, {
+              key: params[:config_key],
+              value: params[:config_value],
+              config_version: @config.version,
+              author: current_user,
+              project_id: @project.id,
+              pipeline_id: @pipeline.id,
+              channel_id: @channel.id
+            })
+          end
+        else
+          flash "Config key <code>#{params[:config_key]}</code> does not exist"
+        end
+
+        redirect config_path(@channel)
+      end
+
       get '/:release' do
         @channel = @pipeline.find_channel_by_slug(params[:channel])
         @release = @channel.find_release_by_number(params[:release].to_i)

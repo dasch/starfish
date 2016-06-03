@@ -11,6 +11,8 @@ module Starfish
     set :root, File.expand_path("../../../", __FILE__)
     set :views, -> { File.join(root, "views", "project") }
 
+    use Rack::MethodOverride
+
     register Sinatra::Namespace
 
     before do
