@@ -44,7 +44,7 @@ module Starfish
     end
 
     def summary
-      commit.summary
+      commit && commit.summary
     end
 
     def changes
