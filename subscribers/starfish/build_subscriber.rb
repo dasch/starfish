@@ -44,7 +44,7 @@ module Starfish
         timestamp: timestamp,
       )
 
-      if commits.last.message =~ /Merge pull request #(\d+) from/
+      if commits.any? && commits.last.message =~ /Merge pull request #(\d+) from/
         build.pull_request = pipeline.find_pull_request($1.to_i) rescue nil
       end
     end
