@@ -14,22 +14,8 @@ module Starfish
       project = @repo.find_project(data[:project_id])
       pipeline = project.find_pipeline(data[:pipeline_id])
 
-      commits = data[:commits].map {|c|
-        author = User.new(
-          name: c[:author][:name],
-          username: c[:author][:username],
-        )
-
-        Commit.new(
-          sha: c[:sha],
-          author: author,
-          message: c[:message],
-          added: c[:added],
-          removed: c[:removed],
-          modified: c[:modified],
-          url: c[:url]
-        )
-      }
+      commits = data[:commits].map {|c| map_commit(c) }
+      commits << map_commit(data[:head_commit]) if commits.empty?
 
       author = User.new(
         username: data[:author][:username],
@@ -47,6 +33,25 @@ module Starfish
       if commits.any? && commits.last.message =~ /Merge pull request #(\d+) from/
         build.pull_request = pipeline.find_pull_request($1.to_i) rescue nil
       end
+    end
+
+    private
+
+    def map_commit(c)
+      author = User.new(
+        name: c[:author][:name],
+        username: c[:author][:username],
+      )
+
+      Commit.new(
+        sha: c[:sha],
+        author: author,
+        message: c[:message],
+        added: c[:added],
+        removed: c[:removed],
+        modified: c[:modified],
+        url: c[:url]
+      )
     end
   end
 end
