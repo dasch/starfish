@@ -1,4 +1,4 @@
-require 'starfish/repository'
+require 'starfish/snapshot'
 require 'starfish/event_store'
 require 'starfish/redis_log'
 require 'starfish/project_subscriber'
@@ -13,17 +13,22 @@ require 'starfish/deploy_subscriber'
 
 $logger.info "=== Booting ==="
 
-$repo = Starfish::Repository.new
+$snapshot = Starfish::Snapshot.restore
+$repo = $snapshot.repo
 
 $events = Starfish::EventStore.new(log: Starfish::RedisLog.new)
+
 $events.add_observer(Starfish::ProjectSubscriber.new($repo))
 $events.add_observer(Starfish::BuildSubscriber.new($repo))
 $events.add_observer(Starfish::GithubSubscriber.new($repo))
 $events.add_observer(Starfish::ReleaseSubscriber.new($repo))
 $events.add_observer(Starfish::FlowdockSubscriber.new($repo))
 $events.add_observer(Starfish::ShipwayWebhookSubscriber.new($repo))
+$events.add_observer($snapshot)
 
-$events.replay!
+$events.replay!(since: $snapshot.offset)
+
+$snapshot.save
 
 $events.add_observer(Starfish::AutoReleaseSubscriber.new($repo))
 $events.add_observer(Starfish::NotificationSubscriber.new($repo))

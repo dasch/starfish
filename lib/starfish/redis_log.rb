@@ -16,8 +16,8 @@ module Starfish
       @redis.rpush(@key, compress(data))
     end
 
-    def events
-      @redis.lrange(@key, 0, -1).map {|data| decompress(data) }
+    def events(since: 0)
+      @redis.lrange(@key, since, -1).map {|data| decompress(data) }
     end
 
     def empty?
