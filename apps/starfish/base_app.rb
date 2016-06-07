@@ -18,6 +18,7 @@ module Starfish
     before do
       redirect "/auth/signin" if session[:auth].nil?
       @projects = $repo.projects
+      @environments = $repo.environments
     end
 
     helpers AuthenticationHelpers, UrlHelpers, FlashHelpers

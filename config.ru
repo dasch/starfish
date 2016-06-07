@@ -13,6 +13,7 @@ Dotenv.load(".env.test") if ENV["RACK_ENV"] == "test"
 
 require 'starfish/setup_app'
 require 'starfish/project_app'
+require 'starfish/environment_app'
 require 'starfish/authentication_app'
 require 'starfish/github_webhook_app'
 require 'starfish/shipway_webhook_app'
@@ -53,6 +54,7 @@ map("/setup") { run Starfish::SetupApp }
 map("/auth") { run Starfish::AuthenticationApp }
 map("/webhooks/github") { run Starfish::GithubWebhookApp }
 map("/webhooks/shipway") { run Starfish::ShipwayWebhookApp }
+map("/environments") { run Starfish::EnvironmentApp }
 
 map("/projects") do
   run Rack::Cascade.new([
