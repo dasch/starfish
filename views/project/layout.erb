@@ -53,6 +53,15 @@
                 <li><a href="<%= setup_path %>">Add project...</a></li>
               </ul>
             </li>
+
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Environments <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <% @environments.each do |environment| %>
+                  <li><a href="<%= environment_path(environment) %>"><%= environment %></a></li>
+                <% end %>
+              </ul>
+            </li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">

@@ -1,0 +1,28 @@
+<div class="panel panel-default">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Release</th>
+        </td>
+      </thead>
+
+      <tbody>
+        <% @environment.channels.each do |channel| %>
+          <tr>
+            <td><%= channel.pipeline.project %></td>
+            <td>
+              <span class="label label-info"><%= channel.current_release %></span>
+
+              <% if channel.current_release %>
+                <%= release_event(channel.current_release) %> <%= relative_time(channel.current_release.timestamp) %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
