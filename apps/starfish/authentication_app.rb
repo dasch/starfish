@@ -13,12 +13,6 @@ module Starfish
       redirect "/"
     end
 
-    get '/flowdock/callback' do
-      session[:flowdock_auth] = env['omniauth.auth']
-
-      redirect "/"
-    end
-
     get '/signin' do
       erb :signin, layout: false
     end

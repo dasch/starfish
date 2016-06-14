@@ -6,7 +6,6 @@ require 'bundler/setup'
 require 'dotenv'
 require 'omniauth'
 require 'omniauth/strategies/github'
-require 'omniauth/strategies/flowdock'
 
 Dotenv.load unless ENV["RACK_ENV"] == "production"
 Dotenv.load(".env.test") if ENV["RACK_ENV"] == "test"
@@ -42,11 +41,7 @@ use OmniAuth::Builder do
     write:repo_hook
   ]
 
-  flowdock_client_id = ENV.fetch("FLOWDOCK_CLIENT_ID")
-  flowdock_client_secret = ENV.fetch("FLOWDOCK_CLIENT_SECRET")
-
   provider :github, github_client_id, github_client_secret, scope: github_scopes.join(",")
-  provider :flowdock, flowdock_client_id, flowdock_client_secret, scope: "flow integration"
 end
 
 map("/setup") { run Starfish::SetupApp }

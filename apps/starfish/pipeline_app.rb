@@ -1,4 +1,3 @@
-require 'starfish/flowdock/client'
 require 'starfish/service_manifest'
 require 'starfish/base_app'
 
@@ -12,50 +11,6 @@ module Starfish
 
       get '' do
         redirect builds_path(@pipeline)
-      end
-
-      get '/settings' do
-        erb :show_pipeline_settings
-      end
-
-      get '/settings/flowdock' do
-        if session[:flowdock_auth].nil?
-          redirect "/auth/flowdock"
-        end
-
-        @flowdock = Flowdock::Client.new(session[:flowdock_auth].credentials.token)
-
-        @flows = @flowdock.flows
-
-        erb :flowdock_select_flow
-      end
-
-      post '/settings/flowdock' do
-        if session[:flowdock_auth].nil?
-          redirect "/auth/flowdock"
-        end
-
-        @flowdock = Flowdock::Client.new(session[:flowdock_auth].credentials.token)
-
-        params[:flowdock_flows].each do |slug|
-          source = @flowdock.add_source(slug, {
-            name: "Starfish (#{@project} / #{@pipeline})",
-            url: pipeline_path(@pipeline)
-          })
-
-          $events.record(:flowdock_source_added, {
-            project_id: @project.id,
-            pipeline_id: @pipeline.id,
-            flowdock_source_id: source.id,
-            flowdock_flow_slug: slug,
-            flowdock_flow_token: source.flow_token,
-            author: current_user
-          })
-        end
-
-        flash "Flowdock integration added to selected flows"
-
-        redirect pipeline_settings_path(@pipeline)
       end
 
       get '/builds' do

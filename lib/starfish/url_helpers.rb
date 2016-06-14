@@ -103,9 +103,5 @@ module Starfish
     def github_webhook_url(project)
       [request.base_url, "webhooks", "github", project.slug].join("/")
     end
-
-    def flowdock_setup_path(pipeline)
-      [pipeline_settings_path(pipeline), "flowdock"].join("/")
-    end
   end
 end
