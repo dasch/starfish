@@ -45,7 +45,7 @@ module Starfish
           "Channels"      => channels_path(pipeline),
           "Config"        => pipeline_config_path(pipeline),
           "Processes"     => processes_path(pipeline),
-          "Settings"      => pipeline_settings_path(pipeline),
+          "Settings"      => project_settings_path(pipeline.project),
         }
 
         active_path = items.values.

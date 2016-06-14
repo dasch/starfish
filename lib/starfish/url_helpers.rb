@@ -20,16 +20,16 @@ module Starfish
       ["/projects", project.slug].join("/")
     end
 
+    def project_settings_path(project)
+      [project_path(project), "settings"].join("/")
+    end
+
     def pipelines_path(project)
       [project_path(project), "pipelines"].join("/")
     end
 
     def pipeline_path(pipeline)
       [project_path(pipeline.project), pipeline.slug].join("/")
-    end
-
-    def pipeline_settings_path(pipeline)
-      [pipeline_path(pipeline), "settings"].join("/")
     end
 
     def builds_path(pipeline)

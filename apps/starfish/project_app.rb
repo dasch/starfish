@@ -13,11 +13,28 @@ module Starfish
     namespace '/:project' do
       before do
         @project = $repo.find_project_by_slug(params[:project])
+        @pipeline = @project.pipelines.first
       end
 
       get '' do
-        @pipeline = @project.pipelines.first
         redirect @pipeline ? pipeline_path(@pipeline) : pipelines_path(@project)
+      end
+
+      get '/settings' do
+        erb :project_settings
+      end
+
+      post '/settings' do
+        if params[:name] != @project.name
+          $events.record(:project_renamed, {
+            id: @project.id,
+            name: params[:name],
+          })
+        end
+
+        flash "Project has been renamed"
+
+        redirect project_path(@project)
       end
 
       get '/pipelines' do

@@ -1,0 +1,9 @@
+{
+  "name": "project_renamed",
+  "namespace": "starfish.events",
+  "type": "record",
+  "fields": [
+    { "name": "id", "type": "string" },
+    { "name": "name", "type": "string" }
+  ]
+}

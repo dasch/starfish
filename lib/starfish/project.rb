@@ -15,6 +15,10 @@ module Starfish
       @commits = []
     end
 
+    def rename(name)
+      @name = name
+    end
+
     def add_commit(**options)
       commit = Commit.new(**options)
       @commits << commit

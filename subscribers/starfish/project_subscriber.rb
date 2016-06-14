@@ -24,6 +24,13 @@ module Starfish
       $logger.info "Added project #{project}"
     end
 
+    def project_renamed(timestamp, data)
+      project = @repo.find_project(data[:id])
+      project.rename(data[:name])
+
+      $logger.info "Renamed project #{project.id} to #{project.name}"
+    end
+
     def pipeline_added(timestamp, data)
       project = @repo.find_project(data[:project_id])
 
