@@ -4,6 +4,7 @@ require 'sinatra/namespace'
 require 'starfish/authentication_helpers'
 require 'starfish/flash_helpers'
 require 'starfish/url_helpers'
+require 'starfish/user_helpers'
 require 'starfish/not_found'
 
 module Starfish
@@ -20,7 +21,7 @@ module Starfish
       @projects = $repo.projects
     end
 
-    helpers AuthenticationHelpers, UrlHelpers, FlashHelpers
+    helpers AuthenticationHelpers, UrlHelpers, FlashHelpers, UserHelpers
 
     helpers do
       def change_status(status)

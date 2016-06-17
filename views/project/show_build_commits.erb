@@ -10,7 +10,7 @@
     <% @build.commits.each do |commit| %>
       <tr>
         <td width="10"><%= commit_link(commit) %></td>
-        <td><%= commit.author %></td>
+        <td><%= avatar_for commit.author %></td>
         <td><%= commit.summary %></td>
       </tr>
     <% end %>

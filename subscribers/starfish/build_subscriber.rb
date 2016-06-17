@@ -14,9 +14,12 @@ module Starfish
       commits << map_commit(event.head_commit) if commits.empty?
 
       author = User.new(
+        name: event.author.name,
         username: event.author.username,
         avatar_url: event.author.avatar_url,
       )
+
+      project.register_user(author)
 
       build = pipeline.add_build(
         id: event.id,

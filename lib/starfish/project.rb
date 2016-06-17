@@ -13,6 +13,15 @@ module Starfish
       @repo = repo
       @pipelines = []
       @commits = []
+      @users = {}
+    end
+
+    def register_user(user)
+      @users[user.username] = user
+    end
+
+    def find_user(username)
+      @users.fetch(username) { User.new(username: username) }
     end
 
     def rename(name)
