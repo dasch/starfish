@@ -25,4 +25,5 @@ end
 
 group :development do
   gem 'shotgun'
+  gem 'ruby-prof'
 end
