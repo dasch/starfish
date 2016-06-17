@@ -1,3 +1,4 @@
+require 'starfish/events'
 require 'starfish/repository'
 require 'starfish/event_store'
 require 'starfish/redis_log'

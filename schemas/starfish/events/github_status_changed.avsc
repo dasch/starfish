@@ -4,6 +4,7 @@
   "type": "record",
   "fields": [
     { "name": "project_id", "type": "string" },
+    { "name": "sha", "type": "string" },
     { "name": "status", "type": "starfish.github_status" }
   ]
 }

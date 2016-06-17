@@ -6,6 +6,7 @@ require 'bundler/setup'
 require 'dotenv'
 require 'omniauth'
 require 'omniauth/strategies/github'
+require 'avromatic'
 
 Dotenv.load unless ENV["RACK_ENV"] == "production"
 Dotenv.load(".env.test") if ENV["RACK_ENV"] == "test"
@@ -26,6 +27,10 @@ if ENV["RACK_ENV"] == "development"
 end
 
 $logger = Logger.new(ENV["LOG_FILE"] || $stderr)
+
+Avromatic.configure do |config|
+  config.schema_store = AvroTurf::SchemaStore.new(path: 'schemas/')
+end
 
 require './boot'
 
