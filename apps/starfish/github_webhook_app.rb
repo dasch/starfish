@@ -84,6 +84,7 @@ module Starfish
     def handle_status
       $events.record(:github_status_changed, {
         project_id: project.id,
+        sha: payload["sha"],
         status: {
           state: payload["state"],
           context: payload["context"],

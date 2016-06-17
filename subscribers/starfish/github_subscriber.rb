@@ -56,7 +56,7 @@ module Starfish
 
       value = value_mapping.fetch(status.state)
 
-      project.find_builds_by_sha(nil).each do |build|
+      project.find_builds_by_sha(event.sha).each do |build|
         build.update_status(
           context: status.context,
           value: value,
