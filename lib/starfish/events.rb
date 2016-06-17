@@ -1,3 +1,10 @@
+# Patch in compatibility with AvroTurf.
+module Avromatic::Model::RawSerialization::Encode
+  def as_avro
+    value_attributes_for_avro
+  end
+end
+
 module EventStruct
   def self.new(event_name)
     schema_name = "starfish.events.#{event_name}"
