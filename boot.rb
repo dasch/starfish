@@ -22,7 +22,12 @@ $events.add_observer(Starfish::GithubSubscriber.new($repo))
 $events.add_observer(Starfish::ReleaseSubscriber.new($repo))
 $events.add_observer(Starfish::ShipwayWebhookSubscriber.new($repo))
 
+start_time = Time.now
+
 $events.replay!
+
+end_time = Time.now
+puts "Booted in #{end_time - start_time}s"
 
 $events.add_observer(Starfish::AutoReleaseSubscriber.new($repo))
 $events.add_observer(Starfish::NotificationSubscriber.new($repo))
