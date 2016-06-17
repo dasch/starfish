@@ -61,7 +61,7 @@ module Starfish
           context: status.context,
           value: value,
           description: status.description,
-          url: status.target_url,
+          url: status.url,
           timestamp: timestamp
         )
       end
