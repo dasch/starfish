@@ -82,7 +82,7 @@ module Starfish
     end
 
     def commit
-      commits.last
+      @commit ||= commits.last
     end
 
     def authors
