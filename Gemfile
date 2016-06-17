@@ -11,8 +11,9 @@ gem 'octokit'
 gem 'redis'
 gem 'httparty'
 gem 'snappy'
-gem 'avro_turf', '~> 0.4.1'
+gem 'avro_turf', '~> 0.7.0'
 gem 'activesupport'
+gem 'avromatic'
 
 group :development, :test do
   gem 'rspec', '~> 3.2.0'

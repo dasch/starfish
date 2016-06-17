@@ -1,30 +1,26 @@
+require 'starfish/event_subscriber'
+
 module Starfish
-  class BuildSubscriber
+  class BuildSubscriber < EventSubscriber
     def initialize(repo)
       @repo = repo
     end
 
-    def update(event)
-      if respond_to?(event.name)
-        send(event.name, event.timestamp, event.data)
-      end
-    end
+    def build_pushed(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
 
-    def build_pushed(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-
-      commits = data[:commits].map {|c| map_commit(c) }
-      commits << map_commit(data[:head_commit]) if commits.empty?
+      commits = event.commits.map {|c| map_commit(c) }
+      commits << map_commit(event.head_commit) if commits.empty?
 
       author = User.new(
-        username: data[:author][:username],
-        avatar_url: data[:author][:avatar_url],
+        username: event.author.username,
+        avatar_url: event.author.avatar_url,
       )
 
       build = pipeline.add_build(
-        id: data.fetch(:id),
-        number: data.fetch(:build_number),
+        id: event.id,
+        number: event.build_number,
         commits: commits,
         author: author,
         timestamp: timestamp,
@@ -39,18 +35,18 @@ module Starfish
 
     def map_commit(c)
       author = User.new(
-        name: c[:author][:name],
-        username: c[:author][:username],
+        name: c.author.name,
+        username: c.author.username,
       )
 
       Commit.new(
-        sha: c[:sha],
+        sha: c.sha,
         author: author,
-        message: c[:message],
-        added: c[:added],
-        removed: c[:removed],
-        modified: c[:modified],
-        url: c[:url]
+        message: c.message,
+        added: c.added,
+        removed: c.removed,
+        modified: c.modified,
+        url: c.url
       )
     end
   end

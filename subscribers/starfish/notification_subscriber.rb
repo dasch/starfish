@@ -1,29 +1,25 @@
+require 'starfish/event_subscriber'
+
 module Starfish
-  class NotificationSubscriber
+  class NotificationSubscriber < EventSubscriber
     def initialize(repo)
       @repo = repo
     end
 
-    def update(event)
-      if respond_to?(event.name)
-        send(event.name, event.timestamp, event.data)
-      end
-    end
-
-    def build_pushed(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      build = pipeline.find_build(data[:id])
+    def build_pushed(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
+      build = pipeline.find_build(event.id)
 
       notify(pipeline, :build_added, build: build)
     end
 
-    def build_automatically_released(timestamp, data)
-      data = data[:release]
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      channel = pipeline.find_channel(data[:channel_id])
-      release = channel.find_release(data[:id])
+    def build_automatically_released(timestamp, event)
+      data = event.release
+      project = @repo.find_project(data.project_id)
+      pipeline = project.find_pipeline(data.pipeline_id)
+      channel = pipeline.find_channel(data.channel_id)
+      release = channel.find_release(data.id)
 
       notify(pipeline, :release_added, release: release)
     end

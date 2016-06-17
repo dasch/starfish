@@ -1,93 +1,88 @@
+require 'starfish/event_subscriber'
 require 'starfish/manual_release_event'
 require 'starfish/config_changed_event'
 require 'starfish/rollback_event'
 
 module Starfish
-  class ProjectSubscriber
+  class ProjectSubscriber < EventSubscriber
     def initialize(repo)
       @repo = repo
     end
 
-    def update(event)
-      if respond_to?(event.name)
-        send(event.name, event.timestamp, event.data)
-      end
-    end
-
-    def project_added(timestamp, data)
+    def project_added(timestamp, event)
       project = @repo.add_project(
-        id: data[:id],
-        name: data[:name],
-        repo: data[:repo]
+        id: event.id,
+        name: event.name,
+        repo: event.repo
       )
 
       $logger.info "Added project #{project}"
     end
 
-    def project_renamed(timestamp, data)
-      project = @repo.find_project(data[:id])
-      project.rename(data[:name])
+    def project_renamed(timestamp, event)
+      project = @repo.find_project(event.id)
+      project.rename(event.name)
 
       $logger.info "Renamed project #{project.id} to #{project.name}"
     end
 
-    def pipeline_added(timestamp, data)
-      project = @repo.find_project(data[:project_id])
+    def pipeline_added(timestamp, event)
+      project = @repo.find_project(event.project_id)
 
       pipeline = project.add_pipeline(
-        id: data[:id],
-        name: data[:name],
-        branch: data[:branch]
+        id: event.id,
+        name: event.name,
+        branch: event.branch
       )
 
       $logger.info "Added pipeline #{pipeline}"
     end
 
-    def pipeline_removed(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
+    def pipeline_removed(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
 
       project.remove_pipeline(pipeline.id)
 
       $logger.info "Removed pipeline #{pipeline}"
     end
 
-    def channel_added(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
+    def channel_added(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
 
       channel = pipeline.add_channel(
-        id: data[:id],
-        name: data[:name],
-        auto_release_builds: data[:auto_release_builds]
+        id: event.id,
+        name: event.name,
+        auto_release_builds: event.auto_release_builds
       )
 
       $logger.info "Added channel #{channel}"
     end
 
-    def channel_settings_updated(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      channel = pipeline.find_channel(data[:channel_id])
+    def channel_settings_updated(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
+      channel = pipeline.find_channel(event.channel_id)
 
-      channel.name = data[:name]
-      channel.auto_release_builds = data[:auto_release_builds]
+      channel.name = event.name
+      channel.auto_release_builds = event.auto_release_builds
     end
 
-    def channel_config_key_added(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      channel = pipeline.find_channel(data[:channel_id])
+    def channel_config_key_added(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
+      channel = pipeline.find_channel(event.channel_id)
 
-      channel.add_config_key(data[:key], data[:value])
+      channel.add_config_key(event.key, event.value)
     end
 
-    def channel_config_value_changed(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      channel = pipeline.find_channel(data[:channel_id])
+    def channel_config_value_changed(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
+      channel = pipeline.find_channel(event.channel_id)
 
-      channel.change_config_value(data[:key], data[:value])
+      channel.change_config_value(event.key, event.value)
     end
   end
 end

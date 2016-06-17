@@ -1,19 +1,15 @@
+require 'starfish/event_subscriber'
+
 module Starfish
-  class AutoReleaseSubscriber
+  class AutoReleaseSubscriber < EventSubscriber
     def initialize(repo)
       @repo = repo
     end
 
-    def update(event)
-      if respond_to?(event.name)
-        send(event.name, event.timestamp, event.data)
-      end
-    end
-
-    def build_pushed(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      build = pipeline.find_build(data.fetch(:id))
+    def build_pushed(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
+      build = pipeline.find_build(event.id)
 
       pipeline.channels.each do |channel|
         if channel.auto_release_builds?
@@ -32,26 +28,26 @@ module Starfish
       end
     end
 
-    def channel_config_value_changed(timestamp, data)
-      channel_config_key_added(timestamp, data)
+    def channel_config_value_changed(timestamp, event)
+      channel_config_key_added(timestamp, event)
     end
 
-    def channel_config_key_added(timestamp, data)
-      project = @repo.find_project(data[:project_id])
-      pipeline = project.find_pipeline(data[:pipeline_id])
-      channel = pipeline.find_channel(data[:channel_id])
+    def channel_config_key_added(timestamp, event)
+      project = @repo.find_project(event.project_id)
+      pipeline = project.find_pipeline(event.pipeline_id)
+      channel = pipeline.find_channel(event.channel_id)
 
       # We only want to release the config if there's a build we can release it
       # with.
       if channel.releases.any?
         $events.record(:config_change_released, {
-          config_key: data[:key],
-          config_value: data[:value],
+          config_key: event.key,
+          config_value: event.value,
           release: {
             id: SecureRandom.uuid,
             build_number: channel.current_build.number,
             config_version: channel.current_config.version,
-            author: data[:author],
+            author: event.author,
             project_id: project.id,
             pipeline_id: pipeline.id,
             channel_id: channel.id
