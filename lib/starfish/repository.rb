@@ -3,28 +3,34 @@ require 'starfish/not_found'
 
 module Starfish
   class Repository
-    attr_reader :projects
-
     def initialize
-      @projects = []
+      @projects = {}
+      @projects_by_slug = {}
     end
 
     def clear
       @projects.clear
     end
 
+    def projects
+      @projects.values
+    end
+
     def add_project(**options)
       project = Project.new(**options)
-      @projects << project
+
+      @projects[project.id] = project
+      @projects_by_slug[project.slug] = project
+
       project
     end
 
     def find_project_by_slug(slug)
-      projects.find {|p| p.slug == slug } or raise NotFound
+      @projects_by_slug.fetch(slug) { raise NotFound }
     end
 
     def find_project(id)
-      projects.find {|p| p.id == id } or raise NotFound
+      @projects.fetch(id) { raise NotFound }
     end
   end
 end
