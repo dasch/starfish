@@ -10,11 +10,11 @@ module Starfish
       )
     end
 
-    def serialize(event)
+    def serialize(record)
       attrs = {
-        "name" => event.name.to_s,
-        "timestamp" => event.timestamp.to_i,
-        "data" => serialize_event_data(event)
+        "name" => record.name,
+        "timestamp" => record.timestamp.to_i,
+        "data" => serialize_event_data(record)
       }
 
       @avro.encode(attrs, schema_name: "event")
@@ -24,18 +24,19 @@ module Starfish
       attrs = @avro.decode(data, schema_name: "event")
       schema_name = "starfish.events.#{attrs['name']}"
       event_data = @avro.decode(attrs["data"], schema_name: schema_name)
+      event = attrs["name"].camelize.constantize.new(event_data)
 
-      EventStore::Event.new(
-        attrs["name"].to_sym,
+      EventStore::Record.new(
+        attrs["name"],
         Time.at(attrs["timestamp"]),
-        event_data.with_indifferent_access
+        event,
       )
     end
 
     private
 
-    def serialize_event_data(event)
-      @avro.encode(event.data.as_avro, schema_name: "starfish.events.#{event.name}")
+    def serialize_event_data(record)
+      @avro.encode(record.event.as_avro, schema_name: "starfish.events.#{record.name}")
     end
   end
 end

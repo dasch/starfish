@@ -6,7 +6,7 @@ module Starfish
   class EventStore
     include Observable
 
-    Event = Struct.new(:name, :timestamp, :data)
+    Record = Struct.new(:name, :timestamp, :event)
 
     attr_reader :log
 
@@ -16,8 +16,8 @@ module Starfish
     end
 
     def record(event_name, data = {})
-      event = Event.new(event_name, Time.now, data)
-      data = @serializer.serialize(event)
+      record = Record.new(event_name, Time.now, data)
+      data = @serializer.serialize(record)
 
       @log.write(data)
       $logger.info "Stored event #{event_name}:\n#{data.inspect}"
