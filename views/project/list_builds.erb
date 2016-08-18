@@ -17,7 +17,7 @@
           </tr>
         </thead>
         <tbody>
-          <% @pipeline.builds.reverse.each do |build| %>
+          <% @pipeline.builds.reverse.take(100).each do |build| %>
             <tr data-build-number="<%= build.number %>" class="build <%= 'success' if @pipeline.channels.any? {|c| c.current_build == build } %>">
               <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
 
