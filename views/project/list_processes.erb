@@ -13,8 +13,8 @@
         <tbody>
           <% @processes.each do |process| %>
             <tr>
-              <th width="10"><code><%= process.name %></code></th>
-              <td><code><%= process.command %></code></td>
+              <th><nobr><code><%= process.name %></code></nobr></th>
+              <td width="100%"><code><%= process.command %></code></td>
             </tr>
           <% end %>
         </tbody>
