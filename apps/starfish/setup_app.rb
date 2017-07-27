@@ -40,6 +40,14 @@ module Starfish
 
       @project = $repo.find_project(id)
 
+      $events.record(:pipeline_added, {
+        id: SecureRandom.uuid,
+        name: "master",
+        branch: "master",
+        project_id: @project.id,
+        author: current_user,
+      })
+
       begin
         secret = SecureRandom.hex
 
