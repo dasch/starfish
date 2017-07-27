@@ -1,4 +1,5 @@
 require 'starfish/base_app'
+require 'sinatra/json'
 
 module Starfish
   class ChannelApp < BaseApp
@@ -61,7 +62,11 @@ module Starfish
           }
         })
 
-        201
+        response = {
+          version: @channel.current_release
+        }
+
+        json response
       end
 
       post '/releases/rollbacks' do

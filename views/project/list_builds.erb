@@ -18,7 +18,7 @@
         </thead>
         <tbody>
           <% @pipeline.builds.reverse.take(100).each do |build| %>
-            <tr data-build-number="<%= build.number %>" class="build <%= 'success' if @pipeline.channels.any? {|c| c.current_build == build } %>">
+            <tr data-build-number="<%= build.number %>" class="build">
               <th width="10"><a href="<%= build_path(build) %>"><%= build %></a></th>
 
               <td width="10" align="center"><%= status_indicator(build.status) %></td>
@@ -52,7 +52,7 @@
                   <% if channel.current_build.nil? || channel.current_build.number < build.number %>
                     <span class="glyphicon glyphicon-plus text-muted release-build" title="Release this build"></span>
                   <% elsif channel.current_build == build %>
-                    <span class="glyphicon glyphicon-ok text-success" title="Current build"></span>
+                    <span class="label label-info"><%= channel.current_release %></span>
                   <% else %>
                     <span class="glyphicon glyphicon-minus text-muted release-build" title="Release this build"></span>
                   <% end %>
@@ -71,11 +71,6 @@
 </div>
 
 <script>
-  function pruneBuildIndicators() {
-    $(".build.success").removeClass("success");
-    $(".build").has(".channel-status .text-success").addClass("success");
-  }
-
   $(".build").on('click', '.release-build', function() {
     var $indicator = $(this);
     var $row = $indicator.closest(".build");
@@ -85,37 +80,42 @@
 
     console.log("Releasing ", build);
 
+    console.log($indicator);
     $indicator.removeClass("glyphicon-plus");
     $indicator.removeClass("glyphicon-minus");
     $indicator.removeClass("release-build");
     $indicator.addClass("glyphicon-refresh");
 
-    $.post(releaseUrl, function() {
-      $(".build.success .channel-status span").each(function() {
+    $.post(releaseUrl, function(data) {
+      $(".build .channel-status span").each(function() {
         if (channel === $(this).parent("td").data("channel")) {
           var thisBuild = parseInt($(this).closest(".build").data("build-number"));
 
-          if (thisBuild !== build) {
-            $(this).removeClass("glyphicon-ok");
-            $(this).removeClass("text-success");
+          if (thisBuild === build) {
+            $(this).text(data.version);
+            $(this).removeClass("glyphicon");
+            $(this).removeClass("glyphicon-refresh");
+            $(this).addClass("label");
+            $(this).addClass("label-info");
+          } else {
             $(this).addClass("release-build");
+            $(this).addClass("glyphicon");
             $(this).addClass("text-muted");
+            $(this).removeClass("label");
+            $(this).removeClass("label-info");
+            $(this).text("");
           }
 
           if (thisBuild < build) {
             $(this).addClass("glyphicon-minus");
-          } else {
+          } else if (thisBuild > build) {
             $(this).addClass("glyphicon-plus");
           }
         }
       });
 
       $indicator.removeClass("glyphicon-refresh");
-      $indicator.addClass("glyphicon-ok");
       $indicator.removeClass("text-muted");
-      $indicator.addClass("text-success");
-      $row.addClass("success");
-      pruneBuildIndicators();
     });
   });
 </script>
