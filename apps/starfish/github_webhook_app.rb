@@ -95,6 +95,18 @@ module Starfish
       })
     end
 
+    def handle_pull_request_review
+      return unless payload["action"] == "submitted"
+
+      $events.record(:github_pull_request_reviewed, {
+        project_id: project.id,
+        pull_request_id: payload["pull_request"]["id"],
+        target_branch: payload["pull_request"]["base"]["ref"],
+        state: payload["review"]["state"],
+        reviewer: payload["review"]["user"]["login"],
+      })
+    end
+
     private
 
     def authenticate_webhook!
