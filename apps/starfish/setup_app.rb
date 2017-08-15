@@ -5,6 +5,15 @@ require 'octokit'
 
 module Starfish
   class SetupApp < Sinatra::Base
+    GITHUB_EVENTS = %w[
+      status
+      push
+      pull_request
+      pull_request_review
+      pull_request_review_comment
+      issue_comment
+    ]
+
     set :root, File.expand_path("../../../", __FILE__)
     set :views, -> { File.join(root, "views", "setup") }
 
@@ -56,7 +65,7 @@ module Starfish
           secret: secret,
           content_type: "json"
         }, {
-          events: %w[status push pull_request pull_request_review_comment issue_comment]
+          events: GITHUB_EVENTS
         })
 
         $events.record(:github_hook_created, {
