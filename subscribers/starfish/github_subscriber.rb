@@ -38,12 +38,17 @@ module Starfish
       if project.has_pipeline_for_branch?(target_branch)
         pipeline = project.find_pipeline_by_branch(target_branch)
 
-        pr = pipeline.find_pull_request(pr_id)
+        begin
+          pr = pipeline.find_pull_request(pr_id)
 
-        pr.add_review(
-          state: event.state,
-          reviewer: event.reviewer,
-        )
+          puts "Adding review #{event}"
+          pr.add_review(
+            state: event.state,
+            reviewer: event.reviewer,
+          )
+        rescue NotFound
+          puts "Pull request #{pr_id} not found"
+        end
       end
     end
 
