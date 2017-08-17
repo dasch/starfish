@@ -47,7 +47,7 @@ module Starfish
             reviewer: event.reviewer,
           )
         rescue NotFound
-          puts "Pull request #{pr_id} not found"
+          puts "Could not add review, pull request #{pr_id} not found for branch #{target_branch}"
         end
       end
     end
