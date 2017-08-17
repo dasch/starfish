@@ -9,7 +9,7 @@ module Starfish
 
     def initialize(name: nil, avatar_url: nil, username: nil)
       @name = name
-      @avatar_url = avatar_url
+      @avatar_url = avatar_url || "https://github.com/#{username}.png"
       @username = username
     end
 
@@ -18,7 +18,15 @@ module Starfish
     end
 
     def ==(other)
-      name == other.name
+      name == other.name || username == other.username
+    end
+
+    def hash
+      to_s.hash
+    end
+
+    def eql?(other)
+      self == other
     end
 
     def to_s

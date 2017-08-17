@@ -8,7 +8,7 @@
           <tr>
             <th>Build</th>
             <th>Status</th>
-            <th>Author</th>
+            <th>Authors</th>
             <th>Commit</th>
 
             <% @pipeline.channels.each do |channel| %>
@@ -23,11 +23,13 @@
 
               <td width="10" align="center"><%= status_indicator(build.status) %></td>
 
-              <td width="10" align="center">
-                <%= erb :avatar, locals: { user: build.author } %>
+              <td>
+                <% build.authors.each do |author| %>
+                  <%= erb :avatar, locals: { user: author } %>
+                <% end %>
               </td>
 
-              <td>
+              <td width="100%">
                 <% if pr = build.pull_request %>
                   <a href="<%= pull_path(pr) %>">#<%= pr.number %></a> <%= pr.title %>
                 <% else %>
@@ -119,3 +121,9 @@
     });
   });
 </script>
+
+<style type="text/css">
+  .avatar + .avatar {
+    margin-left: -8px;
+  }
+</style>
