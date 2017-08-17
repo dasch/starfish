@@ -30,14 +30,20 @@
               </td>
 
               <td width="100%">
-                <% if pr = build.pull_request %>
-                  <a href="<%= pull_path(pr) %>">#<%= pr.number %></a> <%= pr.title %>
+                <% if build.pull_request.present? %>
+                  <%= build.pull_request.title %>
                 <% else %>
                   <%= build.summary %>
                 <% end %>
 
                 <small class="text-muted">
                   &mdash;
+
+                  <% if pr = build.pull_request %>
+                    <a href="<%= pull_path(pr) %>">pull request</a>
+
+                    &middot;
+                  <% end %>
 
                   <%= relative_time(build.timestamp) %>
 
