@@ -30,6 +30,9 @@
               <td>
                 <% if pr = build.pull_request %>
                   <a href="<%= pull_path(pr) %>">#<%= pr.number %></a> <%= pr.title %>
+                  <% pr.reviews.each do |review| %>
+                    <%= review.state %> by <%= review.author %>
+                  <% end %>
                 <% else %>
                   <%= build.summary %>
                 <% end %>
