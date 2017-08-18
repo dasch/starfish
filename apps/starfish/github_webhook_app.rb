@@ -100,7 +100,7 @@ module Starfish
 
       $events.record(:github_pull_request_reviewed, {
         project_id: project.id,
-        pull_request_id: payload["pull_request"]["id"],
+        pull_request_number: payload["pull_request"]["number"],
         target_branch: payload["pull_request"]["base"]["ref"],
         state: payload["review"]["state"],
         reviewer: payload["review"]["user"]["login"],
